@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XAOXAY — Programas & Herramientas</title>
+  <meta name="description" content="XAOXAY — Descargá programas, herramientas y utilidades. Creado por un dev para devs.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✖</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ══════════════ HEADER / NAV ══════════════ -->
+  <header class="header" id="header">
+    <nav class="nav container">
+      <a href="#" class="logo" aria-label="XAOXAY Home">
+        <span class="logo__x">X</span><span class="logo__text">AOXAY</span>
+      </a>
+      <ul class="nav__list" id="navList">
+        <li><a href="#inicio" class="nav__link active">Inicio</a></li>
+        <li><a href="#programas" class="nav__link">Programas</a></li>
+        <li><a href="#herramientas" class="nav__link">Herramientas</a></li>
+        <li>
+          <a href="https://github.com/Xaoxay" target="_blank" rel="noopener noreferrer" class="nav__github" aria-label="Perfil de GitHub">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            <span>GitHub</span>
+          </a>
+        </li>
+      </ul>
+      <button class="nav__toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ══════════════ HERO ══════════════ -->
+  <section class="hero" id="inicio">
+    <div class="hero__bg-grid" aria-hidden="true"></div>
+    <div class="hero__content container">
+      <div class="hero__logo-wrap" aria-hidden="true">
+        <svg class="hero__x-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="xGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ff1a1a"/>
+              <stop offset="50%" stop-color="#cc0000"/>
+              <stop offset="100%" stop-color="#ff4444"/>
+            </linearGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="4" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <line x1="30" y1="30" x2="170" y2="170" stroke="url(#xGrad)" stroke-width="18" stroke-linecap="round" filter="url(#glow)" class="hero__x-line"/>
+          <line x1="170" y1="30" x2="30" y2="170" stroke="url(#xGrad)" stroke-width="18" stroke-linecap="round" filter="url(#glow)" class="hero__x-line"/>
+          <circle cx="100" cy="100" r="90" fill="none" stroke="url(#xGrad)" stroke-width="3" opacity="0.3" class="hero__x-ring"/>
+        </svg>
+      </div>
+      <h1 class="hero__title">
+        <span class="hero__title-x">X</span>AOXAY
+      </h1>
+      <p class="hero__subtitle">Programas · Herramientas · Utilidades</p>
+      <p class="hero__desc">Tu hub para descargar software útil, herramientas de desarrollo y utilidades creadas con dedicación.</p>
+      <div class="hero__actions">
+        <a href="#programas" class="btn btn--primary">Ver Programas</a>
+        <a href="#herramientas" class="btn btn--ghost">Herramientas</a>
+      </div>
+    </div>
+    <div class="hero__scroll-indicator" aria-hidden="true">
+      <span></span>
+    </div>
+  </section>
+
+  <!-- ══════════════ PROGRAMAS ══════════════ -->
+  <section class="section" id="programas">
+    <div class="container">
+      <h2 class="section__title"><span class="section__title-accent">01.</span> Programas</h2>
+      <p class="section__desc">Software completo listo para usar. Descargá e instalá.</p>
+
+      <div class="cards-grid" id="programasGrid">
+        <!-- Card 1 -->
+        <article class="card">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <h3 class="card__title">XaoManager</h3>
+          <p class="card__desc">Gestor de archivos rápido y liviano con interfaz dark. Organiza todo en segundos.</p>
+          <div class="card__meta">
+            <span class="tag">Windows</span>
+            <span class="tag">v2.1</span>
+          </div>
+          <a href="#" class="btn btn--small btn--primary">Descargar</a>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="card">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <h3 class="card__title">CodeXtract</h3>
+          <p class="card__desc">Extrae snippets de código de cualquier proyecto y los organiza automáticamente.</p>
+          <div class="card__meta">
+            <span class="tag">Cross-platform</span>
+            <span class="tag">v1.4</span>
+          </div>
+          <a href="#" class="btn btn--small btn--primary">Descargar</a>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="card">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3 class="card__title">XShield</h3>
+          <p class="card__desc">Scanner de seguridad para tu red local. Detecta vulnerabilidades al instante.</p>
+          <div class="card__meta">
+            <span class="tag">Windows</span>
+            <span class="tag">v3.0</span>
+          </div>
+          <a href="#" class="btn btn--small btn--primary">Descargar</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ HERRAMIENTAS ══════════════ -->
+  <section class="section section--alt" id="herramientas">
+    <div class="container">
+      <h2 class="section__title"><span class="section__title-accent">02.</span> Herramientas</h2>
+      <p class="section__desc">Utilidades y scripts para agilizar tu flujo de trabajo.</p>
+
+      <div class="cards-grid" id="herramientasGrid">
+        <!-- Tool 1 -->
+        <article class="card">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <h3 class="card__title">NetProbe</h3>
+          <p class="card__desc">Escanea puertos y servicios de cualquier IP. Rápido y preciso.</p>
+          <div class="card__meta">
+            <span class="tag">CLI</span>
+            <span class="tag">Python</span>
+          </div>
+          <a href="#" class="btn btn--small btn--primary">Ver Más</a>
+        </article>
+
+        <!-- Tool 2 -->
+        <article class="card">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <h3 class="card__title">AutoConf</h3>
+          <p class="card__desc">Configura tu entorno de desarrollo con un solo comando. Plugins, paths, themes.</p>
+          <div class="card__meta">
+            <span class="tag">Bash</span>
+            <span class="tag">PowerShell</span>
+          </div>
+          <a href="#" class="btn btn--small btn--primary">Ver Más</a>
+        </article>
+
+        <!-- Tool 3 -->
+        <article class="card">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </div>
+          <h3 class="card__title">PixelSnap</h3>
+          <p class="card__desc">Captura pantalla, recorta y comparte al instante. Shortcuts personalizables.</p>
+          <div class="card__meta">
+            <span class="tag">Windows</span>
+            <span class="tag">Portable</span>
+          </div>
+          <a href="#" class="btn btn--small btn--primary">Ver Más</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════ FOOTER ══════════════ -->
+  <footer class="footer">
+    <div class="container footer__content">
+      <a href="#" class="logo logo--small">
+        <span class="logo__x">X</span><span class="logo__text">AOXAY</span>
+      </a>
+      <p class="footer__copy">&copy; 2026 XAOXAY. Todos los derechos reservados.</p>
+      <div class="footer__actions">
+        <div class="footer__links">
+          <a href="https://github.com/Xaoxay" target="_blank" rel="noopener noreferrer" class="footer__github-link" aria-label="Perfil de GitHub">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            <span>GitHub</span>
+          </a>
+        </div>
+        <button id="adminBtn" class="footer__admin-btn" title="Panel Administrador (Atajo: Ctrl + Alt + X)" aria-label="Acceso Administrador">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" aria-hidden="true">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══════════════ MODAL LOGIN ADMIN ══════════════ -->
+  <div class="modal" id="adminLoginModal" aria-hidden="true" role="dialog" aria-labelledby="loginModalTitle">
+    <div class="modal__backdrop" id="loginBackdrop"></div>
+    <div class="modal__dialog modal__dialog--sm">
+      <div class="modal__header">
+        <h3 class="modal__title" id="loginModalTitle"><span class="modal__title-x">🔒</span> Acceso Restringido</h3>
+        <button class="modal__close" id="closeLoginModal" aria-label="Cerrar modal">&times;</button>
+      </div>
+      <form class="modal__body" id="adminLoginForm">
+        <p class="modal__desc">Ingresá tu PIN o clave maestra para administrar los programas y herramientas.</p>
+        <div class="form-group">
+          <label for="adminPinInput">PIN de Administrador</label>
+          <input type="password" id="adminPinInput" class="form-input" placeholder="Ingresá tu PIN (defecto: 1234)" required autocomplete="current-password">
+          <span class="form-error" id="loginErrorMsg"></span>
+        </div>
+        <div class="modal__footer">
+          <button type="button" class="btn btn--ghost" id="cancelLoginBtn">Cancelar</button>
+          <button type="submit" class="btn btn--primary">Desbloquear</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════════ MODAL PANEL ADMIN ══════════════ -->
+  <div class="modal" id="adminPanelModal" aria-hidden="true" role="dialog" aria-labelledby="panelModalTitle">
+    <div class="modal__backdrop" id="panelBackdrop"></div>
+    <div class="modal__dialog modal__dialog--lg">
+      <div class="modal__header">
+        <h3 class="modal__title" id="panelModalTitle">
+          <span class="modal__title-x">⚡</span> Panel de Control <span class="badge badge--accent">Admin</span>
+        </h3>
+        <button class="modal__close" id="closePanelModal" aria-label="Cerrar panel">&times;</button>
+      </div>
+
+      <div class="panel-tabs">
+        <button class="panel-tab active" data-tab="tab-add" id="tabBtnAdd">➕ Agregar Programa</button>
+        <button class="panel-tab" data-tab="tab-list" id="tabBtnList">📋 Administrar (<span id="itemsCountBadge">0</span>)</button>
+        <button class="panel-tab" data-tab="tab-settings" id="tabBtnSettings">⚙️ Seguridad & Exportar</button>
+      </div>
+
+      <!-- TAB 1: FORMULARIO AGREGAR / EDITAR -->
+      <div class="tab-content active" id="tab-add">
+        <form class="panel-form" id="itemForm">
+          <input type="hidden" id="itemId">
+
+          <div class="form-row">
+            <div class="form-group flex-2">
+              <label for="itemTitle">Nombre del Programa / Herramienta *</label>
+              <input type="text" id="itemTitle" class="form-input" placeholder="Ej: MiApp SuperClean" required>
+            </div>
+            <div class="form-group flex-1">
+              <label for="itemSection">Sección / Categoría *</label>
+              <select id="itemSection" class="form-input" required>
+                <option value="programas">01. Programas</option>
+                <option value="herramientas">02. Herramientas</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="itemDesc">Descripción breve *</label>
+            <textarea id="itemDesc" class="form-input form-textarea" rows="3" placeholder="Explicá qué hace, ventajas, etc." required></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="itemVersion">Versión</label>
+              <input type="text" id="itemVersion" class="form-input" placeholder="Ej: v1.0, Beta">
+            </div>
+            <div class="form-group flex-1">
+              <label for="itemPlatform">Sistema / Plataforma</label>
+              <input type="text" id="itemPlatform" class="form-input" placeholder="Ej: Windows, Python, Portable">
+            </div>
+            <div class="form-group flex-1">
+              <label for="itemIcon">Ícono</label>
+              <select id="itemIcon" class="form-input">
+                <option value="window">💻 Ventana / Software</option>
+                <option value="terminal">⌨️ Terminal / Código</option>
+                <option value="shield">🛡️ Seguridad / Red</option>
+                <option value="tool">🛠️ Herramienta / Ajuste</option>
+                <option value="file">📁 Archivos / Gestor</option>
+                <option value="bolt">⚡ Rápido / Utilidad</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Tipo de Descarga *</label>
+            <div class="radio-options">
+              <label class="radio-label">
+                <input type="radio" name="downloadType" value="local" checked>
+                <span>📂 Archivo en carpeta <code>descargas/</code></span>
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="downloadType" value="external">
+                <span>🌐 Enlace externo (Drive, GitHub, Mega, etc.)</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group" id="localFileInputGroup">
+            <label for="itemFileName">Nombre del archivo en <code>descargas/</code></label>
+            <div class="file-name-input-wrap">
+              <span class="file-prefix">descargas/</span>
+              <input type="text" id="itemFileName" class="form-input" placeholder="ejemplo: miprograma.exe o setup.zip">
+            </div>
+            <div class="file-dropzone-hint">
+              <input type="file" id="localFilePicker" class="file-picker-hidden">
+              <label for="localFilePicker" class="file-picker-btn">🔍 Explorar archivo de mi PC...</label>
+              <small class="hint-text">Al seleccionarlo se copia su nombre. <strong>¡Colocá ese archivo en la carpeta <code>descargas/</code> de este proyecto!</strong></small>
+            </div>
+          </div>
+
+          <div class="form-group" id="externalUrlGroup" style="display: none;">
+            <label for="itemUrl">Enlace URL de descarga</label>
+            <input type="url" id="itemUrl" class="form-input" placeholder="https://github.com/... o enlace de Drive/Mega">
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn--ghost" id="cancelEditBtn" style="display: none;">Cancelar edición</button>
+            <button type="submit" class="btn btn--primary" id="saveItemBtn">💾 Guardar y Publicar</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- TAB 2: GESTIONAR EXISTENTES -->
+      <div class="tab-content" id="tab-list">
+        <div class="items-manager-list" id="itemsManagerList">
+          <!-- Se llena por JavaScript -->
+        </div>
+      </div>
+
+      <!-- TAB 3: SEGURIDAD Y EXPORTACIÓN -->
+      <div class="tab-content" id="tab-settings">
+        <div class="settings-card">
+          <h4>🔒 Cambiar PIN de Administrador</h4>
+          <p class="settings-desc">El PIN por defecto es <code>1234</code>. Podés cambiarlo aquí por tu clave personal.</p>
+          <form id="changePinForm" class="settings-form">
+            <div class="form-row">
+              <input type="password" id="newPinInput" class="form-input flex-2" placeholder="Nuevo PIN / Contraseña" required minlength="4">
+              <button type="submit" class="btn btn--primary flex-1">Actualizar PIN</button>
+            </div>
+            <span id="pinSuccessMsg" class="form-success"></span>
+          </form>
+        </div>
+
+        <div class="settings-card">
+          <h4>📦 Exportar index.html permanente</h4>
+          <p class="settings-desc">Descargá una copia de <code>index.html</code> con todos tus programas guardados directamente en el código para subir a GitHub Pages o cualquier hosting.</p>
+          <button type="button" class="btn btn--ghost" id="exportHtmlBtn">📥 Descargar index.html actualizado</button>
+        </div>
+
+        <div class="settings-card settings-card--danger">
+          <h4>⚠️ Sesión y Datos</h4>
+          <div class="settings-actions">
+            <button type="button" class="btn btn--ghost" id="logoutAdminBtn">🚪 Cerrar Sesión</button>
+            <button type="button" class="btn btn--danger-outline" id="resetDefaultsBtn">🔄 Restablecer valores de prueba</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
