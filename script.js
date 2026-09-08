@@ -45,9 +45,6 @@
 
   // ── State Management ──
   const STORAGE_KEY = 'xaoxay_items';
-  const PIN_KEY = 'xaoxay_pin';
-  const AUTH_KEY = 'xaoxay_admin_token';
-  const DEFAULT_PIN_HASH = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4';
 
   function getItems() {
     try {
@@ -180,48 +177,6 @@
     setupRevealObserver();
   }
 
-  // ── Redirection Helpers ──
-  function goToAdmin() {
-    const token = sessionStorage.getItem(AUTH_KEY);
-    const validHash = localStorage.getItem(PIN_KEY) || DEFAULT_PIN_HASH;
-    if (token && token === validHash) {
-      window.location.href = 'admin.html';
-    } else {
-      window.location.href = 'login.html';
-    }
-  }
-
-  // Keyboard shortcut: Ctrl + Alt + X o Ctrl + Shift + A
-  window.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey && e.altKey && (e.key === 'x' || e.key === 'X')) ||
-        (e.ctrlKey && e.shiftKey && (e.key === 'a' || e.key === 'A'))) {
-      e.preventDefault();
-      goToAdmin();
-    }
-  });
-
-  // URL Hash trigger (#admin)
-  if (window.location.hash === '#admin') {
-    goToAdmin();
-  }
-
-  // Triple click en logo
-  const logo = document.querySelector('.logo');
-  let logoClicks = 0;
-  let logoTimer;
-  if (logo) {
-    logo.addEventListener('click', (e) => {
-      logoClicks++;
-      clearTimeout(logoTimer);
-      if (logoClicks >= 3) {
-        e.preventDefault();
-        logoClicks = 0;
-        goToAdmin();
-      } else {
-        logoTimer = setTimeout(() => { logoClicks = 0; }, 600);
-      }
-    });
-  }
 
   // ── Mobile Nav Toggle ──
   const navToggle = document.getElementById('navToggle');
