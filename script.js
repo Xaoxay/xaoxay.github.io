@@ -9,76 +9,28 @@
   // ── Default Items ──
   const DEFAULT_ITEMS = [
     {
-      id: 'prog-1',
+      id: 'prog-xaosuite',
       section: 'programas',
-      title: 'XaoManager',
-      desc: 'Gestor de archivos rápido y liviano con interfaz dark. Organiza todo en segundos.',
-      version: 'v2.1',
-      platform: 'Windows',
-      icon: 'window',
-      downloadType: 'local',
-      fileName: 'XaoManager.exe',
-      url: 'descargas/XaoManager.exe'
-    },
-    {
-      id: 'prog-2',
-      section: 'programas',
-      title: 'CodeXtract',
-      desc: 'Extrae snippets de código de cualquier proyecto y los organiza automáticamente.',
-      version: 'v1.4',
-      platform: 'Cross-platform',
-      icon: 'terminal',
-      downloadType: 'local',
-      fileName: 'CodeXtract.zip',
-      url: 'descargas/CodeXtract.zip'
-    },
-    {
-      id: 'prog-3',
-      section: 'programas',
-      title: 'XShield',
-      desc: 'Scanner de seguridad para tu red local. Detecta vulnerabilidades al instante.',
-      version: 'v3.0',
-      platform: 'Windows',
+      title: 'XaoSuite',
+      desc: 'Centro integral de diagnóstico, optimización y reparación para Windows. 10 herramientas portables y auto-actualización.',
+      version: 'v4.5',
+      platform: 'Windows, Portable',
       icon: 'shield',
       downloadType: 'local',
-      fileName: 'XShield.exe',
-      url: 'descargas/XShield.exe'
+      fileName: 'XaoSuite.exe',
+      url: 'descargas/XaoSuite.exe'
     },
     {
-      id: 'tool-1',
+      id: 'tool-xaoextras',
       section: 'herramientas',
-      title: 'NetProbe',
-      desc: 'Escanea puertos y servicios de cualquier IP. Rápido y preciso.',
+      title: 'XaoExtras',
+      desc: 'Colección de utilidades y herramientas complementarias para Windows. Rápido, ligero y portable.',
       version: 'v1.0',
-      platform: 'CLI, Python',
-      icon: 'bolt',
-      downloadType: 'local',
-      fileName: 'netprobe.py',
-      url: 'descargas/netprobe.py'
-    },
-    {
-      id: 'tool-2',
-      section: 'herramientas',
-      title: 'AutoConf',
-      desc: 'Configura tu entorno de desarrollo con un solo comando. Plugins, paths, themes.',
-      version: 'v2.0',
-      platform: 'Bash, PowerShell',
+      platform: 'Windows, Portable',
       icon: 'tool',
       downloadType: 'local',
-      fileName: 'autoconf.ps1',
-      url: 'descargas/autoconf.ps1'
-    },
-    {
-      id: 'tool-3',
-      section: 'herramientas',
-      title: 'PixelSnap',
-      desc: 'Captura pantalla, recorta y comparte al instante. Shortcuts personalizables.',
-      version: 'Portable',
-      platform: 'Windows',
-      icon: 'file',
-      downloadType: 'local',
-      fileName: 'PixelSnap.exe',
-      url: 'descargas/PixelSnap.exe'
+      fileName: 'XaoExtras.exe',
+      url: 'descargas/XaoExtras.exe'
     }
   ];
 
@@ -99,7 +51,15 @@
   function getItems() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) return JSON.parse(stored);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        // If stored contains old demo items, reset to real defaults
+        if (parsed.some(item => item.title === 'XaoManager' || item.id === 'prog-1')) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_ITEMS));
+          return DEFAULT_ITEMS;
+        }
+        return parsed;
+      }
     } catch (e) {
       console.error('Error reading localStorage', e);
     }
@@ -190,13 +150,24 @@
     const btnText = item.section === 'programas' ? 'Descargar' : 'Descargar';
     const href = sanitizeUrl(item.url);
 
+    let actionButtons = `<a href="${href}" ${downloadAttr} class="btn btn--small btn--primary">${btnText}</a>`;
+    if (isLocal && item.fileName && item.fileName.toLowerCase().endsWith('.exe')) {
+      const zipName = item.fileName.replace(/\.exe$/i, '.zip');
+      actionButtons = `
+        <div class="card__actions-group">
+          <a href="${href}" ${downloadAttr} class="btn btn--small btn--primary">Descargar .exe</a>
+          <a href="descargas/${escapeHtml(zipName)}" download="${escapeHtml(zipName)}" class="btn btn--small btn--ghost">.zip</a>
+        </div>
+      `;
+    }
+
     return `
       <article class="card" data-id="${escapeHtml(item.id)}">
         <div class="card__icon">${iconSvg}</div>
         <h3 class="card__title">${escapeHtml(item.title)}</h3>
         <p class="card__desc">${escapeHtml(item.desc)}</p>
         <div class="card__meta">${metaTags.join(' ')}</div>
-        <a href="${href}" ${downloadAttr} class="btn btn--small btn--primary">${btnText}</a>
+        ${actionButtons}
       </article>
     `;
   }

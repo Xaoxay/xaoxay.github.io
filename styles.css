@@ -517,6 +517,14 @@ ul { list-style: none; }
   color: var(--clr-accent-bright);
 }
 
+.card__actions-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
 /* ══════════════════════════════════════════════
    STATS
    ══════════════════════════════════════════════ */
