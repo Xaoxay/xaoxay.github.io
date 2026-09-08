@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XAOXAY — Acceso Administrador</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="login-body">
+  <div class="login-bg-grid" aria-hidden="true"></div>
+
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="login-header">
+        <a href="index.html" class="login-logo">
+          <span class="logo__x">X</span><span class="logo__text">AOXAY</span>
+        </a>
+        <h1 class="login-title">Panel de Control</h1>
+        <p class="login-subtitle">Ingresá tu PIN o contraseña maestra para administrar tus programas.</p>
+      </div>
+
+      <form id="loginForm" class="login-form">
+        <div class="input-group">
+          <label for="pinInput">PIN / Clave de Acceso</label>
+          <div class="password-wrapper">
+            <input 
+              type="password" 
+              id="pinInput" 
+              class="admin-input" 
+              placeholder="Ingresá tu PIN (por defecto: 1234)" 
+              required 
+              autofocus 
+              autocomplete="current-password"
+            >
+            <button type="button" id="togglePinBtn" class="toggle-pin-btn" title="Mostrar/Ocultar PIN" aria-label="Mostrar/Ocultar PIN">
+              👁️
+            </button>
+          </div>
+          <span id="loginError" class="login-error-msg" role="alert"></span>
+        </div>
+
+        <button type="submit" class="admin-btn admin-btn--primary admin-btn--block" id="loginSubmitBtn">
+          <span>Desbloquear Panel</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </form>
+
+      <div class="login-footer">
+        <a href="index.html" class="back-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          <span>Volver al sitio web público</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      'use strict';
+      const PIN_KEY = 'xaoxay_pin';
+      const AUTH_KEY = 'xaoxay_admin_token';
+      const DEFAULT_PIN_HASH = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4'; // SHA-256 de '1234'
+
+      async function hashString(str) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(str);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      }
+
+      function getStoredPinHash() {
+        return localStorage.getItem(PIN_KEY) || DEFAULT_PIN_HASH;
+      }
+
+      // Si ya está autenticado en esta sesión, redirigir a admin.html
+      const currentToken = sessionStorage.getItem(AUTH_KEY);
+      if (currentToken && currentToken === getStoredPinHash()) {
+        window.location.replace('admin.html');
+      }
+
+      const loginForm = document.getElementById('loginForm');
+      const pinInput = document.getElementById('pinInput');
+      const loginError = document.getElementById('loginError');
+      const togglePinBtn = document.getElementById('togglePinBtn');
+
+      togglePinBtn.addEventListener('click', () => {
+        if (pinInput.type === 'password') {
+          pinInput.type = 'text';
+          togglePinBtn.textContent = '🙈';
+        } else {
+          pinInput.type = 'password';
+          togglePinBtn.textContent = '👁️';
+        }
+      });
+
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const enteredPin = pinInput.value.trim();
+        if (!enteredPin) return;
+
+        const enteredHash = await hashString(enteredPin);
+        const actualHash = getStoredPinHash();
+
+        if (enteredHash === actualHash) {
+          sessionStorage.setItem(AUTH_KEY, enteredHash);
+          loginError.textContent = '';
+          loginForm.querySelector('button[type="submit"]').textContent = '✓ Accediendo...';
+          setTimeout(() => {
+            window.location.replace('admin.html');
+          }, 300);
+        } else {
+          loginError.textContent = '❌ PIN incorrecto. Intentá nuevamente.';
+          pinInput.classList.add('input-shake');
+          pinInput.select();
+          setTimeout(() => pinInput.classList.remove('input-shake'), 500);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
