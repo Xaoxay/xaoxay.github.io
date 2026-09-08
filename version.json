@@ -1,6 +1,8 @@
 {
   "version": "4.5.0",
   "release_date": "2026-09-08",
-  "changelog": "- Sistema de Auto-Actualización integrado con conexión a internet y actualización en caliente.\\n- Creador de Puntos de Restauración del Sistema de Windows integrado en Xaoptic y XaoHub.\\n- Exportador de Herramientas Portables Autónomas (10 utilidades listas para pendrive).\\n- Nueva sección XaoFix con 6 herramientas de reparación directa de Windows.\\n- Destructor de archivos seguro (Shredder DoD de 2 pasadas) en XaoVault.\\n- Correcciones integrales de ortografía, tipografía y codificación UTF-8 pura.",
-  "download_url": "https://xaoxay.github.io/descargas/XaoSuite.exe"
+  "changelog": "- Sistema de Auto-Actualización integrado con conexión a internet y actualización en caliente.\\n- Modo Eye-Comfort anti-fatiga visual con paleta mate suave.\\n- Creador de Puntos de Restauración del Sistema de Windows integrado en Xaoptic y XaoHub.\\n- Exportador de Herramientas Portables Autónomas (10 utilidades listas para pendrive).\\n- Nueva sección XaoFix con 6 herramientas de reparación directa de Windows.\\n- Destructor de archivos seguro (Shredder DoD de 2 pasadas) en XaoVault.",
+  "download_url": "https://xaoxay.github.io/descargas/XaoSuite.exe",
+  "extras_version": "4.5.0",
+  "extras_download_url": "https://xaoxay.github.io/descargas/XaoExtras.exe"
 }
