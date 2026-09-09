@@ -612,43 +612,78 @@
   // ── Settings: Exportar index.html para GitHub Pages ──
   function generateIndexCard(item) {
     const iconSvg = ICONS[item.icon] || ICONS.window;
-    const metaTags = [];
+    const isProg = item.section === 'programas';
+    const sectionBadgeLabel = isProg ? '01. Programa' : '02. Herramienta';
+
+    const tagsHtml = [];
+    tagsHtml.push(`<span class="tech-tag tech-tag--accent">${sectionBadgeLabel}</span>`);
+    if (item.version) {
+      tagsHtml.push(`<span class="tech-tag">${escapeHtml(item.version)}</span>`);
+    }
     if (item.platform) {
       item.platform.split(',').forEach(tag => {
         const clean = tag.trim();
-        if (clean) metaTags.push(`<span class="tag">${escapeHtml(clean)}</span>`);
+        if (clean) tagsHtml.push(`<span class="tech-tag">${escapeHtml(clean)}</span>`);
       });
-    }
-    if (item.version) {
-      metaTags.push(`<span class="tag">${escapeHtml(item.version)}</span>`);
     }
 
     const isLocal = item.downloadType === 'local';
     const downloadAttr = isLocal ? `download="${escapeHtml(item.fileName || '')}"` : `target="_blank" rel="noopener noreferrer"`;
     const href = sanitizeUrl(item.url);
 
-    let actionButtons = `<a href="${href}" ${downloadAttr} class="btn btn--small btn--primary">Descargar</a>`;
+    let actionButtons = '';
     if (isLocal && item.fileName && item.fileName.toLowerCase().endsWith('.exe')) {
       const zipName = item.fileName.replace(/\.exe$/i, '.zip');
       actionButtons = `
-        <div class="card__actions-group">
-          <a href="${href}" ${downloadAttr} class="btn btn--small btn--primary">Descargar .exe</a>
-          <a href="descargas/${escapeHtml(zipName)}" download="${escapeHtml(zipName)}" class="btn btn--small btn--ghost">.zip</a>
-        </div>
+                <div class="download-dual-group">
+                  <a href="${href}" ${downloadAttr} class="btn-card btn-card--primary">
+                    <span class="btn-card-text">Descargar .exe</span>
+                    <span class="btn-card-bubble">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </span>
+                  </a>
+                  <a href="descargas/${escapeHtml(zipName)}" download="${escapeHtml(zipName)}" class="btn-card btn-card--ghost" title="Descargar comprimido .zip">
+                    <span>.zip</span>
+                  </a>
+                </div>
+      `;
+    } else {
+      const label = isLocal && item.fileName ? `Descargar (${escapeHtml(item.fileName)})` : 'Descargar';
+      actionButtons = `
+                <div class="download-dual-group">
+                  <a href="${href}" ${downloadAttr} class="btn-card btn-card--primary">
+                    <span class="btn-card-text">${label}</span>
+                    <span class="btn-card-bubble">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </span>
+                  </a>
+                </div>
       `;
     }
 
     return `
-        <!-- Card ${escapeHtml(item.title)} -->
-        <article class="card" data-id="${escapeHtml(item.id)}">
-          <div class="card__icon">${iconSvg}</div>
-          <h3 class="card__title">${escapeHtml(item.title)}</h3>
-          <p class="card__desc">${escapeHtml(item.desc)}</p>
-          <div class="card__meta">
-            ${metaTags.join('\n            ')}
-          </div>
-          ${actionButtons}
-        </article>`;
+          <!-- Card ${escapeHtml(item.title)} -->
+          <article class="card-shell" data-id="${escapeHtml(item.id)}">
+            <div class="card-core">
+              <div class="card-core__top">
+                <div class="card-icon-enclosure">
+                  ${iconSvg}
+                </div>
+                <div class="card-badges-wrap">
+                  ${tagsHtml.join('')}
+                </div>
+              </div>
+
+              <div class="card-core__body">
+                <h3 class="card-title">${escapeHtml(item.title)}</h3>
+                <p class="card-desc">${escapeHtml(item.desc)}</p>
+              </div>
+
+              <div class="card-core__footer">
+${actionButtons}
+              </div>
+            </div>
+          </article>`;
   }
 
   if (btnExportHtml) {
@@ -669,12 +704,12 @@
         const toolsCardsHtml = tools.map(generateIndexCard).join('\n');
 
         htmlText = htmlText.replace(
-          /(<div class="cards-grid" id="programasGrid">)[\s\S]*?(<\/div>\s*<\/div>\s*<\/section>)/,
-          `$1\n${progsCardsHtml}\n      $2`
+          /(<div class="bento-cards-grid" id="programasGrid">)[\s\S]*?(<\/div>\s*<\/div>\s*<\/section>)/,
+          `$1\n${progsCardsHtml}\n        $2`
         );
         htmlText = htmlText.replace(
-          /(<div class="cards-grid" id="herramientasGrid">)[\s\S]*?(<\/div>\s*<\/div>\s*<\/section>)/,
-          `$1\n${toolsCardsHtml}\n      $2`
+          /(<div class="bento-cards-grid" id="herramientasGrid">)[\s\S]*?(<\/div>\s*<\/div>\s*<\/section>)/,
+          `$1\n${toolsCardsHtml}\n        $2`
         );
 
         const blob = new Blob([htmlText], { type: 'text/html;charset=utf-8' });
