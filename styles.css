@@ -283,9 +283,19 @@ ul { list-style: none; }
 
 /* ── X SVG Logo with Orbital Radar ── */
 .hero__logo-wrap {
-  inline-size: clamp(120px, 20vw, 180px);
+  width: 100%;
+  max-width: 160px;
+  inline-size: clamp(120px, 20vw, 160px);
   margin-inline: auto;
   margin-block-end: 1.5rem;
+}
+
+.hero__x-svg {
+  width: 100%;
+  max-width: 160px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
 }
 
 .hero__x-line {
