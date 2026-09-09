@@ -140,7 +140,12 @@
   let revealObserver;
   function setupRevealObserver() {
     if (revealObserver) revealObserver.disconnect();
-    const cards = document.querySelectorAll('.card');
+    const targets = document.querySelectorAll('.card, .section__title');
+
+    if (!('IntersectionObserver' in window)) {
+      targets.forEach(el => el.classList.add('revealed'));
+      return;
+    }
 
     revealObserver = new IntersectionObserver(
       (entries) => {
@@ -151,10 +156,10 @@
           }
         });
       },
-      { threshold: 0.1, rootMargin: '0px 0px -20px 0px' }
+      { threshold: 0.12, rootMargin: '0px 0px -30px 0px' }
     );
 
-    cards.forEach((el) => revealObserver.observe(el));
+    targets.forEach((el) => revealObserver.observe(el));
   }
 
   function renderAll() {
@@ -202,40 +207,79 @@
     });
   }
 
-  // ── Active Nav Link on Scroll ──
+  // ── Unified Tactical Scroll Engine ──
+  const scrollBar = document.getElementById('scrollBar');
+  const heroContent = document.querySelector('.hero__content');
+  const backToTop = document.getElementById('backToTop');
+  const header = document.getElementById('header');
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.nav__link');
 
-  const setActiveLink = () => {
-    const scrollY = window.scrollY + 120;
-    sections.forEach((section) => {
-      const top = section.offsetTop;
-      const height = section.offsetHeight;
-      const id = section.getAttribute('id');
-      if (scrollY >= top && scrollY < top + height) {
-        navLinks.forEach((link) => {
-          link.classList.remove('active');
-          if (link.getAttribute('href') === `#${id}`) {
-            link.classList.add('active');
+  let isTicking = false;
+
+  function onScroll() {
+    if (!isTicking) {
+      window.requestAnimationFrame(() => {
+        const scrollY = window.scrollY || window.pageYOffset;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+        // 1. Tactical Laser Scroll Tracker (scaleX 0 -> 1)
+        if (scrollBar && docHeight > 0) {
+          const progress = Math.min(Math.max(scrollY / docHeight, 0), 1);
+          scrollBar.style.transform = `scaleX(${progress})`;
+        }
+
+        // 2. Hero 3D Parallax Descent
+        if (heroContent && scrollY <= window.innerHeight) {
+          const heroHeight = window.innerHeight * 0.75;
+          heroContent.style.transform = `translateY(${scrollY * 0.28}px)`;
+          heroContent.style.opacity = String(Math.max(1 - (scrollY / heroHeight), 0));
+        }
+
+        // 3. Active Nav Link on Scroll
+        const probeY = scrollY + 140;
+        sections.forEach((section) => {
+          const top = section.offsetTop;
+          const height = section.offsetHeight;
+          const id = section.getAttribute('id');
+          if (probeY >= top && probeY < top + height) {
+            navLinks.forEach((link) => {
+              link.classList.remove('active');
+              if (link.getAttribute('href') === `#${id}`) {
+                link.classList.add('active');
+              }
+            });
           }
         });
-      }
-    });
-  };
 
-  window.addEventListener('scroll', setActiveLink, { passive: true });
+        // 4. Header Background Blur & Border
+        if (header) {
+          header.style.background = scrollY > 50 ? 'rgba(10, 10, 10, 0.95)' : 'rgba(10, 10, 10, 0.85)';
+        }
 
-  // ── Header bg opacity on scroll ──
-  const header = document.getElementById('header');
-  const updateHeader = () => {
-    if (!header) return;
-    if (window.scrollY > 50) {
-      header.style.background = 'rgba(10, 10, 10, 0.95)';
-    } else {
-      header.style.background = 'rgba(10, 10, 10, 0.85)';
+        // 5. Back to Top Tactical Button
+        if (backToTop) {
+          if (scrollY > 350) {
+            backToTop.classList.add('visible');
+          } else {
+            backToTop.classList.remove('visible');
+          }
+        }
+
+        isTicking = false;
+      });
+      isTicking = true;
     }
-  };
-  window.addEventListener('scroll', updateHeader, { passive: true });
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  if (backToTop) {
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
 
   // ── Initial Render ──
   renderAll();

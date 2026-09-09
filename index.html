@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap">
-  <link rel="stylesheet" href="styles.css?v=5.0">
+  <link rel="stylesheet" href="styles.css?v=5.1">
 </head>
 <body class="cyber-terminal">
   <!-- CRT Scanlines Overlay (Tactical Telemetry) -->
@@ -36,6 +36,10 @@
         <span></span><span></span><span></span>
       </button>
     </nav>
+    <!-- Tactical Laser Scroll Tracker -->
+    <div class="scroll-tracker" aria-hidden="true">
+      <div class="scroll-tracker__bar" id="scrollBar"></div>
+    </div>
   </header>
 
   <!-- ══════════════ HERO ══════════════ -->
@@ -180,6 +184,12 @@
     </div>
   </footer>
 
-  <script src="script.js?v=5.0"></script>
+  <!-- Floating Tactical Back to Top Button -->
+  <button class="back-to-top" id="backToTop" aria-label="Volver arriba">
+    <span class="back-to-top__icon">▲</span>
+    <span class="back-to-top__text">TOP</span>
+  </button>
+
+  <script src="script.js?v=5.1"></script>
 </body>
 </html>
