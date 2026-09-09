@@ -252,7 +252,8 @@
   const navList = document.getElementById('navList');
 
   if (navToggle && navList) {
-    navToggle.addEventListener('click', () => {
+    navToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
       const isOpen = navList.classList.toggle('open');
       navToggle.classList.toggle('active');
       navToggle.setAttribute('aria-expanded', isOpen);
@@ -260,6 +261,15 @@
 
     navList.addEventListener('click', (e) => {
       if (e.target.closest('a')) {
+        navList.classList.remove('open');
+        navToggle.classList.remove('active');
+        navToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Close when clicking outside of mobile nav
+    document.addEventListener('click', (e) => {
+      if (navList.classList.contains('open') && !navList.contains(e.target) && !navToggle.contains(e.target)) {
         navList.classList.remove('open');
         navToggle.classList.remove('active');
         navToggle.setAttribute('aria-expanded', 'false');
@@ -280,7 +290,8 @@
   function onScroll() {
     if (!isTicking) {
       window.requestAnimationFrame(() => {
-        const scrollY = window.scrollY || window.pageYOffset;
+        // Clamp to 0 to prevent negative scroll on iOS rubber-band overscroll
+        const scrollY = Math.max(0, window.scrollY || window.pageYOffset);
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
 
         // 1. Tactical Laser Scroll Tracker (scaleX 0 -> 1)
@@ -289,41 +300,25 @@
           scrollBar.style.transform = `scaleX(${progress})`;
         }
 
-        // 2. Hero 3D Parallax Descent
-        if (heroContent && scrollY <= window.innerHeight) {
-          const heroHeight = window.innerHeight * 0.75;
-          heroContent.style.transform = `translateY(${scrollY * 0.28}px)`;
-          heroContent.style.opacity = String(Math.max(1 - (scrollY / heroHeight), 0));
+        // 2. Hero 3D Parallax Descent (only computed when visible in viewport)
+        if (heroContent) {
+          if (scrollY <= window.innerHeight) {
+            const heroHeight = window.innerHeight * 0.75;
+            heroContent.style.transform = `translateY(${scrollY * 0.28}px)`;
+            heroContent.style.opacity = String(Math.max(1 - (scrollY / heroHeight), 0));
+          } else if (heroContent.style.opacity !== '0') {
+            heroContent.style.opacity = '0';
+          }
         }
 
-        // 3. Active Nav Link on Scroll
-        const probeY = scrollY + 140;
-        sections.forEach((section) => {
-          const top = section.offsetTop;
-          const height = section.offsetHeight;
-          const id = section.getAttribute('id');
-          if (probeY >= top && probeY < top + height) {
-            navLinks.forEach((link) => {
-              link.classList.remove('active');
-              if (link.getAttribute('href') === `#${id}`) {
-                link.classList.add('active');
-              }
-            });
-          }
-        });
-
-        // 4. Header Background Blur & Border
+        // 3. Header Class Toggle (Zero-reflow style transition)
         if (header) {
-          header.style.background = scrollY > 50 ? 'rgba(10, 10, 10, 0.95)' : 'rgba(10, 10, 10, 0.85)';
+          header.classList.toggle('scrolled', scrollY > 50);
         }
 
-        // 5. Back to Top Tactical Button
+        // 4. Back to Top Tactical Button
         if (backToTop) {
-          if (scrollY > 350) {
-            backToTop.classList.add('visible');
-          } else {
-            backToTop.classList.remove('visible');
-          }
+          backToTop.classList.toggle('visible', scrollY > 350);
         }
 
         isTicking = false;
@@ -333,6 +328,29 @@
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
+
+  // ── Active Nav Link Observer (Zero-Reflow IntersectionObserver) ──
+  if ('IntersectionObserver' in window && sections.length > 0) {
+    const navObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          navLinks.forEach((link) => {
+            if (link.getAttribute('href') === `#${id}`) {
+              link.classList.add('active');
+            } else {
+              link.classList.remove('active');
+            }
+          });
+        }
+      });
+    }, {
+      rootMargin: '-25% 0px -65% 0px',
+      threshold: 0
+    });
+
+    sections.forEach((section) => navObserver.observe(section));
+  }
 
   if (backToTop) {
     backToTop.addEventListener('click', () => {
