@@ -7,7 +7,9 @@
   'use strict';
 
   // ── Default Items ──
+  // ── Default Items (Programas y Herramientas subidos) ──
   const DEFAULT_ITEMS = [
+    // ── 01. Programas ──
     {
       id: 'prog-xaosuite',
       section: 'programas',
@@ -21,6 +23,43 @@
       url: 'descargas/XaoSuite.exe'
     },
     {
+      id: 'prog-xaofocus',
+      section: 'programas',
+      title: 'XaoFocus',
+      desc: 'Modo de máxima concentración. Bloquea distracciones, silencia avisos y activa filtro de confort visual para jornadas de trabajo intensas.',
+      version: 'v1.0',
+      platform: 'Windows, Portable',
+      icon: 'bolt',
+      downloadType: 'local',
+      fileName: 'XaoFocus.exe',
+      url: 'descargas/XaoFocus.exe'
+    },
+    {
+      id: 'prog-xaosleep',
+      section: 'programas',
+      title: 'XaoSleep',
+      desc: 'Temporizador inteligente de apagado y suspensión programada para Windows. Ligero, preciso y sin configuraciones complejas.',
+      version: 'v1.0',
+      platform: 'Windows, Portable',
+      icon: 'window',
+      downloadType: 'local',
+      fileName: 'XaoSleep.exe',
+      url: 'descargas/XaoSleep.exe'
+    },
+    {
+      id: 'prog-xaoinstaller',
+      section: 'programas',
+      title: 'XaoInstaller',
+      desc: 'Instalador y actualizador silencioso de software esencial para Windows en 1 solo clic mediante paquetes limpios y oficiales.',
+      version: 'v1.0',
+      platform: 'Windows, Portable',
+      icon: 'file',
+      downloadType: 'local',
+      fileName: 'XaoInstaller.zip',
+      url: 'descargas/XaoInstaller.zip'
+    },
+    // ── 02. Herramientas ──
+    {
       id: 'tool-xaoextras',
       section: 'herramientas',
       title: 'XaoExtras',
@@ -31,6 +70,30 @@
       downloadType: 'local',
       fileName: 'XaoExtras.exe',
       url: 'descargas/XaoExtras.exe'
+    },
+    {
+      id: 'tool-xaotoolbox',
+      section: 'herramientas',
+      title: 'XaoToolbox',
+      desc: 'Suite gráfica integral de mantenimiento para Windows 10 y 11: optimizaciones de rendimiento, modo gaming y diagnóstico del equipo.',
+      version: 'v1.0',
+      platform: 'Windows, Portable',
+      icon: 'terminal',
+      downloadType: 'local',
+      fileName: 'XaoToolbox.zip',
+      url: 'descargas/XaoToolbox.zip'
+    },
+    {
+      id: 'tool-xaoproblems',
+      section: 'herramientas',
+      title: 'XaoProblems',
+      desc: 'Reparador automatizado para Windows. Soluciona pantallas azules, Windows Update trabado, archivos dañados DISM/SFC y fallos de red.',
+      version: 'v1.0',
+      platform: 'Windows, Portable',
+      icon: 'shield',
+      downloadType: 'local',
+      fileName: 'XaoProblems.zip',
+      url: 'descargas/XaoProblems.zip'
     }
   ];
 
@@ -52,7 +115,7 @@
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          if (parsed.some(item => item.title === 'XaoManager' || item.id === 'prog-1')) {
+          if (parsed.length < DEFAULT_ITEMS.length || parsed.some(item => item.title === 'XaoManager' || item.id === 'prog-1')) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_ITEMS));
             return DEFAULT_ITEMS;
           }
