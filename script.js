@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════
-   XAOXAY — High-End Frontend Controller
-   Dynamic Double-Bezel Cards, Scroll Revelations & Navigation
+   XAOXAY — Public Website Script
+   Dynamic Cards, Navigation, Smooth Scroll & Admin Redirection
    ═══════════════════════════════════════════════ */
 
 (() => {
@@ -34,7 +34,6 @@
     }
   ];
 
-  // ── Precision Linear SVG Icons ──
   const ICONS = {
     shield: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
     window: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
@@ -44,6 +43,7 @@
     bolt: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`
   };
 
+  // ── State Management ──
   const STORAGE_KEY = 'xaoxay_items';
 
   function getItems() {
@@ -60,7 +60,7 @@
         }
       }
     } catch (e) {
-      console.error('Error al leer de localStorage', e);
+      console.error('Error reading localStorage', e);
     }
     return DEFAULT_ITEMS;
   }
@@ -89,94 +89,55 @@
     return '#';
   }
 
-  // ── Render Double-Bezel Cards ──
+  // ── Render Cards ──
   const programasGrid = document.getElementById('programasGrid');
   const herramientasGrid = document.getElementById('herramientasGrid');
 
-  function renderDoubleBezelCard(item) {
+  function renderCard(item) {
     const iconSvg = ICONS[item.icon] || ICONS.window;
-    const isProg = item.section === 'programas';
-    const sectionBadgeLabel = isProg ? '01. Programa' : '02. Herramienta';
-
-    const tagsHtml = [];
-    tagsHtml.push(`<span class="tech-tag tech-tag--accent">${sectionBadgeLabel}</span>`);
-
-    if (item.version) {
-      tagsHtml.push(`<span class="tech-tag">${escapeHtml(item.version)}</span>`);
-    }
-
+    const metaTags = [];
     if (item.platform) {
       item.platform.split(',').forEach(tag => {
         const clean = tag.trim();
-        if (clean) tagsHtml.push(`<span class="tech-tag">${escapeHtml(clean)}</span>`);
+        if (clean) metaTags.push(`<span class="tag">${escapeHtml(clean)}</span>`);
       });
+    }
+    if (item.version) {
+      metaTags.push(`<span class="tag">${escapeHtml(item.version)}</span>`);
     }
 
     const isLocal = item.downloadType === 'local';
     const downloadAttr = isLocal ? `download="${escapeHtml(item.fileName || '')}"` : `target="_blank" rel="noopener noreferrer"`;
+    const btnText = 'Descargar';
     const href = sanitizeUrl(item.url);
 
-    let actionButtons = '';
+    let actionButtons = `<a href="${href}" ${downloadAttr} class="btn btn--small btn--primary">${btnText}</a>`;
     if (isLocal && item.fileName && item.fileName.toLowerCase().endsWith('.exe')) {
       const zipName = item.fileName.replace(/\.exe$/i, '.zip');
       actionButtons = `
-        <div class="download-dual-group">
-          <a href="${href}" ${downloadAttr} class="btn-card btn-card--primary">
-            <span class="btn-card-text">Descargar .exe</span>
-            <span class="btn-card-bubble">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            </span>
-          </a>
-          <a href="descargas/${escapeHtml(zipName)}" download="${escapeHtml(zipName)}" class="btn-card btn-card--ghost" title="Descargar comprimido .zip">
-            <span>.zip</span>
-          </a>
-        </div>
-      `;
-    } else {
-      const label = isLocal && item.fileName ? `Descargar (${escapeHtml(item.fileName)})` : 'Descargar';
-      actionButtons = `
-        <div class="download-dual-group">
-          <a href="${href}" ${downloadAttr} class="btn-card btn-card--primary">
-            <span class="btn-card-text">${label}</span>
-            <span class="btn-card-bubble">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            </span>
-          </a>
+        <div class="card__actions-group">
+          <a href="${href}" ${downloadAttr} class="btn btn--small btn--primary">Descargar .exe</a>
+          <a href="descargas/${escapeHtml(zipName)}" download="${escapeHtml(zipName)}" class="btn btn--small btn--ghost">.zip</a>
         </div>
       `;
     }
 
     return `
-      <article class="card-shell reveal-item" data-id="${escapeHtml(item.id)}">
-        <div class="card-core">
-          <div class="card-core__top">
-            <div class="card-icon-enclosure">
-              ${iconSvg}
-            </div>
-            <div class="card-badges-wrap">
-              ${tagsHtml.join('')}
-            </div>
-          </div>
-
-          <div class="card-core__body">
-            <h3 class="card-title">${escapeHtml(item.title)}</h3>
-            <p class="card-desc">${escapeHtml(item.desc)}</p>
-          </div>
-
-          <div class="card-core__footer">
-            ${actionButtons}
-          </div>
-        </div>
+      <article class="card" data-id="${escapeHtml(item.id)}">
+        <div class="card__icon">${iconSvg}</div>
+        <h3 class="card__title">${escapeHtml(item.title)}</h3>
+        <p class="card__desc">${escapeHtml(item.desc)}</p>
+        <div class="card__meta">${metaTags.join(' ')}</div>
+        ${actionButtons}
       </article>
     `;
   }
 
-  // ── Intersection Observer for Cinematic Scroll Entry ──
   let revealObserver;
-  function setupScrollReveals() {
+  function setupRevealObserver() {
     if (revealObserver) revealObserver.disconnect();
+    const cards = document.querySelectorAll('.card');
 
-    const revealItems = document.querySelectorAll('.reveal-item');
     revealObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -186,10 +147,10 @@
           }
         });
       },
-      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+      { threshold: 0.1, rootMargin: '0px 0px -20px 0px' }
     );
 
-    revealItems.forEach((el) => revealObserver.observe(el));
+    cards.forEach((el) => revealObserver.observe(el));
   }
 
   function renderAll() {
@@ -199,58 +160,50 @@
 
     if (programasGrid) {
       if (progs.length === 0) {
-        programasGrid.innerHTML = `<p style="grid-column:1/-1; color:var(--text-mid); text-align:center; padding:3rem 1rem;">No hay programas publicados actualmente.</p>`;
+        programasGrid.innerHTML = `<p style="grid-column:1/-1; color:var(--clr-text-muted); text-align:center; padding:2rem;">Aún no agregaste programas. Hacé clic en el candado abajo para acceder al panel admin.</p>`;
       } else {
-        programasGrid.innerHTML = progs.map(renderDoubleBezelCard).join('');
+        programasGrid.innerHTML = progs.map(renderCard).join('');
       }
     }
 
     if (herramientasGrid) {
       if (tools.length === 0) {
-        herramientasGrid.innerHTML = `<p style="grid-column:1/-1; color:var(--text-mid); text-align:center; padding:3rem 1rem;">No hay herramientas publicadas actualmente.</p>`;
+        herramientasGrid.innerHTML = `<p style="grid-column:1/-1; color:var(--clr-text-muted); text-align:center; padding:2rem;">Aún no agregaste herramientas. Hacé clic en el candado abajo para acceder al panel admin.</p>`;
       } else {
-        herramientasGrid.innerHTML = tools.map(renderDoubleBezelCard).join('');
+        herramientasGrid.innerHTML = tools.map(renderCard).join('');
       }
     }
 
-    setupScrollReveals();
+    setupRevealObserver();
   }
 
-  // ── Mobile Navigation Dropdown ──
-  const navToggle = document.getElementById('navToggle');
-  const mobileMenu = document.getElementById('mobileMenu');
 
-  if (navToggle && mobileMenu) {
+  // ── Mobile Nav Toggle ──
+  const navToggle = document.getElementById('navToggle');
+  const navList = document.getElementById('navList');
+
+  if (navToggle && navList) {
     navToggle.addEventListener('click', () => {
-      const isOpen = mobileMenu.classList.toggle('open');
+      const isOpen = navList.classList.toggle('open');
       navToggle.classList.toggle('active');
       navToggle.setAttribute('aria-expanded', isOpen);
     });
 
-    mobileMenu.addEventListener('click', (e) => {
+    navList.addEventListener('click', (e) => {
       if (e.target.closest('a')) {
-        mobileMenu.classList.remove('open');
-        navToggle.classList.remove('active');
-        navToggle.setAttribute('aria-expanded', 'false');
-      }
-    });
-
-    // Close on click outside
-    document.addEventListener('click', (e) => {
-      if (!navToggle.contains(e.target) && !mobileMenu.contains(e.target) && mobileMenu.classList.contains('open')) {
-        mobileMenu.classList.remove('open');
+        navList.classList.remove('open');
         navToggle.classList.remove('active');
         navToggle.setAttribute('aria-expanded', 'false');
       }
     });
   }
 
-  // ── Active Navigation on Scroll ──
+  // ── Active Nav Link on Scroll ──
   const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-link');
+  const navLinks = document.querySelectorAll('.nav__link');
 
-  const updateActiveNavLink = () => {
-    const scrollY = window.scrollY + 140;
+  const setActiveLink = () => {
+    const scrollY = window.scrollY + 120;
     sections.forEach((section) => {
       const top = section.offsetTop;
       const height = section.offsetHeight;
@@ -266,8 +219,20 @@
     });
   };
 
-  window.addEventListener('scroll', updateActiveNavLink, { passive: true });
+  window.addEventListener('scroll', setActiveLink, { passive: true });
 
-  // ── Initialize ──
+  // ── Header bg opacity on scroll ──
+  const header = document.getElementById('header');
+  const updateHeader = () => {
+    if (!header) return;
+    if (window.scrollY > 50) {
+      header.style.background = 'rgba(10, 10, 10, 0.95)';
+    } else {
+      header.style.background = 'rgba(10, 10, 10, 0.85)';
+    }
+  };
+  window.addEventListener('scroll', updateHeader, { passive: true });
+
+  // ── Initial Render ──
   renderAll();
 })();
