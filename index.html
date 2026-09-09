@@ -11,7 +11,9 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="cyber-terminal">
+  <!-- CRT Scanlines Overlay (Tactical Telemetry) -->
+  <div class="crt-scanlines" aria-hidden="true"></div>
 
   <!-- ══════════════ HEADER / NAV ══════════════ -->
   <header class="header" id="header">
@@ -56,8 +58,30 @@
           <line x1="30" y1="30" x2="170" y2="170" stroke="url(#xGrad)" stroke-width="18" stroke-linecap="round" filter="url(#glow)" class="hero__x-line"/>
           <line x1="170" y1="30" x2="30" y2="170" stroke="url(#xGrad)" stroke-width="18" stroke-linecap="round" filter="url(#glow)" class="hero__x-line"/>
           <circle cx="100" cy="100" r="90" fill="none" stroke="url(#xGrad)" stroke-width="3" opacity="0.3" class="hero__x-ring"/>
+          <circle cx="100" cy="100" r="76" fill="none" stroke="url(#xGrad)" stroke-width="1.5" stroke-dasharray="6 12" opacity="0.4" class="hero__x-radar"/>
         </svg>
       </div>
+
+      <!-- Tactical Telemetry HUD -->
+      <div class="hero__telemetry" aria-label="Telemetría de Sistema">
+        <div class="telemetry__item">
+          <span class="telemetry__led"></span>
+          <span class="telemetry__text">SYS // ONLINE</span>
+        </div>
+        <div class="telemetry__item">
+          <span class="telemetry__label">ARCH:</span>
+          <span class="telemetry__val">x64_WIN</span>
+        </div>
+        <div class="telemetry__item">
+          <span class="telemetry__label">REV:</span>
+          <span class="telemetry__val">v4.5</span>
+        </div>
+        <div class="telemetry__item">
+          <span class="telemetry__label">HASH:</span>
+          <span class="telemetry__val">SHA-256</span>
+        </div>
+      </div>
+
       <h1 class="hero__title">
         <span class="hero__title-x">X</span>AOXAY
       </h1>
@@ -82,6 +106,10 @@
       <div class="cards-grid" id="programasGrid">
         <!-- Card XaoSuite -->
         <article class="card" data-id="prog-xaosuite">
+          <span class="card__corner card__corner--tl" aria-hidden="true">+</span>
+          <span class="card__corner card__corner--tr" aria-hidden="true">+</span>
+          <span class="card__corner card__corner--bl" aria-hidden="true">+</span>
+          <span class="card__corner card__corner--br" aria-hidden="true">+</span>
           <div class="card__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
@@ -110,6 +138,10 @@
       <div class="cards-grid" id="herramientasGrid">
         <!-- Card XaoExtras -->
         <article class="card" data-id="tool-xaoextras">
+          <span class="card__corner card__corner--tl" aria-hidden="true">+</span>
+          <span class="card__corner card__corner--tr" aria-hidden="true">+</span>
+          <span class="card__corner card__corner--bl" aria-hidden="true">+</span>
+          <span class="card__corner card__corner--br" aria-hidden="true">+</span>
           <div class="card__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
           </div>

@@ -51,6 +51,22 @@ body {
   overflow-x: clip;
 }
 
+/* ── CRT Scanlines Overlay (Tactical Telemetry) ── */
+.crt-scanlines {
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.16),
+    rgba(0, 0, 0, 0.16) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.55;
+}
+
 a {
   color: var(--clr-accent-bright);
   text-decoration: none;
@@ -223,20 +239,41 @@ ul { list-style: none; }
   overflow: clip;
 }
 
-/* Animated grid background */
+/* Animated grid background with traveling laser scan */
 .hero__bg-grid {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(224, 16, 32, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(224, 16, 32, 0.06) 1px, transparent 1px);
+    linear-gradient(rgba(224, 16, 32, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(224, 16, 32, 0.07) 1px, transparent 1px);
   background-size: 60px 60px;
   animation: gridPulse 8s ease-in-out infinite;
+  overflow: hidden;
+}
+
+.hero__bg-grid::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(224, 16, 32, 0.12) 50%,
+    transparent 100%
+  );
+  transform: translateY(-100%);
+  animation: radarScan 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes radarScan {
+  0% { transform: translateY(-100%); }
+  50%, 100% { transform: translateY(100%); }
 }
 
 @keyframes gridPulse {
-  0%, 100% { opacity: 0.4; }
-  50%      { opacity: 1; }
+  0%, 100% { opacity: 0.45; }
+  50%      { opacity: 0.95; }
 }
 
 .hero__content {
@@ -244,11 +281,11 @@ ul { list-style: none; }
   z-index: 1;
 }
 
-/* ── X SVG Logo ── */
+/* ── X SVG Logo with Orbital Radar ── */
 .hero__logo-wrap {
   inline-size: clamp(120px, 20vw, 180px);
   margin-inline: auto;
-  margin-block-end: 2rem;
+  margin-block-end: 1.5rem;
 }
 
 .hero__x-line {
@@ -265,12 +302,82 @@ ul { list-style: none; }
 }
 
 .hero__x-ring {
-  animation: ringPulse 3s ease-in-out infinite;
+  transform-origin: 100px 100px;
+  animation: ringPulse 3.5s ease-in-out infinite, ringRotateRev 22s linear infinite;
+}
+
+@keyframes ringRotateRev {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+
+.hero__x-radar {
+  transform-origin: 100px 100px;
+  animation: radarRotate 14s linear infinite;
+}
+
+@keyframes radarRotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
 @keyframes ringPulse {
-  0%, 100% { opacity: 0.15; transform: scale(1); }
-  50%      { opacity: 0.4; transform: scale(1.03); }
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50%      { opacity: 0.55; transform: scale(1.03); }
+}
+
+/* ── Tactical Telemetry HUD ── */
+.hero__telemetry {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.25rem;
+  background: rgba(14, 14, 14, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(224, 16, 32, 0.3);
+  box-shadow: 0 0 16px rgba(224, 16, 32, 0.14), inset 0 0 10px rgba(0, 0, 0, 0.8);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 1.25rem;
+  margin-inline: auto;
+  margin-block-end: 1.75rem;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.telemetry__item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.telemetry__led {
+  width: 7px;
+  height: 7px;
+  background: var(--clr-accent-bright);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--clr-accent-bright);
+  animation: pulseLed 1.8s infinite;
+}
+
+@keyframes pulseLed {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.85); }
+}
+
+.telemetry__text {
+  color: var(--clr-accent-bright);
+  font-weight: 700;
+}
+
+.telemetry__label {
+  color: var(--clr-text-muted);
+}
+
+.telemetry__val {
+  color: var(--clr-text);
+  font-weight: 600;
 }
 
 .hero__title {
@@ -359,6 +466,30 @@ ul { list-style: none; }
   cursor: pointer;
   transition: all var(--transition);
   text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.28) 50%,
+    transparent 65%
+  );
+  transform: rotate(25deg) translateY(-130%);
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.btn:hover::after {
+  transform: rotate(25deg) translateY(130%);
 }
 
 .btn--primary {
@@ -458,13 +589,38 @@ ul { list-style: none; }
 }
 
 .card:hover {
-  border-color: var(--clr-accent-dark);
-  translate: 0 -4px;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 20px var(--clr-accent-glow);
+  border-color: var(--clr-accent-bright);
+  translate: 0 -5px;
+  box-shadow: 0 16px 44px rgba(0,0,0,0.6), 0 0 26px var(--clr-accent-glow);
 }
 
 .card:hover::before {
   transform: scaleX(1);
+}
+
+/* ── Tactical Corner Crosshairs ── */
+.card__corner {
+  position: absolute;
+  font-family: monospace;
+  font-size: 0.8rem;
+  line-height: 1;
+  color: var(--clr-accent-dark);
+  opacity: 0.45;
+  transition: all var(--transition);
+  pointer-events: none;
+  user-select: none;
+  z-index: 2;
+}
+
+.card__corner--tl { top: 6px; left: 8px; }
+.card__corner--tr { top: 6px; right: 8px; }
+.card__corner--bl { bottom: 6px; left: 8px; }
+.card__corner--br { bottom: 6px; right: 8px; }
+
+.card:hover .card__corner {
+  color: var(--clr-accent-bright);
+  opacity: 0.95;
+  text-shadow: 0 0 8px var(--clr-accent-bright);
 }
 
 .card__icon {

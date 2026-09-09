@@ -124,6 +124,10 @@
 
     return `
       <article class="card" data-id="${escapeHtml(item.id)}">
+        <span class="card__corner card__corner--tl" aria-hidden="true">+</span>
+        <span class="card__corner card__corner--tr" aria-hidden="true">+</span>
+        <span class="card__corner card__corner--bl" aria-hidden="true">+</span>
+        <span class="card__corner card__corner--br" aria-hidden="true">+</span>
         <div class="card__icon">${iconSvg}</div>
         <h3 class="card__title">${escapeHtml(item.title)}</h3>
         <p class="card__desc">${escapeHtml(item.desc)}</p>
