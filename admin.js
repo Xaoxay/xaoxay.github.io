@@ -169,12 +169,18 @@
   function sanitizeUrl(url) {
     if (!url) return '#';
     const trimmed = String(url).trim();
-    if (
-      trimmed.startsWith('descargas/') ||
-      trimmed.startsWith('https://') ||
-      trimmed.startsWith('http://') ||
-      trimmed.startsWith('#')
-    ) {
+    // Block path traversal attempts and backslashes
+    if (trimmed.includes('..') || trimmed.includes('\\')) return '#';
+
+    if (trimmed.startsWith('descargas/')) {
+      const fileName = trimmed.slice('descargas/'.length);
+      if (/^[a-zA-Z0-9_\-.]+\.(exe|zip)$/i.test(fileName)) {
+        return escapeHtml(trimmed);
+      }
+      return '#';
+    }
+
+    if (trimmed.startsWith('https://') || trimmed.startsWith('#')) {
       return escapeHtml(trimmed);
     }
     return '#';
@@ -578,18 +584,16 @@
       let uVal = urlInput.value.trim();
 
       if (isLocal) {
-        if (!fName) {
-          alert('Por favor especificá el nombre del archivo en descargas/ (ej: XaoSuite.exe)');
+        fName = fName.replace(/^descargas[/\\]+/, '').trim();
+        if (!fName || !/^[a-zA-Z0-9_\-.]+\.(exe|zip)$/i.test(fName) || fName.includes('..')) {
+          alert('Nombre de archivo inválido. Debe terminar en .exe o .zip y contener solo letras, números, guiones o puntos (ej: XaoSuite.exe).');
           fileNameInput.focus();
           return;
         }
-        if (fName.startsWith('descargas/')) {
-          fName = fName.replace(/^descargas\//, '');
-        }
         uVal = `descargas/${fName}`;
       } else {
-        if (!uVal) {
-          alert('Por favor ingresá la dirección URL directa para descargar el programa.');
+        if (!uVal || !/^https:\/\//i.test(uVal)) {
+          alert('Por favor ingresá una dirección URL segura que comience con https://');
           urlInput.focus();
           return;
         }

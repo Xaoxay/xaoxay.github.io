@@ -141,12 +141,18 @@
   function sanitizeUrl(url) {
     if (!url) return '#';
     const trimmed = String(url).trim();
-    if (
-      trimmed.startsWith('descargas/') ||
-      trimmed.startsWith('https://') ||
-      trimmed.startsWith('http://') ||
-      trimmed.startsWith('#')
-    ) {
+    // Block path traversal attempts and backslashes
+    if (trimmed.includes('..') || trimmed.includes('\\')) return '#';
+
+    if (trimmed.startsWith('descargas/')) {
+      const fileName = trimmed.slice('descargas/'.length);
+      if (/^[a-zA-Z0-9_\-.]+\.(exe|zip)$/i.test(fileName)) {
+        return escapeHtml(trimmed);
+      }
+      return '#';
+    }
+
+    if (trimmed.startsWith('https://') || trimmed.startsWith('#')) {
       return escapeHtml(trimmed);
     }
     return '#';
@@ -223,7 +229,7 @@
 
     if (programasGrid) {
       if (progs.length === 0) {
-        programasGrid.innerHTML = `<p style="grid-column:1/-1; color:var(--clr-text-muted); text-align:center; padding:2rem;">Aún no agregaste programas. Hacé clic en el candado abajo para acceder al panel admin.</p>`;
+        programasGrid.innerHTML = `<p style="grid-column:1/-1; color:var(--clr-text-muted); text-align:center; padding:2rem;">No hay programas disponibles en este momento.</p>`;
       } else {
         programasGrid.innerHTML = progs.map(renderCard).join('');
       }
@@ -231,7 +237,7 @@
 
     if (herramientasGrid) {
       if (tools.length === 0) {
-        herramientasGrid.innerHTML = `<p style="grid-column:1/-1; color:var(--clr-text-muted); text-align:center; padding:2rem;">Aún no agregaste herramientas. Hacé clic en el candado abajo para acceder al panel admin.</p>`;
+        herramientasGrid.innerHTML = `<p style="grid-column:1/-1; color:var(--clr-text-muted); text-align:center; padding:2rem;">No hay herramientas disponibles en este momento.</p>`;
       } else {
         herramientasGrid.innerHTML = tools.map(renderCard).join('');
       }
