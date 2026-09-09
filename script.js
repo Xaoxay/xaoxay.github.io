@@ -335,6 +335,67 @@
   }
 
 
+  // ── Hacker Scramble / Cyber Decryption Effect for XAOXAY ──
+  const heroTitle = document.getElementById('heroTitle');
+  if (heroTitle) {
+    const TARGET_TEXT = 'XAOXAY';
+    const GLYPHS = '01#%&*[]<>/_\\~$!?XYZ';
+    let scrambleInterval = null;
+    let isScrambling = false;
+
+    function runHackerScramble() {
+      if (isScrambling) return;
+      isScrambling = true;
+
+      let iteration = 0;
+      const totalSteps = TARGET_TEXT.length * 3;
+
+      clearInterval(scrambleInterval);
+      scrambleInterval = setInterval(() => {
+        const letters = TARGET_TEXT.split('').map((char, index) => {
+          if (index < Math.floor(iteration / 3)) {
+            return char;
+          }
+          return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+        });
+
+        // Set live scrambled text on glitch layers
+        heroTitle.setAttribute('data-text', letters.join(''));
+
+        // First letter is styled with hero__title-x accent
+        const firstLetter = `<span class="hero__title-x">${escapeHtml(letters[0])}</span>`;
+        const rest = escapeHtml(letters.slice(1).join(''));
+        heroTitle.innerHTML = firstLetter + rest;
+
+        iteration++;
+
+        if (iteration > totalSteps) {
+          clearInterval(scrambleInterval);
+          heroTitle.innerHTML = `<span class="hero__title-x">X</span>AOXAY`;
+          heroTitle.setAttribute('data-text', TARGET_TEXT);
+          isScrambling = false;
+        }
+      }, 35);
+    }
+
+    // Trigger scramble on mouseenter, click, and touch
+    heroTitle.addEventListener('mouseenter', runHackerScramble);
+    heroTitle.addEventListener('click', runHackerScramble);
+    heroTitle.addEventListener('touchstart', runHackerScramble, { passive: true });
+
+    // Periodic hacker scramble every 6.5s when in view
+    setInterval(() => {
+      const rect = heroTitle.getBoundingClientRect();
+      const inView = rect.top < window.innerHeight && rect.bottom > 0;
+      if (inView && !isScrambling) {
+        runHackerScramble();
+      }
+    }, 6500);
+
+    // Initial decode effect after load
+    setTimeout(runHackerScramble, 600);
+  }
+
   // ── Initial Render ──
   renderAll();
 })();
