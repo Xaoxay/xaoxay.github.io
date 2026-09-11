@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════
    XAOXAY — Advanced Festive Engine Script
-   Extreme Interactive Animations, Physics & Holiday Themes
+   Extreme Interactive Animations, Sleigh, Snow & Pixel Art
    ═══════════════════════════════════════════════ */
 
 (() => {
@@ -62,17 +62,22 @@
     }
   };
 
-  // ── High-Quality SVGs ──
+  // ── Symmetrically Centered Santa Hat SVG ──
   const SANTA_HAT_SVG = `
-    <svg viewBox="0 0 100 85" class="santa-hat-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M78 60 C65 20, 30 10, 15 35 C10 42, 5 45, 2 50 C25 45, 60 55, 82 62 Z" fill="#d90429"/>
-      <path d="M78 60 C65 20, 30 10, 15 35 C20 40, 45 30, 78 60 Z" fill="#ef233c"/>
-      <path d="M-2 58 C15 52, 60 52, 88 64 C90 72, 80 75, 75 75 C50 70, 20 70, -2 72 C-6 66, -4 60, -2 58 Z" fill="#ffffff" filter="drop-shadow(0 2px 3px rgba(0,0,0,0.4))"/>
-      <circle cx="10" cy="38" r="10" fill="#ffffff" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.35))"/>
-      <circle cx="8" cy="36" r="8" fill="#f8f9fa"/>
+    <svg viewBox="0 0 100 80" class="santa-hat-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Red Hat Cone -->
+      <path d="M18 56 C24 20, 52 10, 76 26 C84 32, 88 40, 86 52 C70 54, 30 54, 18 56 Z" fill="#d90429"/>
+      <path d="M22 54 C30 24, 52 16, 72 28 C56 34, 34 43, 22 54 Z" fill="#ef233c"/>
+      <!-- Symmetrically Centered White Fur Brim (Centered at x=50) -->
+      <rect x="12" y="54" width="76" height="18" rx="9" fill="#ffffff" filter="drop-shadow(0 2px 3px rgba(0,0,0,0.4))"/>
+      <ellipse cx="50" cy="63" rx="35" ry="7" fill="#f8f9fa"/>
+      <!-- Fluffy White Pompom on right tip -->
+      <circle cx="86" cy="38" r="9" fill="#ffffff" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.35))"/>
+      <circle cx="84" cy="36" r="7.5" fill="#f8f9fa"/>
     </svg>
   `;
 
+  // ── Symmetrically Centered Pumpkin SVG ──
   const PUMPKIN_SVG = `
     <svg viewBox="0 0 100 90" class="pumpkin-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M48 8 C48 2, 56 2, 55 18 C52 18, 48 14, 48 8 Z" fill="#2d6a4f"/>
@@ -87,34 +92,110 @@
     </svg>
   `;
 
+  // ── Puffy Snowcap & Hanging Icicles SVG ──
   const SNOW_CAP_SVG = `
     <svg viewBox="0 0 320 24" preserveAspectRatio="none" class="festive-snow-cap-svg">
       <defs>
-        <linearGradient id="snowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <linearGradient id="icicleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" stop-color="#ffffff"/>
-          <stop offset="60%" stop-color="#e6f4fa"/>
-          <stop offset="100%" stop-color="#bce3f7"/>
+          <stop offset="60%" stop-color="#e0f2fe"/>
+          <stop offset="100%" stop-color="#bae6fd"/>
         </linearGradient>
       </defs>
-      <path d="M0,0 L320,0 L320,7 Q304,17 288,9 Q274,23 260,11 Q244,14 230,8 Q214,20 198,10 Q182,12 170,22 Q156,10 142,8 Q126,19 112,11 Q94,14 80,21 Q66,10 52,8 Q36,18 20,10 Q10,14 0,7 Z" fill="url(#snowGrad)"/>
-      <path d="M10,2 Q60,6 100,2 M145,2 Q200,6 250,2 M275,2 Q300,5 315,2" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" opacity="0.9"/>
+      <path d="M0,0 L320,0 L320,6 Q304,18 288,9 Q274,24 260,11 Q244,14 230,8 Q214,21 198,10 Q182,12 170,23 Q156,10 142,8 Q126,20 112,11 Q94,14 80,22 Q66,10 52,8 Q36,19 20,10 Q10,14 0,6 Z" fill="url(#icicleGrad)"/>
+      <path d="M10,2 Q60,5 100,2 M145,2 Q200,5 250,2 M275,2 Q300,4 315,2" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.95"/>
     </svg>
   `;
 
-  const CYBER_SLEIGH_SVG = `
-    <svg viewBox="0 0 160 70" fill="none" class="cyber-sleigh-svg" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="14" cy="44" rx="14" ry="5" fill="#00f2fe" filter="drop-shadow(0 0 8px #00f2fe)"/>
-      <ellipse cx="6" cy="44" rx="6" ry="3" fill="#ffffff"/>
-      <path d="M22,46 L130,46 Q148,46 156,36 Q158,32 152,30 L110,30 L95,18 L55,18 L48,30 L22,30 Z" fill="#140204" stroke="#ff1e38" stroke-width="2"/>
-      <path d="M10,56 L140,56 Q156,56 160,42" stroke="#00f2fe" stroke-width="3" stroke-linecap="round" filter="drop-shadow(0 0 6px #00f2fe)"/>
-      <line x1="45" y1="46" x2="40" y2="56" stroke="#00f2fe" stroke-width="2"/>
-      <line x1="115" y1="46" x2="110" y2="56" stroke="#00f2fe" stroke-width="2"/>
-      <circle cx="75" cy="14" r="8" fill="#ff1e38"/>
-      <path d="M68,14 Q75,2 88,14 Z" fill="#ef233c"/>
-      <circle cx="90" cy="14" r="2.5" fill="#ffffff"/>
-      <rect x="74" y="12" width="7" height="3" rx="1.5" fill="#00f2fe" filter="drop-shadow(0 0 4px #00f2fe)"/>
-      <rect x="30" y="24" width="14" height="14" rx="2" fill="#ffd700" stroke="#ff1e38" stroke-width="1.5"/>
-      <rect x="46" y="20" width="16" height="16" rx="2" fill="#00cc66" stroke="#ffd700" stroke-width="1.5"/>
+  // ── Flying Santa Sleigh with Reindeer SVG ──
+  const SLEIGH_SVG = `
+    <svg viewBox="0 0 280 70" fill="none" class="festive-sleigh-sky-svg" xmlns="http://www.w3.org/2000/svg">
+      <!-- Reindeer 1 (Leader - Rudolph) -->
+      <g transform="translate(195, 8)">
+        <path d="M26,8 L35,-4 M30,2 L38,0" stroke="#ffd700" stroke-width="2" stroke-linecap="round"/>
+        <ellipse cx="18" cy="22" rx="14" ry="8" fill="#8d5b4c"/>
+        <path d="M26,20 L32,10 L36,12 L30,24 Z" fill="#8d5b4c"/>
+        <circle cx="37" cy="11" r="3.5" fill="#ff2233" filter="drop-shadow(0 0 8px #ff2233)"/>
+        <path d="M10,28 L5,40 M15,28 L13,42 M24,28 L28,42 M28,28 L34,38" stroke="#714234" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M8,22 L30,20" stroke="#ffd700" stroke-width="2"/>
+        <circle cx="18" cy="21" r="2.5" fill="#ffd700"/>
+      </g>
+      <!-- Reindeer 2 -->
+      <g transform="translate(125, 12)">
+        <path d="M26,8 L35,-4 M30,2 L38,0" stroke="#ffd700" stroke-width="2" stroke-linecap="round"/>
+        <ellipse cx="18" cy="22" rx="14" ry="8" fill="#7a4b3d"/>
+        <path d="M26,20 L32,10 L36,12 L30,24 Z" fill="#7a4b3d"/>
+        <circle cx="37" cy="11" r="2.5" fill="#120204"/>
+        <path d="M10,28 L5,40 M15,28 L13,42 M24,28 L28,42 M28,28 L34,38" stroke="#603529" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M8,22 L30,20" stroke="#ffd700" stroke-width="2"/>
+        <circle cx="18" cy="21" r="2.5" fill="#ffd700"/>
+      </g>
+      <!-- Golden Reins -->
+      <path d="M68,32 Q100,40 135,30 M135,30 Q170,38 205,26" stroke="#ffd700" stroke-width="1.8" stroke-dasharray="3 2"/>
+      <!-- Sleigh Body & Santa -->
+      <g transform="translate(0, 10)">
+        <path d="M8,46 L78,46 Q90,46 94,34" stroke="#00f2fe" stroke-width="3.5" stroke-linecap="round" filter="drop-shadow(0 0 10px #00f2fe)"/>
+        <line x1="24" y1="36" x2="20" y2="46" stroke="#00f2fe" stroke-width="2.5"/>
+        <line x1="62" y1="36" x2="58" y2="46" stroke="#00f2fe" stroke-width="2.5"/>
+        <path d="M12,38 L72,38 Q82,38 86,28 Q88,20 76,20 L55,20 L45,10 L22,10 L16,22 L10,22 Z" fill="#d90429" stroke="#ffd700" stroke-width="1.8"/>
+        <!-- Santa Head -->
+        <circle cx="48" cy="8" r="7.5" fill="#ffccd5"/>
+        <path d="M42,10 Q48,22 54,10 Z" fill="#ffffff"/>
+        <path d="M42,7 Q48,-3 56,7 Z" fill="#ef233c"/>
+        <circle cx="58" cy="7" r="2.5" fill="#ffffff"/>
+        <path d="M52,12 Q64,4 68,8" stroke="#d90429" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="69" cy="8" r="3" fill="#ffffff"/>
+        <!-- Golden Gift in Sleigh -->
+        <ellipse cx="26" cy="16" rx="12" ry="10" fill="#b08968" stroke="#8d5b4c"/>
+        <rect x="21" y="8" width="9" height="9" rx="2" fill="#ffd700" stroke="#ff2233" stroke-width="1.5"/>
+      </g>
+    </svg>
+  `;
+
+  // ── 3D Gift Box SVG ──
+  const GIFT_BOX_SVG = `
+    <svg viewBox="0 0 60 60" fill="none" class="gift-box-svg" xmlns="http://www.w3.org/2000/svg">
+      <!-- Box Body -->
+      <rect x="10" y="22" width="40" height="32" rx="4" fill="#d90429" stroke="#ffd700" stroke-width="2" filter="drop-shadow(0 4px 8px rgba(0,0,0,0.5))"/>
+      <!-- Lid -->
+      <rect x="6" y="16" width="48" height="10" rx="3" fill="#ef233c" stroke="#ffd700" stroke-width="2"/>
+      <!-- Vertical Ribbon -->
+      <rect x="26" y="16" width="8" height="38" fill="#ffd700"/>
+      <!-- Horizontal Ribbon -->
+      <rect x="10" y="34" width="40" height="8" fill="#ffd700"/>
+      <!-- Bow loops on top -->
+      <path d="M30,16 C20,4 12,12 28,16 Z" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"/>
+      <path d="M30,16 C40,4 48,12 32,16 Z" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"/>
+      <circle cx="30" cy="16" r="3.5" fill="#f59e0b"/>
+    </svg>
+  `;
+
+  // ── Retro 8-Bit Pixel Art Christmas Tree SVG ──
+  const PIXEL_XMAS_TREE_SVG = `
+    <svg viewBox="0 0 32 36" class="pixel-tree-svg" style="image-rendering: pixelated; shape-rendering: crispEdges;">
+      <rect x="15" y="0" width="2" height="2" fill="#ffd700"/>
+      <rect x="14" y="2" width="4" height="2" fill="#ffd700"/>
+      <rect x="14" y="4" width="4" height="2" fill="#00cc66"/>
+      <rect x="12" y="6" width="8" height="2" fill="#00cc66"/>
+      <rect x="10" y="8" width="12" height="2" fill="#00994c"/>
+      <rect x="13" y="6" width="2" height="2" fill="#ff2233" class="px-light-red"/>
+      <rect x="17" y="8" width="2" height="2" fill="#ffd700" class="px-light-gold"/>
+      <rect x="11" y="10" width="10" height="2" fill="#00cc66"/>
+      <rect x="9" y="12" width="14" height="2" fill="#00cc66"/>
+      <rect x="7" y="14" width="18" height="2" fill="#00994c"/>
+      <rect x="5" y="16" width="22" height="2" fill="#008040"/>
+      <rect x="8" y="12" width="2" height="2" fill="#00f2fe" class="px-light-blue"/>
+      <rect x="16" y="14" width="2" height="2" fill="#ff2233" class="px-light-red"/>
+      <rect x="22" y="16" width="2" height="2" fill="#ffd700" class="px-light-gold"/>
+      <rect x="8" y="18" width="16" height="2" fill="#00cc66"/>
+      <rect x="6" y="20" width="20" height="2" fill="#00cc66"/>
+      <rect x="4" y="22" width="24" height="2" fill="#00994c"/>
+      <rect x="2" y="24" width="28" height="2" fill="#008040"/>
+      <rect x="6" y="22" width="2" height="2" fill="#ffd700" class="px-light-gold"/>
+      <rect x="13" y="24" width="2" height="2" fill="#00f2fe" class="px-light-blue"/>
+      <rect x="20" y="22" width="2" height="2" fill="#ff2233" class="px-light-red"/>
+      <rect x="13" y="26" width="6" height="6" fill="#8d5b4c"/>
+      <rect x="11" y="32" width="10" height="2" fill="#714234"/>
     </svg>
   `;
 
@@ -179,7 +260,7 @@
     return settings.mode || 'none';
   }
 
-  // ── Canvas Particle & Sparkles Engine ──
+  // ── Rich Canvas Particle & Sparkles Engine ──
   let canvas = null;
   let ctx = null;
   let particles = [];
@@ -188,7 +269,6 @@
   let isRunning = false;
   let canvasParticleType = 'none';
 
-  // Mouse interactivity variables
   let lastMouseX = -1000;
   let windForce = 0;
 
@@ -214,7 +294,6 @@
     canvas.height = window.innerHeight;
   }
 
-  // ── Cursor Trail & Click Burst Events ──
   function setupMouseListeners() {
     window.addEventListener('pointermove', (e) => {
       const holidayId = getActiveHolidayId();
@@ -222,14 +301,12 @@
       const settings = loadSettings();
       if (!settings.particles) return;
 
-      // Calculate wind reaction
       if (lastMouseX !== -1000) {
         const deltaX = e.clientX - lastMouseX;
         windForce = Math.max(-2.2, Math.min(2.2, windForce + deltaX * 0.04));
       }
       lastMouseX = e.clientX;
 
-      // Spawn sparkle on move
       addSparkle(e.clientX, e.clientY, holidayId);
     }, { passive: true });
 
@@ -264,13 +341,13 @@
   }
 
   function addSparkle(x, y, holidayId) {
-    if (sparkles.length > 75) return; // Cap to keep silky 60fps
+    if (sparkles.length > 80) return;
     sparkles.push({
-      x: x + (Math.random() * 8 - 4),
-      y: y + (Math.random() * 8 - 4),
+      x: x + (Math.random() * 10 - 5),
+      y: y + (Math.random() * 10 - 5),
       vx: (Math.random() - 0.5) * 1.2,
-      vy: Math.random() * 1.5 + 0.4,
-      size: Math.random() * 4 + 2,
+      vy: Math.random() * 1.5 + 0.3,
+      size: Math.random() * 4 + 2.5,
       alpha: 0.95,
       decay: Math.random() * 0.035 + 0.025,
       color: getSparkleColor(holidayId),
@@ -280,10 +357,10 @@
   }
 
   function addClickBurst(x, y, holidayId) {
-    const count = holidayId === 'newyear' ? 24 : 14;
+    const count = holidayId === 'newyear' ? 26 : 16;
     for (let i = 0; i < count; i++) {
       const angle = (Math.PI * 2 / count) * i + Math.random() * 0.3;
-      const speed = Math.random() * 4 + 2;
+      const speed = Math.random() * 4.5 + 2;
       sparkles.push({
         x: x,
         y: y,
@@ -325,12 +402,13 @@
       flakes.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        r: Math.random() * 3 + 1.2,
-        speed: Math.random() * 1.4 + 0.6,
+        r: Math.random() * 4 + 1.8,
+        speed: Math.random() * 1.5 + 0.7,
         swaySpeed: Math.random() * 0.02 + 0.01,
         swayAngle: Math.random() * Math.PI * 2,
-        swayWidth: Math.random() * 1.5 + 0.5,
-        opacity: Math.random() * 0.65 + 0.3
+        swayWidth: Math.random() * 1.8 + 0.5,
+        opacity: Math.random() * 0.4 + 0.6,
+        isPixel: Math.random() > 0.85
       });
     }
     return flakes;
@@ -396,13 +474,13 @@
     const isMobile = window.innerWidth < 768;
 
     if (type === 'snow') {
-      particles = createSnowFlakes(isMobile ? 35 : 75);
+      particles = createSnowFlakes(isMobile ? 55 : 120);
     } else if (type === 'bats') {
       particles = createBats(isMobile ? 12 : 24);
     } else if (type === 'confetti') {
-      particles = createConfetti(isMobile ? 30 : 65);
+      particles = createConfetti(isMobile ? 35 : 75);
     } else if (type === 'hearts') {
-      particles = createHearts(isMobile ? 16 : 32);
+      particles = createHearts(isMobile ? 18 : 36);
     } else {
       stopParticles();
       return;
@@ -479,10 +557,9 @@
     const w = canvas.width;
     const h = canvas.height;
 
-    // Wind damping
     windForce *= 0.96;
 
-    // 1. Base Particles
+    // 1. Base Snowflakes & Particles
     if (canvasParticleType === 'snow') {
       ctx.fillStyle = '#ffffff';
       for (let i = 0; i < particles.length; i++) {
@@ -500,8 +577,14 @@
 
         ctx.beginPath();
         ctx.globalAlpha = p.opacity;
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
+
+        if (p.isPixel) {
+          // Pixel snowflake
+          ctx.fillRect(p.x - 2, p.y - 2, 4, 4);
+        } else {
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
     } else if (canvasParticleType === 'bats') {
       for (let i = 0; i < particles.length; i++) {
@@ -560,7 +643,7 @@
       const s = sparkles[i];
       s.x += s.vx;
       s.y += s.vy;
-      s.vy += 0.04; // gentle gravity
+      s.vy += 0.04;
       s.rot += s.rotSpeed;
       s.alpha -= s.decay;
 
@@ -574,7 +657,6 @@
     animFrameId = requestAnimationFrame(animateParticles);
   }
 
-  // Auto-pause loop when page is hidden
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       if (animFrameId) {
@@ -620,7 +702,7 @@
     header.appendChild(garland);
   }
 
-  // 2. Santa Hat / Jack-o-lantern on Logo & Hero
+  // 2. Perfectly Centered Santa Hat / Pumpkin on Logos
   function updateLogoEmblem(holiday) {
     document.querySelectorAll('.festive-logo-hat, .festive-hero-hat, .festive-logo-pumpkin, .festive-hero-pumpkin').forEach(el => el.remove());
 
@@ -632,13 +714,16 @@
 
     if (holiday.id === 'christmas') {
       if (logoX) {
+        logoX.style.position = 'relative';
+        logoX.style.display = 'inline-block';
         const hat = document.createElement('div');
         hat.className = 'festive-logo-hat';
         hat.setAttribute('aria-hidden', 'true');
         hat.innerHTML = SANTA_HAT_SVG;
-        logoX.parentElement.appendChild(hat);
+        logoX.appendChild(hat);
       }
       if (heroWrap) {
+        heroWrap.style.position = 'relative';
         const heroHat = document.createElement('div');
         heroHat.className = 'festive-hero-hat';
         heroHat.setAttribute('aria-hidden', 'true');
@@ -647,13 +732,16 @@
       }
     } else if (holiday.id === 'halloween') {
       if (logoX) {
+        logoX.style.position = 'relative';
+        logoX.style.display = 'inline-block';
         const p = document.createElement('div');
         p.className = 'festive-logo-pumpkin';
         p.setAttribute('aria-hidden', 'true');
         p.innerHTML = PUMPKIN_SVG;
-        logoX.parentElement.appendChild(p);
+        logoX.appendChild(p);
       }
       if (heroWrap) {
+        heroWrap.style.position = 'relative';
         const heroP = document.createElement('div');
         heroP.className = 'festive-hero-pumpkin';
         heroP.setAttribute('aria-hidden', 'true');
@@ -663,7 +751,7 @@
     }
   }
 
-  // 3. Snow-Caps & Icicles on Cards
+  // 3. Snow-Caps on Cards (Programas & Herramientas)
   function updateCardDecorations(holiday) {
     document.querySelectorAll('.festive-card-snowcap').forEach(el => el.remove());
 
@@ -679,45 +767,109 @@
     }
   }
 
-  // 4. Cyber-Sleigh / Drone Flyby in Hero
-  function updateHeroCyberSleigh(holiday) {
-    const existing = document.querySelector('.cyber-sleigh-wrap');
+  // 4. Flying Sleigh with Reindeer Across Screen
+  function updateFlyingSleigh(holiday) {
+    const existing = document.querySelector('.festive-sleigh-sky');
     if (existing) existing.remove();
 
     if (holiday.id === 'christmas') {
+      const sleigh = document.createElement('div');
+      sleigh.className = 'festive-sleigh-sky';
+      sleigh.setAttribute('aria-hidden', 'true');
+      sleigh.innerHTML = SLEIGH_SVG;
+      document.body.appendChild(sleigh);
+    }
+  }
+
+  // 5. Interactive Gift Boxes Across Screen
+  function updateGiftBoxes(holiday) {
+    document.querySelectorAll('.festive-gift-item').forEach(el => el.remove());
+
+    if (holiday.id === 'christmas') {
+      // 1. Hero Gift
       const hero = document.querySelector('.hero') || document.getElementById('inicio');
       if (hero) {
-        const wrap = document.createElement('div');
-        wrap.className = 'cyber-sleigh-wrap';
-        wrap.setAttribute('aria-hidden', 'true');
-        wrap.innerHTML = `<div class="cyber-sleigh">${CYBER_SLEIGH_SVG}</div>`;
-        hero.appendChild(wrap);
+        const giftHero = document.createElement('div');
+        giftHero.className = 'festive-gift-item festive-gift-hero';
+        giftHero.title = '¡Abrir regalo navideño!';
+        giftHero.innerHTML = GIFT_BOX_SVG;
+        hero.appendChild(giftHero);
+        giftHero.addEventListener('click', (e) => {
+          triggerGiftOpen(giftHero, e.clientX, e.clientY);
+        });
+      }
+
+      // 2. Programas Section Gift
+      const progTitle = document.querySelector('#programas .section__title');
+      if (progTitle) {
+        const giftProg = document.createElement('span');
+        giftProg.className = 'festive-gift-item festive-gift-section';
+        giftProg.title = '¡Abrir sorpresa!';
+        giftProg.innerHTML = GIFT_BOX_SVG;
+        progTitle.appendChild(giftProg);
+        giftProg.addEventListener('click', (e) => {
+          e.stopPropagation();
+          triggerGiftOpen(giftProg, e.clientX, e.clientY);
+        });
+      }
+
+      // 3. Herramientas Section Gift
+      const toolTitle = document.querySelector('#herramientas .section__title');
+      if (toolTitle) {
+        const giftTool = document.createElement('span');
+        giftTool.className = 'festive-gift-item festive-gift-section';
+        giftTool.title = '¡Abrir sorpresa!';
+        giftTool.innerHTML = GIFT_BOX_SVG;
+        toolTitle.appendChild(giftTool);
+        giftTool.addEventListener('click', (e) => {
+          e.stopPropagation();
+          triggerGiftOpen(giftTool, e.clientX, e.clientY);
+        });
       }
     }
   }
 
-  // 5. Halloween Spooky Peeking Eyes
-  function updateHalloweenSpookyEyes(holiday) {
-    document.querySelectorAll('.festive-spooky-eyes').forEach(el => el.remove());
+  function triggerGiftOpen(element, x, y) {
+    addClickBurst(x, y, 'christmas');
+    addClickBurst(x, y, 'newyear');
 
-    if (holiday.id === 'halloween') {
-      const sections = document.querySelectorAll('.section');
-      sections.forEach((sec, idx) => {
-        if (idx > 1) return;
-        const eyes = document.createElement('div');
-        eyes.className = 'festive-spooky-eyes';
-        eyes.style.top = '30px';
-        eyes.style.right = idx === 0 ? '45px' : 'auto';
-        eyes.style.left = idx === 1 ? '45px' : 'auto';
-        eyes.setAttribute('aria-hidden', 'true');
-        eyes.innerHTML = `<div class="festive-spooky-eye"></div><div class="festive-spooky-eye"></div>`;
-        sec.style.position = 'relative';
-        sec.appendChild(eyes);
-      });
+    const wishes = [
+      '🎁 ¡Felicidades! Que tu código nunca crashee y compile a la primera.',
+      '🎄 ¡Felices Fiestas! 100% optimizado y sin bugs para el nuevo año.',
+      '⚡ ¡Regalo XAOXAY: Diagnóstico y velocidad al máximo para tu PC!',
+      '✨ ¡Que todos tus proyectos alcancen el éxito en 2027!'
+    ];
+    const wish = wishes[Math.floor(Math.random() * wishes.length)];
+
+    let toast = document.createElement('div');
+    toast.className = 'festive-banner visible';
+    toast.style.top = '120px';
+    toast.innerHTML = `<span class="festive-banner__icon">🎁</span><span>${wish}</span>`;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.remove('visible');
+      setTimeout(() => toast.remove(), 400);
+    }, 4500);
+  }
+
+  // 6. Retro 8-Bit Pixel Art Mascot
+  function updatePixelArtMascot(holiday) {
+    const existing = document.querySelector('.festive-pixel-mascot');
+    if (existing) existing.remove();
+
+    if (holiday.id === 'christmas') {
+      const heroContent = document.querySelector('.hero__content');
+      if (heroContent) {
+        const mascot = document.createElement('div');
+        mascot.className = 'festive-pixel-mascot';
+        mascot.title = 'Árbol navideño 8-bit';
+        mascot.innerHTML = PIXEL_XMAS_TREE_SVG;
+        heroContent.appendChild(mascot);
+      }
     }
   }
 
-  // 6. Top Greeting Banner
+  // 7. Top Greeting Banner
   function updateGreetingBanner(holiday) {
     const existing = document.querySelector('.festive-banner');
     if (existing) existing.remove();
@@ -745,7 +897,7 @@
     });
   }
 
-  // 7. Visitor Interactive Floating Widget
+  // 8. Visitor Interactive Floating Widget
   function updateVisitorWidget(holiday) {
     let widget = document.getElementById('festiveVisitorWidget');
     const settings = loadSettings();
@@ -857,23 +1009,23 @@
       stopParticles();
     }
 
-    // Injections & Advanced Decorations
+    // Injections & Decorations
     updateHeaderLights(holiday);
     updateLogoEmblem(holiday);
     updateGreetingBanner(holiday);
     updateVisitorWidget(holiday);
     updateCardDecorations(holiday);
-    updateHeroCyberSleigh(holiday);
-    updateHalloweenSpookyEyes(holiday);
+    updateFlyingSleigh(holiday);
+    updateGiftBoxes(holiday);
+    updatePixelArtMascot(holiday);
 
-    // Dispatch event for any other component (e.g. admin preview)
     window.dispatchEvent(new CustomEvent('festivities:changed', {
       detail: { holiday, settings }
     }));
   }
 
   // Watch for dynamic card rerenders (e.g. from script.js)
-  const observer = new MutationObserver(() => {
+  const cardObserver = new MutationObserver(() => {
     const holidayId = getActiveHolidayId();
     if (holidayId === 'christmas') {
       const cardsWithoutCap = document.querySelectorAll('.card:not(:has(.festive-card-snowcap))');
@@ -888,10 +1040,10 @@
   });
 
   if (document.body) {
-    observer.observe(document.body, { childList: true, subtree: true });
+    cardObserver.observe(document.body, { childList: true, subtree: true });
   }
 
-  // ── Public API for Admin Panel & Integrations ──
+  // ── Public API ──
   window.Festivities = {
     HOLIDAYS: HOLIDAY_DATA,
     getSettings: loadSettings,
@@ -906,7 +1058,6 @@
     refresh: applyCurrentState
   };
 
-  // ── Auto Initialization ──
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', applyCurrentState);
   } else {
