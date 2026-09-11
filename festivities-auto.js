@@ -1,18 +1,20 @@
 /**
  * ==============================================================================
- * FESTIVITIES AUTO (Universal Zero-Config Festive Engine)
+ * FESTIVITIES AUTO (Universal Zero-Config Festive Engine) - v2.0
  * ==============================================================================
  * An autonomous, plug-and-play festive decoration engine.
  * Just import this single script on ANY website:
  *   <script src="festivities-auto.js"></script>
  *
- * Features:
+ * Capabilities:
  *  - 100% Zero-Config: Injects its own CSS styles and DOM elements automatically.
- *  - Semantic Niche Detection: Auto-detects if the site is a burger/restaurant,
- *    tech, fashion, or general site, and drops contextual items (e.g. pixel burgers & fries).
- *  - Element Heuristics: Finds the brand logo, navigation bar, and product/menu cards.
- *  - Background Light/Dark Adaptation: Adjusts contrast dynamically.
- *  - 60 FPS Canvas Snowfall & Scenic Snowy Mountains Backdrop.
+ *  - Argentine Gourmet & Food Detection: yerba, mate, alfajor, chocolate, burger, etc.
+ *  - Smart DOM Heuristics:
+ *      * Logo Hat: Aligns over images and brand wrappers.
+ *      * Nav Garland: Drapes swinging lights from sticky/fixed headers.
+ *      * Card Snow: Uses MutationObserver for async/dynamically rendered cards.
+ *  - Real-time Light/Dark Mode Adaptation: Reacts to live theme changes.
+ *  - 60 FPS Canvas Snow with mouse breeze & panoramic winter mountains.
  *  - Safe & Non-destructive: pointer-events: none, non-blocking.
  * ==============================================================================
  */
@@ -20,11 +22,10 @@
 (function () {
   'use strict';
 
-  // Prevent multiple executions
   if (window.__FESTIVITIES_AUTO_INITIALIZED__) return;
   window.__FESTIVITIES_AUTO_INITIALIZED__ = true;
 
-  console.log('%c[Festivities Auto]%c Initializing universal festive engine...', 'color: #ff3366; font-weight: bold;', 'color: #00f0ff;');
+  console.log('%c[Festivities Auto]%c Initializing universal festive engine v2.0...', 'color: #ff3366; font-weight: bold;', 'color: #00f0ff;');
 
   // ── SVGs DEFINITIONS ──
 
@@ -61,11 +62,10 @@
                L 400,24
                Q 375,32 355,22 T 310,34 T 270,22 T 230,36 T 190,22 T 150,34 T 110,22 T 70,36 T 30,22 T 0,26 Z"
             fill="url(#autoCardSnowGrad)" filter="url(#autoSnowGlow)"/>
-      <!-- Icicles -->
-      <polygon points="45,20 48,34 52,20" fill="#ffffff" opacity="0.9"/>
-      <polygon points="125,18 128,35 132,18" fill="#ffffff" opacity="0.9"/>
-      <polygon points="215,18 219,36 223,18" fill="#ffffff" opacity="0.9"/>
-      <polygon points="325,18 329,33 333,18" fill="#ffffff" opacity="0.9"/>
+      <polygon points="45,20 48,34 52,20" fill="#ffffff" opacity="0.95"/>
+      <polygon points="125,18 128,35 132,18" fill="#ffffff" opacity="0.95"/>
+      <polygon points="215,18 219,36 223,18" fill="#ffffff" opacity="0.95"/>
+      <polygon points="325,18 329,33 333,18" fill="#ffffff" opacity="0.95"/>
     </svg>
   `;
 
@@ -98,10 +98,9 @@
         </linearGradient>
       </defs>
 
-      <!-- Aurora Wave -->
       <path d="M0,220 Q 360,90 720,200 T 1440,160 L 1440,380 L 0,380 Z" fill="url(#autoAuroraGrad)" opacity="0.65" class="festive-auto-aurora"/>
 
-      <!-- Distant Snow Peaks -->
+      <!-- Distant Peaks -->
       <g>
         <polygon points="40,460 220,150 420,460" fill="url(#autoDistPeak)"/>
         <polygon points="220,150 180,220 215,205 235,225 260,205 220,150" fill="#ffffff"/>
@@ -116,7 +115,7 @@
         <polygon points="1280,160 1220,240 1270,220 1300,245 1350,210 1280,160" fill="#ffffff"/>
       </g>
 
-      <!-- Midground Craggy Ridges -->
+      <!-- Midground Ridges -->
       <g>
         <path d="M-40,540 L120,290 L320,450 L480,270 L720,540 Z" fill="url(#autoMidPeak)"/>
         <polygon points="120,290 80,350 115,340 135,360 170,330 120,290" fill="#ffffff"/>
@@ -127,12 +126,11 @@
         <polygon points="1260,260 1200,330 1245,315 1275,340 1320,310 1260,260" fill="#ffffff"/>
       </g>
 
-      <!-- Foreground Snowy Hills with Pines -->
+      <!-- Foreground Hills with Pines -->
       <g>
         <path d="M0,600 L0,490 Q240,430 540,480 T 1100,460 Q1300,440 1440,480 L1440,600 Z" fill="url(#autoForeHill)"/>
         <path d="M0,490 Q240,430 540,480 T 1100,460 Q1300,440 1440,480" stroke="#bae6fd" stroke-width="3" fill="none" opacity="0.8"/>
 
-        <!-- Pine Trees -->
         <g transform="translate(80, 440) scale(0.85)">
           <polygon points="20,0 5,30 35,30" fill="#040b14"/>
           <polygon points="20,18 2,52 38,52" fill="#040b14"/>
@@ -157,30 +155,23 @@
 
   const SLEIGH_SVG = `
     <svg viewBox="0 0 240 90" class="festive-auto-sleigh-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Reindeer Rudolph -->
       <g transform="translate(150, 15)">
         <path d="M25 35 C20 20, 35 15, 45 22 C55 28, 52 40, 42 45 Z" fill="#8B4513"/>
         <path d="M42 22 C48 12, 60 10, 58 18 C55 22, 48 24, 45 25" stroke="#5c2c16" stroke-width="2" stroke-linecap="round"/>
-        <!-- Red Glowing Nose -->
         <circle cx="56" cy="24" r="4.5" fill="#ff1e38" filter="drop-shadow(0 0 6px #ff0033)"/>
-        <!-- Reindeer body & legs -->
         <ellipse cx="20" cy="45" rx="20" ry="12" fill="#8B4513"/>
         <line x1="8" y1="55" x2="2" y2="72" stroke="#8B4513" stroke-width="3.5" stroke-linecap="round"/>
         <line x1="16" y1="56" x2="14" y2="72" stroke="#6d340d" stroke-width="3" stroke-linecap="round"/>
         <line x1="28" y1="55" x2="35" y2="70" stroke="#8B4513" stroke-width="3.5" stroke-linecap="round"/>
         <line x1="33" y1="55" x2="42" y2="68" stroke="#6d340d" stroke-width="3" stroke-linecap="round"/>
       </g>
-      <!-- Reins -->
       <path d="M100 45 Q125 55 160 48" stroke="#ffd700" stroke-width="1.8" stroke-dasharray="3 2" fill="none"/>
-      <!-- Sleigh -->
       <g transform="translate(10, 20)">
         <path d="M10 50 Q45 65 85 48 C92 45, 96 38, 90 32 L82 32 C78 24, 60 22, 50 30 L22 30 C15 30, 8 38, 10 50 Z" fill="#dc2626"/>
         <path d="M10 50 Q45 65 85 48" stroke="#ffd700" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-        <!-- Sleigh Runners -->
         <path d="M5 64 L85 64 C95 64, 100 56, 102 50" stroke="#f1f5f9" stroke-width="3.5" stroke-linecap="round" fill="none"/>
         <line x1="25" y1="55" x2="25" y2="64" stroke="#ffd700" stroke-width="2.5"/>
         <line x1="70" y1="52" x2="70" y2="64" stroke="#ffd700" stroke-width="2.5"/>
-        <!-- Santa in Sleigh -->
         <circle cx="50" cy="22" r="9" fill="#fca5a5"/>
         <path d="M42 22 Q50 32 58 22" fill="#ffffff"/>
         <circle cx="58" cy="20" r="2" fill="#ef4444"/>
@@ -192,41 +183,43 @@
 
   // ── DROPPED GIFT ICONS BY NICHE ──
 
-  // 1. Food / Burger Niche Items (Burger, Fries, Drink)
+  // 1. Argentine Mate & Bombilla
+  const ITEM_MATE_SVG = `
+    <svg viewBox="0 0 36 36" width="30" height="30" fill="none" xmlns="http://www.w3.org/2000/svg" filter="drop-shadow(0 4px 8px rgba(0,0,0,0.5))">
+      <line x1="16" y1="20" x2="30" y2="4" stroke="#e2e8f0" stroke-width="3" stroke-linecap="round"/>
+      <line x1="28" y1="4" x2="33" y2="2" stroke="#ffd700" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M7 16 C7 28, 12 32, 18 32 C24 32, 29 28, 29 16 C29 14, 7 14, 7 16 Z" fill="#451a03"/>
+      <ellipse cx="18" cy="14" rx="11" ry="3.5" fill="#78350f" stroke="#e2e8f0" stroke-width="1.2"/>
+      <ellipse cx="18" cy="14" rx="8" ry="2" fill="#2d6a4f"/>
+      <path d="M9 22 Q18 25 27 22" stroke="#ffd700" stroke-width="1.8" fill="none"/>
+    </svg>
+  `;
+
+  // 2. Argentine Alfajor de Chocolate con Dulce de Leche
+  const ITEM_ALFAJOR_SVG = `
+    <svg viewBox="0 0 36 36" width="30" height="30" fill="none" xmlns="http://www.w3.org/2000/svg" filter="drop-shadow(0 4px 8px rgba(0,0,0,0.5))">
+      <rect x="5" y="21" width="26" height="5" rx="2.5" fill="#3e2723"/>
+      <rect x="4" y="16" width="28" height="5" rx="1.5" fill="#b45309"/>
+      <rect x="5" y="10" width="26" height="6" rx="3" fill="#2d1b15"/>
+      <path d="M7 12 Q18 10 29 12" stroke="#4a2c20" stroke-width="1.5" fill="none"/>
+    </svg>
+  `;
+
+  // 3. Burger & Fries
   const ITEM_BURGER_SVG = `
-    <svg viewBox="0 0 36 36" width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg" filter="drop-shadow(0 4px 8px rgba(0,0,0,0.5))">
-      <!-- Top Bun -->
+    <svg viewBox="0 0 36 36" width="30" height="30" fill="none" xmlns="http://www.w3.org/2000/svg" filter="drop-shadow(0 4px 8px rgba(0,0,0,0.5))">
       <path d="M5 16 C5 8, 31 8, 31 16 Z" fill="#f59e0b"/>
-      <!-- Sesame seeds -->
       <ellipse cx="12" cy="12" rx="1" ry="0.6" fill="#fef3c7"/>
       <ellipse cx="18" cy="10" rx="1" ry="0.6" fill="#fef3c7"/>
       <ellipse cx="24" cy="12" rx="1" ry="0.6" fill="#fef3c7"/>
-      <!-- Lettuce -->
       <path d="M4 17 Q9 20 14 17 Q19 20 24 17 Q29 20 32 17 L31 19 L5 19 Z" fill="#22c55e"/>
-      <!-- Melted Cheddar -->
       <path d="M6 19 L30 19 L28 23 L22 21 L16 24 L10 21 Z" fill="#eab308"/>
-      <!-- Patty -->
       <rect x="5" y="21" width="26" height="5" rx="2.5" fill="#78350f"/>
-      <!-- Bottom Bun -->
       <path d="M7 26 L29 26 C29 29, 26 31, 18 31 C10 31, 7 29, 7 26 Z" fill="#d97706"/>
     </svg>
   `;
 
-  const ITEM_FRIES_SVG = `
-    <svg viewBox="0 0 36 36" width="30" height="30" fill="none" xmlns="http://www.w3.org/2000/svg" filter="drop-shadow(0 4px 8px rgba(0,0,0,0.5))">
-      <!-- Fries Box -->
-      <polygon points="9,16 27,16 24,33 12,33" fill="#dc2626"/>
-      <circle cx="18" cy="24" r="4" fill="#ffd700"/>
-      <!-- Crispy Golden Fries -->
-      <line x1="12" y1="16" x2="11" y2="6" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
-      <line x1="15" y1="16" x2="14" y2="4" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
-      <line x1="18" y1="16" x2="18" y2="3" stroke="#fbbf24" stroke-width="3.2" stroke-linecap="round"/>
-      <line x1="21" y1="16" x2="22" y2="5" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
-      <line x1="24" y1="16" x2="25" y2="8" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
-    </svg>
-  `;
-
-  // 2. Classic Wrapped Presents (Universal)
+  // 4. Classic Presents
   const ITEM_GIFT_RED_SVG = `
     <svg viewBox="0 0 32 32" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg" filter="drop-shadow(0 4px 8px rgba(0,0,0,0.4))">
       <rect x="5" y="11" width="22" height="18" rx="2" fill="#dc2626"/>
@@ -259,7 +252,6 @@
     const styleEl = document.createElement('style');
     styleEl.id = 'festive-auto-styles';
     styleEl.textContent = `
-      /* Canvas & Mountains Viewport Layers */
       .festive-auto-canvas {
         position: fixed !important;
         inset: 0 !important;
@@ -277,6 +269,7 @@
         pointer-events: none !important;
         z-index: 0 !important;
         overflow: hidden !important;
+        transition: opacity 0.4s ease;
       }
 
       .festive-auto-mountains-svg {
@@ -302,12 +295,12 @@
       /* Hanging Nav Lights with Wind Sway */
       .festive-auto-lights-garland {
         position: absolute;
-        bottom: -16px;
+        bottom: -15px;
         left: 0;
         width: 100%;
         height: 24px;
         pointer-events: none;
-        z-index: 100;
+        z-index: 105;
         display: flex;
         justify-content: space-around;
         align-items: flex-start;
@@ -317,9 +310,9 @@
       }
 
       @keyframes autoGarlandSway {
-        0%   { transform: rotate(-0.6deg) translateY(0); }
-        50%  { transform: rotate(0.4deg) translateY(1.5px); }
-        100% { transform: rotate(-0.3deg) translateY(-0.8px); }
+        0%   { transform: rotate(-0.5deg) translateY(0); }
+        50%  { transform: rotate(0.4deg) translateY(1px); }
+        100% { transform: rotate(-0.3deg) translateY(-0.5px); }
       }
 
       .festive-auto-bulb {
@@ -367,10 +360,9 @@
       .festive-auto-hat-wrapper {
         position: absolute !important;
         top: -24px !important;
-        left: 50% !important;
         transform: translateX(-50%) !important;
-        width: 46px !important;
-        height: 38px !important;
+        width: 44px !important;
+        height: 36px !important;
         pointer-events: none !important;
         z-index: 50 !important;
         animation: autoHatBob 3.5s ease-in-out infinite alternate;
@@ -406,10 +398,10 @@
         display: block;
       }
 
-      /* Sleigh Across the Sky */
+      /* Sleigh Flying */
       .festive-auto-sleigh-sky {
         position: fixed !important;
-        top: 14vh;
+        top: 13vh;
         left: -320px;
         width: 250px;
         height: 95px;
@@ -450,7 +442,7 @@
         position: fixed !important;
         pointer-events: none !important;
         z-index: 996 !important;
-        animation: autoDropAndSpin 4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        animation: autoDropAndSpin 4.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
       }
 
       @keyframes autoDropAndSpin {
@@ -468,12 +460,13 @@
         }
       }
 
-      /* Light Theme Adaptations (if the host website has a light/white background) */
+      /* Light Theme Adaptation (e.g. SaboresMás Cream/White Background) */
       body.festive-auto-light-theme .festive-auto-mountains-backdrop {
-        opacity: 0.35 !important;
+        opacity: 0.28 !important;
+        mix-blend-mode: multiply;
       }
-      body.festive-auto-light-theme .festive-auto-bulb {
-        opacity: 0.95;
+      body.festive-auto-light-theme .festive-auto-canvas {
+        filter: drop-shadow(0 1.5px 2px rgba(31, 69, 41, 0.35)) drop-shadow(0 0 1px rgba(0, 0, 0, 0.3));
       }
     `;
 
@@ -484,15 +477,16 @@
 
   function detectNiche() {
     const metaDesc = document.querySelector('meta[name="description"]')?.content || '';
-    const textCorpus = (document.title + ' ' + metaDesc + ' ' + (document.body ? document.body.innerText.slice(0, 4000) : '')).toLowerCase();
+    const textCorpus = (document.title + ' ' + metaDesc + ' ' + (document.body ? document.body.innerText.slice(0, 5000) : '')).toLowerCase();
 
-    if (/burger|hamburguesa|smash|papas|fries|comida|restaurant|gastronomia|taco|sushi|cerveza|menu|combo|bebida|alimentos/i.test(textCorpus)) {
-      return 'food';
+    // Argentine Gourmet & Foods (SaboresMás: yerba, mate, alfajores, dulces, gourmet)
+    if (/yerba|mate|alfajor|dulce|chocolate|sabores|gourmet|burger|hamburguesa|smash|papas|fries|comida|restaurant|alimentos|tienda/i.test(textCorpus)) {
+      return 'gourmet_food';
     }
-    if (/software|developer|coding|programador|dev|computadora|tech|hardware|cloud|ingenier|fullstack/i.test(textCorpus)) {
+    if (/software|developer|coding|programador|dev|computadora|tech|hardware|cloud|ingenier/i.test(textCorpus)) {
       return 'tech';
     }
-    if (/ropa|moda|tienda|fashion|indumentaria|shoes|zapatos|boutique|accesorios/i.test(textCorpus)) {
+    if (/ropa|moda|tienda|fashion|indumentaria|shoes|zapatos|boutique/i.test(textCorpus)) {
       return 'fashion';
     }
     return 'general';
@@ -500,7 +494,13 @@
 
   // ── LIGHT / DARK THEME BACKGROUND DETECTION ──
 
-  function detectAndApplyTheme() {
+  function updateThemeState() {
+    const isExplicitDark = document.body.classList.contains('dark-mode') || document.documentElement.classList.contains('dark');
+    if (isExplicitDark) {
+      document.body.classList.remove('festive-auto-light-theme');
+      return 'dark';
+    }
+
     const bg = window.getComputedStyle(document.body).backgroundColor;
     const match = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
     if (match) {
@@ -508,11 +508,12 @@
       const g = parseInt(match[2], 10);
       const b = parseInt(match[3], 10);
       const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-      if (lum > 0.55) {
+      if (lum > 0.5) {
         document.body.classList.add('festive-auto-light-theme');
         return 'light';
       }
     }
+    document.body.classList.remove('festive-auto-light-theme');
     return 'dark';
   }
 
@@ -520,6 +521,8 @@
 
   function findLogoElement() {
     const selectors = [
+      'header img.logo-img-grande', 'nav img.logo-img-grande',
+      'header .logo-stack', 'nav .logo-stack',
       'header [class*="logo"]', 'nav [class*="logo"]',
       'header [id*="logo"]', 'nav [id*="logo"]',
       'header [class*="brand"]', 'nav [class*="brand"]',
@@ -531,7 +534,7 @@
       const el = document.querySelector(sel);
       if (el && el.offsetParent !== null) {
         const rect = el.getBoundingClientRect();
-        if (rect.width > 15 && rect.height > 15) return el;
+        if (rect.width > 12 && rect.height > 12) return el;
       }
     }
     return null;
@@ -548,16 +551,20 @@
 
   function findCardElements() {
     const selectors = [
-      '[class*="card"]', '[class*="product"]', '[class*="item"]',
+      '.card', '[class*="card"]', '[class*="product"]', '[class*="item"]',
       '[class*="menu-item"]', '[class*="combo"]', 'article',
-      '.grid > div', '.menu-grid > div'
+      '.grid-productos > div', '.grid > div', '.menu-grid > div'
     ];
     for (const sel of selectors) {
       const elements = Array.from(document.querySelectorAll(sel)).filter(el => {
+        // Exclude modal cards, skeleton placeholders or header icon containers
+        if (el.classList.contains('skeleton-card') || el.closest('.modal') || el.closest('.cart-container')) {
+          return false;
+        }
         const rect = el.getBoundingClientRect();
-        return rect.width > 140 && rect.height > 120 && el.offsetParent !== null;
+        return rect.width > 120 && rect.height > 100 && el.offsetParent !== null;
       });
-      if (elements.length >= 2) return elements;
+      if (elements.length >= 1) return elements;
     }
     return [];
   }
@@ -591,7 +598,7 @@
     });
 
     const flakes = [];
-    const FLAKE_COUNT = Math.min(100, Math.floor(width / 15));
+    const FLAKE_COUNT = Math.min(105, Math.floor(width / 15));
 
     for (let i = 0; i < FLAKE_COUNT; i++) {
       flakes.push({
@@ -602,7 +609,7 @@
         speedX: (Math.random() - 0.5) * 0.8,
         swaySpeed: Math.random() * 0.03 + 0.01,
         swayOffset: Math.random() * Math.PI * 2,
-        alpha: Math.random() * 0.7 + 0.3
+        alpha: Math.random() * 0.7 + 0.35
       });
     }
 
@@ -652,17 +659,31 @@
   function attachLogoHat(logoEl) {
     if (!logoEl || logoEl.querySelector('.festive-auto-hat-wrapper')) return;
 
-    // Ensure logo has relative positioning so hat is absolute to it
-    const pos = window.getComputedStyle(logoEl).position;
+    let targetContainer = logoEl;
+    let offsetX = '50%';
+
+    if (logoEl.tagName.toLowerCase() === 'img') {
+      targetContainer = logoEl.parentElement;
+      if (!targetContainer) return;
+      offsetX = (logoEl.offsetLeft + logoEl.offsetWidth / 2) + 'px';
+    } else {
+      const imgChild = logoEl.querySelector('img');
+      if (imgChild) {
+        offsetX = (imgChild.offsetLeft + imgChild.offsetWidth / 2) + 'px';
+      }
+    }
+
+    const pos = window.getComputedStyle(targetContainer).position;
     if (pos === 'static') {
-      logoEl.style.position = 'relative';
+      targetContainer.style.position = 'relative';
     }
 
     const hatWrapper = document.createElement('div');
     hatWrapper.className = 'festive-auto-hat-wrapper';
     hatWrapper.setAttribute('aria-hidden', 'true');
+    hatWrapper.style.left = offsetX;
     hatWrapper.innerHTML = SANTA_HAT_SVG;
-    logoEl.appendChild(hatWrapper);
+    targetContainer.appendChild(hatWrapper);
   }
 
   // ── ATTACH LIGHTS TO NAV ──
@@ -692,7 +713,7 @@
     navEl.appendChild(garland);
   }
 
-  // ── ATTACH SNOW TO CARDS ──
+  // ── ATTACH SNOW TO CARDS (DYNAMIC-AWARE) ──
 
   function attachCardsSnow(cards) {
     cards.forEach((card) => {
@@ -703,7 +724,6 @@
         card.style.position = 'relative';
       }
 
-      // Ensure visible overflow so snow crest pops out nicely
       card.style.overflow = 'visible';
 
       const snowEl = document.createElement('div');
@@ -726,15 +746,17 @@
     sleigh.innerHTML = SLEIGH_SVG;
     document.body.appendChild(sleigh);
 
-    // Pick item pool based on detected niche
-    const foodItems = [ITEM_BURGER_SVG, ITEM_FRIES_SVG, ITEM_GIFT_RED_SVG, ITEM_GIFT_GOLD_SVG];
-    const defaultItems = [ITEM_GIFT_RED_SVG, ITEM_GIFT_GOLD_SVG];
-    const itemPool = (niche === 'food') ? foodItems : defaultItems;
+    // Contextual item pool
+    let itemPool;
+    if (niche === 'gourmet_food') {
+      itemPool = [ITEM_MATE_SVG, ITEM_ALFAJOR_SVG, ITEM_BURGER_SVG, ITEM_GIFT_RED_SVG, ITEM_GIFT_GOLD_SVG];
+    } else {
+      itemPool = [ITEM_GIFT_RED_SVG, ITEM_GIFT_GOLD_SVG];
+    }
 
     let dropCount = 0;
     setInterval(() => {
       const rect = sleigh.getBoundingClientRect();
-      // Drop while visible in screen view
       if (rect.left > 80 && rect.right < window.innerWidth - 80) {
         dropPresent(rect.left + 50, rect.top + 50, itemPool[dropCount % itemPool.length]);
         dropCount++;
@@ -752,7 +774,21 @@
 
     setTimeout(() => {
       if (item.parentNode) item.parentNode.removeChild(item);
-    }, 4100);
+    }, 4300);
+  }
+
+  // ── OBSERVATION LOOP FOR DYNAMIC APPS / SPAs ──
+
+  function startDynamicObserver() {
+    const observer = new MutationObserver(() => {
+      updateThemeState();
+      const cards = findCardElements();
+      if (cards.length > 0) {
+        attachCardsSnow(cards);
+      }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
   }
 
   // ── MAIN RUNTIME ──
@@ -762,7 +798,7 @@
     injectMountains();
     initSnowCanvas();
 
-    const theme = detectAndApplyTheme();
+    const theme = updateThemeState();
     const niche = detectNiche();
 
     console.log(`%c[Festivities Auto]%c Niche Detected: "%c${niche.toUpperCase()}%c" | Theme: ${theme}`, 
@@ -770,7 +806,6 @@
       'color: #ffd700; font-weight: bold;', 'color: #94a3b8;'
     );
 
-    // DOM Heuristics
     const logoEl = findLogoElement();
     if (logoEl) {
       attachLogoHat(logoEl);
@@ -786,11 +821,11 @@
     const cards = findCardElements();
     if (cards.length > 0) {
       attachCardsSnow(cards);
-      console.log(`[Festivities Auto] Located ${cards.length} product/menu cards and attached snow.`);
+      console.log(`[Festivities Auto] Located ${cards.length} cards and attached snow.`);
     }
 
-    // Launch flying sleigh with contextual items
     initSleigh(niche);
+    startDynamicObserver();
   }
 
   if (document.readyState === 'loading') {
