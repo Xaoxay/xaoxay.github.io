@@ -976,11 +976,14 @@
         cap.innerHTML = `<svg viewBox="0 0 320 24" preserveAspectRatio="none" style="width:100%;height:18px;display:block;fill:#ffffff;"><path d="M0,0 L320,0 L320,7 Q304,17 288,9 Q274,23 260,11 Q244,14 230,8 Q214,20 198,10 Q182,12 170,22 Q156,10 142,8 Q126,19 112,11 Q94,14 80,21 Q66,10 52,8 Q36,18 20,10 Q10,14 0,7 Z" fill="#ffffff"/></svg>`;
         simCard.prepend(cap);
       } else if (holiday.id === 'halloween') {
-        simCard.style.borderColor = '#ff6a00';
-        simCard.style.boxShadow = '0 0 15px rgba(255, 106, 0, 0.35)';
+        simCard.style.borderColor = '#00ff66';
+        simCard.style.boxShadow = '0 0 15px rgba(0, 255, 102, 0.4)';
       } else if (holiday.id === 'newyear') {
         simCard.style.borderColor = '#ffd700';
-        simCard.style.boxShadow = '0 0 15px rgba(255, 215, 0, 0.35)';
+        simCard.style.boxShadow = '0 0 15px rgba(255, 215, 0, 0.4)';
+      } else if (holiday.id === 'valentine') {
+        simCard.style.borderColor = '#ff0055';
+        simCard.style.boxShadow = '0 0 15px rgba(255, 0, 85, 0.4)';
       }
     }
   }

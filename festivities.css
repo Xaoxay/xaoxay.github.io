@@ -1,9 +1,9 @@
 /* ═══════════════════════════════════════════════
-   XAOXAY — Advanced Festive Engine Stylesheet
-   Extreme Interactive Animations, Sleigh, Snow & Pixel Art
+   XAOXAY — Complete Festive Engine Stylesheet
+   Christmas, New Year, Valentine & Halloween Themes
    ═══════════════════════════════════════════════ */
 
-/* ── Festive Theme Overrides ── */
+/* ── Festive Theme Color Overrides ── */
 body[data-festivity="christmas"] {
   --festive-primary: #ff1e38;
   --festive-secondary: #00cc66;
@@ -13,28 +13,31 @@ body[data-festivity="christmas"] {
 }
 
 body[data-festivity="halloween"] {
-  --festive-primary: #ff6a00;
-  --festive-secondary: #9d00ff;
-  --festive-accent: #ffb703;
-  --festive-glow: rgba(255, 106, 0, 0.5);
+  --festive-primary: #00ff66;
+  --festive-secondary: #ff6a00;
+  --festive-accent: #a855f7;
+  --festive-glow: rgba(0, 255, 102, 0.55);
+  background: radial-gradient(circle at 50% 15%, #0e2a18 0%, #06170d 50%, #020a05 100%) !important;
 }
 
 body[data-festivity="newyear"] {
   --festive-primary: #ffd700;
   --festive-secondary: #00f2fe;
   --festive-accent: #ffffff;
-  --festive-glow: rgba(255, 215, 0, 0.5);
+  --festive-glow: rgba(255, 215, 0, 0.55);
+  background: radial-gradient(circle at 50% 15%, #16152a 0%, #0c0b18 55%, #05050c 100%) !important;
 }
 
 body[data-festivity="valentine"] {
-  --festive-primary: #ff3366;
+  --festive-primary: #ff0055;
   --festive-secondary: #ff758c;
-  --festive-accent: #ffffff;
-  --festive-glow: rgba(255, 51, 102, 0.5);
+  --festive-accent: #ffd700;
+  --festive-glow: rgba(255, 0, 85, 0.55);
+  background: radial-gradient(circle at 50% 20%, #200812 0%, #12040a 55%, #080205 100%) !important;
 }
 
 /* ══════════════════════════════════════════════
-   BACKGROUND CONTINUOUS SNOWFALL (CSS + CANVAS)
+   CANVAS PARTICLE SYSTEM & BACKGROUND OVERLAYS
    ══════════════════════════════════════════════ */
 #festiveCanvas {
   position: fixed;
@@ -42,10 +45,10 @@ body[data-festivity="valentine"] {
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  z-index: 998; /* Under CRT overlay, above normal content */
+  z-index: 998;
 }
 
-/* CSS Parallax Snow Drift Layer */
+/* Christmas Background Continuous Snowfall */
 body[data-festivity="christmas"]::before {
   content: '';
   position: fixed;
@@ -70,19 +73,160 @@ body[data-festivity="christmas"]::before {
   100% { background-position: 60px 840px; }
 }
 
+/* Halloween Background Toxic Green Flames Aura */
+body[data-festivity="halloween"]::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 997;
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(0, 255, 102, 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 90%, rgba(255, 106, 0, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(168, 85, 247, 0.14) 0%, transparent 50%);
+  animation: halloweenFlamesGlow 5s ease-in-out infinite alternate;
+  opacity: 0.9;
+}
+
+@keyframes halloweenFlamesGlow {
+  0%   { transform: scale(1) translateY(0); opacity: 0.75; }
+  50%  { transform: scale(1.03) translateY(-8px); opacity: 1; filter: hue-rotate(10deg); }
+  100% { transform: scale(0.98) translateY(4px); opacity: 0.8; }
+}
+
+/* New Year Background Starlight Shimmer */
+body[data-festivity="newyear"]::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 997;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255, 215, 0, 0.12) 0%, transparent 70%);
+  animation: newyearShimmer 4s ease-in-out infinite alternate;
+}
+
+@keyframes newyearShimmer {
+  0%   { opacity: 0.6; }
+  100% { opacity: 1; filter: drop-shadow(0 0 20px rgba(0, 242, 254, 0.3)); }
+}
+
 /* ══════════════════════════════════════════════
-   SANTA HATS - CENTERED & PROPORTIONED
+   HEADER LIGHTS GARLAND WITH WIND SWAY (ALL STYLES)
+   ══════════════════════════════════════════════ */
+.festive-lights-garland {
+  position: absolute;
+  bottom: -16px;
+  left: 0;
+  right: 0;
+  height: 24px;
+  pointer-events: none;
+  z-index: 100;
+  overflow: visible;
+  display: flex;
+  justify-content: space-around;
+  padding: 0 1rem;
+  transform-origin: top center;
+  animation: garlandWireSway 6s ease-in-out infinite alternate;
+}
+
+@keyframes garlandWireSway {
+  0%   { transform: translateY(0) rotate(0.4deg); }
+  50%  { transform: translateY(2px) rotate(-0.4deg); }
+  100% { transform: translateY(0) rotate(0.4deg); }
+}
+
+.festive-wire {
+  position: absolute;
+  top: 2px;
+  left: -20px;
+  right: -20px;
+  height: 8px;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+}
+
+.festive-bulb {
+  position: relative;
+  width: 10px;
+  height: 14px;
+  border-radius: 50% 50% 45% 45%;
+  margin-top: 5px;
+  transform-origin: top center;
+  animation-duration: 2.8s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
+}
+
+.festive-bulb:nth-child(2n) {
+  animation-name: bulbSwingEven;
+  animation-duration: 2.4s;
+}
+.festive-bulb:nth-child(2n+1) {
+  animation-name: bulbSwingOdd;
+  animation-duration: 2.7s;
+}
+
+@keyframes bulbSwingEven {
+  0%   { transform: rotate(-11deg); }
+  100% { transform: rotate(11deg); }
+}
+@keyframes bulbSwingOdd {
+  0%   { transform: rotate(10deg); }
+  100% { transform: rotate(-10deg); }
+}
+
+.festive-bulb::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 3px;
+  width: 4px;
+  height: 3px;
+  background: #2a2a2a;
+  border-radius: 1px;
+}
+
+.festive-bulb--red {
+  background: #ff2233;
+  box-shadow: 0 2px 10px #ff2233, 0 0 16px rgba(255, 34, 51, 0.85);
+}
+.festive-bulb--green {
+  background: #00ff66;
+  box-shadow: 0 2px 10px #00ff66, 0 0 16px rgba(0, 255, 102, 0.85);
+}
+.festive-bulb--gold {
+  background: #fbbf24;
+  box-shadow: 0 2px 10px #fbbf24, 0 0 16px rgba(251, 191, 36, 0.85);
+}
+.festive-bulb--blue {
+  background: #38bdf8;
+  box-shadow: 0 2px 10px #38bdf8, 0 0 16px rgba(56, 189, 248, 0.85);
+}
+.festive-bulb--orange {
+  background: #ff6a00;
+  box-shadow: 0 2px 10px #ff6a00, 0 0 16px rgba(255, 106, 0, 0.85);
+}
+.festive-bulb--purple {
+  background: #a855f7;
+  box-shadow: 0 2px 10px #a855f7, 0 0 16px rgba(168, 85, 247, 0.85);
+}
+
+/* ══════════════════════════════════════════════
+   LOGO EMBLEMS (CENTERED ON TOP OF X)
    ══════════════════════════════════════════════ */
 .logo {
   position: relative;
 }
 
-.logo__x {
+.logo__x,
+.hero__title-x,
+.hero__logo-wrap {
   position: relative !important;
   display: inline-block !important;
 }
 
-/* Header Logo Hat - Perfectly centered on top of the "X" */
+/* Christmas Hats */
 .festive-logo-hat {
   position: absolute;
   top: -14px;
@@ -95,11 +239,6 @@ body[data-festivity="christmas"]::before {
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
   animation: hatBob 3s ease-in-out infinite;
   transform-origin: bottom center;
-}
-
-/* Hero Logo Hat - Perfectly centered on the top of the big X */
-.hero__logo-wrap {
-  position: relative !important;
 }
 
 .festive-hero-hat {
@@ -122,55 +261,115 @@ body[data-festivity="christmas"]::before {
   66%      { transform: translateX(-50%) rotate(3deg); }
 }
 
-/* Halloween emblem on logo */
+/* Halloween Flaming Pumpkin on Logo */
 .festive-logo-pumpkin {
   position: absolute;
-  top: -12px;
+  top: -15px;
   left: 50%;
   transform: translateX(-50%);
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   pointer-events: none;
   z-index: 10;
-  filter: drop-shadow(0 2px 8px rgba(255, 106, 0, 0.8));
-  animation: pumpkinPulse 2.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(0, 255, 102, 0.8));
+  animation: flameBob 2.6s ease-in-out infinite;
 }
 
 .festive-hero-pumpkin {
   position: absolute;
-  top: -10px;
+  top: -16px;
   left: 50%;
   transform: translateX(-50%);
-  width: 60px;
-  height: 60px;
+  width: 72px;
+  height: 72px;
   pointer-events: none;
   z-index: 10;
-  filter: drop-shadow(0 4px 16px rgba(255, 106, 0, 0.9));
-  animation: pumpkinPulse 2.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(0, 255, 102, 0.9));
+  animation: flameBob 2.6s ease-in-out infinite;
 }
 
-@keyframes pumpkinPulse {
+@keyframes flameBob {
   0%, 100% { transform: translateX(-50%) scale(1); }
-  50%      { transform: translateX(-50%) scale(1.08) rotate(3deg); }
+  50%      { transform: translateX(-50%) scale(1.08) translateY(-3px); }
+}
+
+/* New Year Top Hat on Logo */
+.festive-logo-newyear {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 24px;
+  pointer-events: none;
+  z-index: 10;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.85));
+  animation: hatBob 3s ease-in-out infinite;
+}
+
+.festive-hero-newyear {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 76px;
+  height: 64px;
+  pointer-events: none;
+  z-index: 10;
+  filter: drop-shadow(0 0 22px rgba(255, 215, 0, 0.9));
+  animation: hatBob 3.5s ease-in-out infinite;
+}
+
+/* Valentine Winged Cupid Heart on Logo */
+.festive-logo-valentine {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 24px;
+  pointer-events: none;
+  z-index: 10;
+  filter: drop-shadow(0 0 8px rgba(255, 0, 85, 0.85));
+  animation: pulseHeart 2s ease-in-out infinite;
+}
+
+.festive-hero-valentine {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 78px;
+  height: 64px;
+  pointer-events: none;
+  z-index: 10;
+  filter: drop-shadow(0 0 22px rgba(255, 0, 85, 0.9));
+  animation: pulseHeart 2s ease-in-out infinite;
+}
+
+@keyframes pulseHeart {
+  0%, 100% { transform: translateX(-50%) scale(1); }
+  50%      { transform: translateX(-50%) scale(1.12); }
 }
 
 /* ══════════════════════════════════════════════
-   SNOW ON CARDS (PROGRAMAS & HERRAMIENTAS)
+   CARD DECORATIONS & STYLING
    ══════════════════════════════════════════════ */
-body[data-festivity="christmas"] .card {
-  overflow: visible !important;
+.card {
   position: relative;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 15px rgba(255, 30, 56, 0.18);
   transition: transform 0.28s ease, box-shadow 0.28s ease;
 }
 
+/* Christmas Cards: Snowcaps */
+body[data-festivity="christmas"] .card {
+  overflow: visible !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 15px rgba(255, 30, 56, 0.18);
+}
 body[data-festivity="christmas"] .card:hover {
   transform: translateY(-6px) scale(1.015);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85), 0 0 30px var(--festive-glow, rgba(255, 30, 56, 0.45));
 }
-
-/* Thick Puffy Snow Mound Layer on Top of Every Card */
 body[data-festivity="christmas"] .card::before {
   content: '';
   position: absolute;
@@ -179,19 +378,14 @@ body[data-festivity="christmas"] .card::before {
   right: -2px;
   height: 18px;
   background:
-    radial-gradient(ellipse 24px 13px at 12% 100%, #ffffff 99%, transparent 100%),
-    radial-gradient(ellipse 32px 16px at 35% 100%, #ffffff 99%, transparent 100%),
-    radial-gradient(ellipse 22px 12px at 56% 100%, #ffffff 99%, transparent 100%),
-    radial-gradient(ellipse 34px 16px at 76% 100%, #ffffff 99%, transparent 100%),
-    radial-gradient(ellipse 26px 13px at 94% 100%, #ffffff 99%, transparent 100%),
-    linear-gradient(to bottom, #ffffff 0%, #e2f2fc 100%);
-  border-radius: 12px 12px 0 0;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5), 0 0 14px rgba(0, 240, 255, 0.45);
+    radial-gradient(circle at 12% 100%, #ffffff 13px, transparent 14px),
+    radial-gradient(circle at 35% 100%, #ffffff 16px, transparent 17px),
+    radial-gradient(circle at 62% 100%, #ffffff 14px, transparent 15px),
+    radial-gradient(circle at 88% 100%, #ffffff 15px, transparent 16px);
+  filter: drop-shadow(0 2px 4px rgba(0, 240, 255, 0.5));
   z-index: 8;
   pointer-events: none;
 }
-
-/* Hanging SVG Icicles underneath the snowdrift */
 .festive-card-snowcap {
   position: absolute;
   top: 4px;
@@ -202,17 +396,84 @@ body[data-festivity="christmas"] .card::before {
   z-index: 9;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
 }
-
 .festive-snow-cap-svg {
   width: 100%;
   height: 24px;
   display: block;
 }
 
-/* Neon Rotating Card Borders */
+/* Valentine Cards: Luxurious Chocolate Box */
+body[data-festivity="valentine"] .card {
+  overflow: visible !important;
+  background: linear-gradient(145deg, #240a12 0%, #16060c 50%, #0c0206 100%) !important;
+  border-color: rgba(255, 0, 85, 0.4) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 215, 0, 0.35), 0 0 20px rgba(255, 0, 85, 0.2) !important;
+}
+body[data-festivity="valentine"] .card:hover {
+  transform: translateY(-6px) scale(1.015);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 215, 0, 0.5), 0 0 35px rgba(255, 0, 85, 0.5) !important;
+}
+
+/* Chocolate Box Ribbon & Bow & Bonbons */
+.festive-card-bonbon-ribbon {
+  position: absolute;
+  top: -14px;
+  left: -2px;
+  right: -2px;
+  pointer-events: none;
+  z-index: 10;
+}
+.bonbon-ribbon-stripe {
+  height: 8px;
+  background: linear-gradient(90deg, #d90429, #ff4d6d, #d90429);
+  border-top: 1px dashed rgba(255, 215, 0, 0.8);
+  border-bottom: 1px dashed rgba(255, 215, 0, 0.8);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  border-radius: 4px 4px 0 0;
+}
+.bonbon-ribbon-bow {
+  position: absolute;
+  top: -12px;
+  left: 12px;
+  width: 44px;
+  height: 28px;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.6));
+}
+.bonbon-trio {
+  position: absolute;
+  top: -10px;
+  right: 14px;
+  display: flex;
+  gap: 6px;
+  pointer-events: auto;
+}
+.bonbon {
+  width: 22px;
+  height: 22px;
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.7));
+}
+.bonbon:hover {
+  transform: scale(1.3) translateY(-3px);
+}
+
+/* Halloween Cards: Poison Green / Fire Glow */
+body[data-festivity="halloween"] .card {
+  background: linear-gradient(145deg, #09170e 0%, #050d08 60%, #020704 100%) !important;
+  border-color: rgba(0, 255, 102, 0.35) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), 0 0 20px rgba(0, 255, 102, 0.2) !important;
+}
+body[data-festivity="halloween"] .card:hover {
+  transform: translateY(-6px) scale(1.015);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9), 0 0 35px rgba(0, 255, 102, 0.45) !important;
+}
+
+/* Neon Rotating Borders */
 body[data-festivity="christmas"] .card::after,
 body[data-festivity="halloween"] .card::after,
-body[data-festivity="newyear"] .card::after {
+body[data-festivity="newyear"] .card::after,
+body[data-festivity="valentine"] .card::after {
   content: '';
   position: absolute;
   inset: -1.5px;
@@ -230,10 +491,13 @@ body[data-festivity="christmas"] .card::after {
   background: linear-gradient(135deg, #ff1e38 0%, #ffd700 35%, #00cc66 70%, #00f2fe 100%);
 }
 body[data-festivity="halloween"] .card::after {
-  background: linear-gradient(135deg, #ff6a00 0%, #a855f7 50%, #ffb703 100%);
+  background: linear-gradient(135deg, #00ff66 0%, #ff6a00 50%, #a855f7 100%);
 }
 body[data-festivity="newyear"] .card::after {
   background: linear-gradient(135deg, #ffd700 0%, #ffffff 40%, #00f2fe 80%, #ffd700 100%);
+}
+body[data-festivity="valentine"] .card::after {
+  background: linear-gradient(135deg, #ff0055 0%, #ffd700 40%, #ff758c 70%, #c1121f 100%);
 }
 
 @keyframes neonBorderPulse {
@@ -242,7 +506,7 @@ body[data-festivity="newyear"] .card::after {
 }
 
 /* ══════════════════════════════════════════════
-   SANTA'S FLYING SLEIGH WITH REINDEER
+   FLYING SLEIGH (SANTA DROPPING GIFTS) & CUPID
    ══════════════════════════════════════════════ */
 .festive-sleigh-sky {
   position: fixed;
@@ -258,30 +522,89 @@ body[data-festivity="newyear"] .card::after {
 }
 
 @keyframes sleighCruise {
+  0% { transform: translate3d(-340px, 40px, 0) scale(0.65) rotate(4deg); opacity: 0; }
+  3% { opacity: 1; }
+  50% { transform: translate3d(50vw, -15px, 0) scale(0.9) rotate(-2deg); opacity: 1; }
+  97% { opacity: 1; }
+  100% { transform: translate3d(calc(100vw + 340px), -50px, 0) scale(1.15) rotate(-6deg); opacity: 0; }
+}
+
+/* Falling Dropped Gift from Santa's Sleigh */
+.festive-dropped-gift {
+  position: fixed;
+  width: 26px;
+  height: 26px;
+  pointer-events: none;
+  z-index: 997;
+  filter: drop-shadow(0 0 8px #ffd700);
+  animation: giftTumbleFall 4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes giftTumbleFall {
   0% {
-    transform: translate3d(-340px, 40px, 0) scale(0.65) rotate(4deg);
-    opacity: 0;
-  }
-  3% {
+    transform: translate(0, 0) rotate(0deg) scale(0.8);
     opacity: 1;
+  }
+  25% {
+    transform: translate(25px, 150px) rotate(45deg) scale(0.9);
   }
   50% {
-    transform: translate3d(50vw, -15px, 0) scale(0.9) rotate(-2deg);
-    opacity: 1;
+    transform: translate(-20px, 350px) rotate(-35deg) scale(1);
   }
-  97% {
-    opacity: 1;
+  75% {
+    transform: translate(30px, 550px) rotate(60deg) scale(1.05);
   }
   100% {
-    transform: translate3d(calc(100vw + 340px), -50px, 0) scale(1.15) rotate(-6deg);
+    transform: translate(0, calc(100vh - 120px)) rotate(0deg) scale(1.1);
     opacity: 0;
   }
 }
 
+/* Flying Cupid */
+.festive-cupid-sky {
+  position: fixed;
+  top: 100px;
+  left: -200px;
+  width: 150px;
+  height: 110px;
+  pointer-events: none;
+  z-index: 997;
+  filter: drop-shadow(0 0 16px rgba(255, 0, 85, 0.8)) drop-shadow(0 0 28px rgba(255, 215, 0, 0.6));
+  animation: cupidFlyby 24s cubic-bezier(0.25, 1, 0.35, 1) infinite;
+  will-change: transform;
+}
+
+@keyframes cupidFlyby {
+  0% { transform: translate(0, 0) scale(0.85) rotate(-4deg); opacity: 0; }
+  4% { opacity: 1; }
+  25% { transform: translate(30vw, 30px) scale(0.95) rotate(4deg); }
+  50% { transform: translate(60vw, -20px) scale(1.05) rotate(-2deg); }
+  75% { transform: translate(85vw, 25px) scale(1) rotate(3deg); }
+  96% { opacity: 1; }
+  100% { transform: translate(calc(100vw + 240px), -10px) scale(0.9) rotate(0deg); opacity: 0; }
+}
+
+.cupid-wing--left {
+  transform-origin: 52px 38px;
+  animation: wingFlap 0.35s ease-in-out infinite alternate;
+}
+.cupid-wing--right {
+  transform-origin: 68px 36px;
+  animation: wingFlap 0.35s ease-in-out infinite alternate 0.18s;
+}
+
+@keyframes wingFlap {
+  0%   { transform: rotate(-15deg) scaleY(0.9); }
+  100% { transform: rotate(18deg) scaleY(1.1); }
+}
+
 /* ══════════════════════════════════════════════
-   INTERACTIVE CHRISTMAS GIFTS ACROSS SCREEN
+   INTERACTIVE CELEBRATION ITEMS (GIFTS, CHEERS, BONBONS, PUMPKINS)
    ══════════════════════════════════════════════ */
-.festive-gift-item {
+.festive-gift-item,
+.festive-cheers-item,
+.festive-bonbon-item,
+.festive-horror-item {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -292,35 +615,75 @@ body[data-festivity="newyear"] .card::after {
   user-select: none;
 }
 
-.festive-gift-item:hover {
+.festive-gift-item:hover,
+.festive-cheers-item:hover,
+.festive-bonbon-item:hover,
+.festive-horror-item:hover {
   transform: scale(1.22) rotate(-5deg);
-  filter: drop-shadow(0 6px 16px rgba(255, 215, 0, 0.8));
 }
 
-.festive-gift-item:active {
+.festive-gift-item:active,
+.festive-cheers-item:active,
+.festive-bonbon-item:active,
+.festive-horror-item:active {
   transform: scale(0.95);
 }
 
-.festive-gift-hero {
+/* Hero Placements */
+.festive-gift-hero,
+.festive-cheers-hero,
+.festive-bonbon-hero,
+.festive-pumpkin-flame {
   position: absolute;
   bottom: 25px;
   right: 5%;
-  width: 50px;
-  height: 50px;
   z-index: 10;
-  animation: giftWiggle 4s ease-in-out infinite;
 }
 
-.festive-gift-section {
+.festive-gift-hero {
+  width: 50px;
+  height: 50px;
+  animation: celebrationWiggle 4s ease-in-out infinite;
+}
+
+.festive-cheers-hero {
+  width: 90px;
+  height: 70px;
+  filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.7));
+}
+
+.festive-bonbon-hero {
+  width: 54px;
+  height: 54px;
+  animation: celebrationWiggle 3.8s ease-in-out infinite;
+}
+
+.festive-pumpkin-flame {
+  width: 75px;
+  height: 70px;
+  filter: drop-shadow(0 0 18px rgba(0, 255, 102, 0.8));
+  animation: flameBob 2.5s ease-in-out infinite;
+}
+
+/* Section Placements */
+.festive-gift-section,
+.festive-cheers-section,
+.festive-bonbon-section,
+.festive-mask-section {
   display: inline-block;
   vertical-align: middle;
   margin-left: 0.75rem;
   width: 36px;
   height: 36px;
-  animation: giftWiggle 3.5s ease-in-out infinite 0.7s;
+  animation: celebrationWiggle 3.5s ease-in-out infinite 0.7s;
 }
 
-@keyframes giftWiggle {
+.festive-cheers-section {
+  width: 52px;
+  height: 38px;
+}
+
+@keyframes celebrationWiggle {
   0%, 80%, 100% { transform: rotate(0deg) scale(1); }
   83% { transform: rotate(-8deg) scale(1.08); }
   86% { transform: rotate(8deg) scale(1.12); }
@@ -329,8 +692,79 @@ body[data-festivity="newyear"] .card::after {
   95% { transform: rotate(0deg) scale(1); }
 }
 
+/* Toasting Champagne Glasses Clinking Physics */
+.toasting-glasses-svg .flute-left {
+  transform-origin: 48px 110px;
+  animation: clinkLeft 3.2s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+.toasting-glasses-svg .flute-right {
+  transform-origin: 112px 110px;
+  animation: clinkRight 3.2s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+.toasting-glasses-svg .clink-sparkle {
+  transform-origin: 80px 35px;
+  animation: clinkSparkleFlash 3.2s ease-out infinite;
+}
+
+@keyframes clinkLeft {
+  0%, 72%, 100% { transform: rotate(0deg); }
+  78% { transform: rotate(-7deg); }
+  85% { transform: rotate(15deg); }
+  90% { transform: rotate(10deg); }
+  95% { transform: rotate(0deg); }
+}
+
+@keyframes clinkRight {
+  0%, 72%, 100% { transform: rotate(0deg); }
+  78% { transform: rotate(7deg); }
+  85% { transform: rotate(-15deg); }
+  90% { transform: rotate(-10deg); }
+  95% { transform: rotate(0deg); }
+}
+
+@keyframes clinkSparkleFlash {
+  0%, 82%, 100% { opacity: 0; transform: scale(0.2); }
+  85% { opacity: 1; transform: scale(1.35); }
+  91% { opacity: 0.85; transform: scale(1); }
+  96% { opacity: 0; transform: scale(0.5); }
+}
+
+.champagne-bubble {
+  animation: bubbleRise 2s ease-in infinite;
+}
+.champagne-bubble.cb2 { animation-delay: 0.6s; }
+.champagne-bubble.cb3 { animation-delay: 1.2s; }
+
+@keyframes bubbleRise {
+  0%   { transform: translateY(0); opacity: 0.3; }
+  50%  { opacity: 1; }
+  100% { transform: translateY(-28px); opacity: 0; }
+}
+
+/* Flaming Pumpkin Fire Flutter */
+.flaming-pumpkin-svg .fire-tongues {
+  transform-origin: 55px 70px;
+  animation: fireFlutter 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes fireFlutter {
+  0%   { transform: scaleY(0.92) skewX(-2deg); opacity: 0.85; }
+  100% { transform: scaleY(1.08) skewX(2deg); opacity: 1; filter: drop-shadow(0 0 10px #00ff66); }
+}
+
+.fire-spark {
+  animation: sparkDance 1.8s ease-in infinite;
+}
+.fire-spark.sp2 { animation-delay: 0.6s; }
+.fire-spark.sp3 { animation-delay: 1.2s; }
+
+@keyframes sparkDance {
+  0%   { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-24px) scale(0.4); opacity: 0; }
+}
+
 /* ══════════════════════════════════════════════
-   RETRO PIXEL-ART MASCOT & CHRISTMAS TREE
+   RETRO PIXEL-ART MASCOT
    ══════════════════════════════════════════════ */
 .festive-pixel-mascot {
   position: absolute;
@@ -355,192 +789,64 @@ body[data-festivity="newyear"] .card::after {
 }
 
 /* ══════════════════════════════════════════════
-   HEADER LIGHTS GARLAND
-   ══════════════════════════════════════════════ */
-.festive-lights-garland {
-  position: absolute;
-  bottom: -15px;
-  left: 0;
-  right: 0;
-  height: 20px;
-  pointer-events: none;
-  z-index: 100;
-  overflow: hidden;
-  display: flex;
-  justify-content: space-around;
-  padding: 0 1rem;
-}
-
-.festive-wire {
-  position: absolute;
-  top: 2px;
-  left: -20px;
-  right: -20px;
-  height: 8px;
-  border-bottom: 1.5px solid rgba(255, 255, 255, 0.25);
-  border-radius: 50%;
-}
-
-.festive-bulb {
-  position: relative;
-  width: 10px;
-  height: 14px;
-  border-radius: 50% 50% 45% 45%;
-  margin-top: 5px;
-  animation-duration: 1.4s;
-  animation-iteration-count: infinite;
-  animation-timing-function: ease-in-out;
-  animation-direction: alternate;
-  transform-origin: top center;
-}
-
-.festive-bulb::before {
-  content: '';
-  position: absolute;
-  top: -3px;
-  left: 3px;
-  width: 4px;
-  height: 3px;
-  background: #2a2a2a;
-  border-radius: 1px;
-}
-
-.festive-bulb--red {
-  background: #ff2233;
-  box-shadow: 0 2px 10px #ff2233, 0 0 16px rgba(255, 34, 51, 0.8);
-  animation-name: bulbGlowRed;
-}
-.festive-bulb--green {
-  background: #10b981;
-  box-shadow: 0 2px 10px #10b981, 0 0 16px rgba(16, 185, 129, 0.8);
-  animation-name: bulbGlowGreen;
-  animation-delay: 0.35s;
-}
-.festive-bulb--gold {
-  background: #fbbf24;
-  box-shadow: 0 2px 10px #fbbf24, 0 0 16px rgba(251, 191, 36, 0.8);
-  animation-name: bulbGlowGold;
-  animation-delay: 0.7s;
-}
-.festive-bulb--blue {
-  background: #38bdf8;
-  box-shadow: 0 2px 10px #38bdf8, 0 0 16px rgba(56, 189, 248, 0.8);
-  animation-name: bulbGlowBlue;
-  animation-delay: 1.05s;
-}
-
-.festive-bulb--orange {
-  background: #ff6a00;
-  box-shadow: 0 2px 10px #ff6a00, 0 0 16px rgba(255, 106, 0, 0.8);
-  animation-name: bulbGlowOrange;
-}
-.festive-bulb--purple {
-  background: #a855f7;
-  box-shadow: 0 2px 10px #a855f7, 0 0 16px rgba(168, 85, 247, 0.8);
-  animation-name: bulbGlowPurple;
-  animation-delay: 0.5s;
-}
-
-@keyframes bulbGlowRed {
-  0% { opacity: 0.45; transform: scale(0.9); }
-  100% { opacity: 1; transform: scale(1.06); }
-}
-@keyframes bulbGlowGreen {
-  0% { opacity: 0.45; transform: scale(0.9); }
-  100% { opacity: 1; transform: scale(1.06); }
-}
-@keyframes bulbGlowGold {
-  0% { opacity: 0.45; transform: scale(0.9); }
-  100% { opacity: 1; transform: scale(1.06); }
-}
-@keyframes bulbGlowBlue {
-  0% { opacity: 0.45; transform: scale(0.9); }
-  100% { opacity: 1; transform: scale(1.06); }
-}
-@keyframes bulbGlowOrange {
-  0% { opacity: 0.4; transform: scale(0.92); }
-  100% { opacity: 1; transform: scale(1.06); }
-}
-@keyframes bulbGlowPurple {
-  0% { opacity: 0.4; transform: scale(0.92); }
-  100% { opacity: 1; transform: scale(1.06); }
-}
-
-/* Jingle button bounce */
-body[data-festivity="christmas"] .btn--primary:hover {
-  animation: jingleBounce 0.42s ease-in-out;
-}
-@keyframes jingleBounce {
-  0%, 100% { transform: translateY(-2px) rotate(0deg); }
-  25% { transform: translateY(-4px) rotate(-3.5deg); }
-  50% { transform: translateY(-4px) rotate(3.5deg); }
-  75% { transform: translateY(-2px) rotate(-1.5deg); }
-}
-
-/* ══════════════════════════════════════════════
-   TOP BANNER & VISITOR WIDGET
+   TOP GREETING BANNER & VISITOR WIDGET
    ══════════════════════════════════════════════ */
 .festive-banner {
   position: fixed;
   top: 75px;
   left: 50%;
-  transform: translateX(-50%) translateY(-20px);
-  background: rgba(18, 18, 20, 0.94);
-  border: 1px solid var(--festive-primary, #ff2233);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 20px var(--festive-glow, rgba(255, 34, 51, 0.35));
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 50px;
-  padding: 0.4rem 1.25rem 0.4rem 1rem;
+  transform: translateX(-50%) translateY(-25px);
+  z-index: 1000;
+  background: rgba(14, 14, 18, 0.94);
+  border: 1.5px solid var(--festive-primary, #ffd700);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 25px var(--festive-glow, rgba(255, 215, 0, 0.4));
+  border-radius: 999px;
+  padding: 0.6rem 1.4rem;
   display: flex;
   align-items: center;
-  gap: 0.65rem;
-  font-family: var(--font-display);
-  font-size: 0.82rem;
-  letter-spacing: 0.05em;
-  color: #ffffff;
-  z-index: 990;
+  gap: 0.8rem;
+  color: #f1f5f9;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.88rem;
   opacity: 0;
-  pointer-events: auto;
-  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  max-width: 90vw;
 }
 
 .festive-banner.visible {
   opacity: 1;
+  pointer-events: auto;
   transform: translateX(-50%) translateY(0);
 }
 
 .festive-banner__icon {
-  font-size: 1.15rem;
-  line-height: 1;
-  animation: bounceMini 2s infinite ease-in-out;
-}
-
-@keyframes bounceMini {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-3px); }
+  font-size: 1.25rem;
+  animation: celebrationWiggle 3s infinite;
 }
 
 .festive-banner__close {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 1rem;
+  color: #888;
   cursor: pointer;
-  padding: 0 0 0 0.5rem;
+  font-size: 1.25rem;
   line-height: 1;
+  padding: 0 0.2rem;
   transition: color 0.2s ease;
 }
 .festive-banner__close:hover {
-  color: #ffffff;
+  color: #fff;
 }
 
+/* Visitor Floating Widget */
 .festive-widget {
   position: fixed;
-  bottom: 24px;
-  left: 24px;
-  z-index: 995;
-  font-family: var(--font-body);
+  bottom: 25px;
+  left: 25px;
+  z-index: 9999;
 }
 
 .festive-widget__toggle {
@@ -622,7 +928,7 @@ body[data-festivity="christmas"] .btn--primary:hover {
 }
 
 .festive-widget__title {
-  font-family: var(--font-display);
+  font-family: var(--font-display, sans-serif);
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -657,24 +963,40 @@ body[data-festivity="christmas"] .btn--primary:hover {
 }
 
 .festive-widget__btn.active {
-  background: rgba(255, 34, 51, 0.18);
-  border-color: var(--festive-primary, #ff2233);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--festive-primary, #ffd700);
   color: #ffffff;
   font-weight: 600;
 }
 
-/* Reduced Motion */
+/* ══════════════════════════════════════════════
+   ACCESSIBILITY & REDUCED MOTION
+   ══════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
   #festiveCanvas,
-  body[data-festivity="christmas"]::before,
+  body[data-festivity]::before,
   .festive-sleigh-sky,
+  .festive-cupid-sky,
+  .festive-dropped-gift,
   .festive-pixel-mascot {
     display: none !important;
   }
   .festive-logo-hat,
   .festive-hero-hat,
+  .festive-logo-pumpkin,
+  .festive-hero-pumpkin,
+  .festive-logo-newyear,
+  .festive-hero-newyear,
+  .festive-logo-valentine,
+  .festive-hero-valentine,
   .festive-bulb,
   .festive-gift-item,
+  .festive-cheers-item,
+  .festive-bonbon-item,
+  .festive-horror-item,
+  .toasting-glasses-svg .flute-left,
+  .toasting-glasses-svg .flute-right,
+  .toasting-glasses-svg .clink-sparkle,
   .btn--primary:hover {
     animation: none !important;
   }
