@@ -1016,36 +1016,3 @@ body[data-festivity="valentine"] .card::after {
   font-weight: 600;
 }
 
-/* ══════════════════════════════════════════════
-   ACCESSIBILITY & REDUCED MOTION
-   ══════════════════════════════════════════════ */
-@media (prefers-reduced-motion: reduce) {
-  #festiveCanvas,
-  body[data-festivity]::before,
-  .festive-mountains-backdrop,
-  .festive-sleigh-sky,
-  .festive-cupid-sky,
-  .festive-dropped-gift,
-  .festive-pixel-mascot {
-    display: none !important;
-  }
-  .festive-logo-hat,
-  .festive-hero-hat,
-  .festive-logo-pumpkin,
-  .festive-hero-pumpkin,
-  .festive-logo-newyear,
-  .festive-hero-newyear,
-  .festive-logo-valentine,
-  .festive-hero-valentine,
-  .festive-bulb,
-  .festive-gift-item,
-  .festive-cheers-item,
-  .festive-bonbon-item,
-  .festive-horror-item,
-  .toasting-glasses-svg .flute-left,
-  .toasting-glasses-svg .flute-right,
-  .toasting-glasses-svg .clink-sparkle,
-  .btn--primary:hover {
-    animation: none !important;
-  }
-}

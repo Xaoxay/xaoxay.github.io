@@ -894,11 +894,6 @@
   function animateParticles() {
     if (!isRunning || !ctx || !canvas) return;
 
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      stopParticles();
-      return;
-    }
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     const w = canvas.width;
