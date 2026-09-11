@@ -130,14 +130,37 @@
     return;
   }
 
+  // ── Toast Notification System ──
+  function showToast(message, type = 'success') {
+    let container = document.getElementById('adminToastContainer');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'adminToastContainer';
+      container.className = 'admin-toast-container';
+      document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `admin-toast admin-toast--${type}`;
+    toast.textContent = message;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.add('admin-toast--hide');
+      setTimeout(() => toast.remove(), 400);
+    }, 3500);
+  }
+
   // ── Storage Operations ──
   function getItems() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
+      if (stored !== null) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          if (parsed.length < DEFAULT_ITEMS.length || parsed.some(i => i.title === 'XaoManager' || i.id === 'prog-1')) {
+        if (Array.isArray(parsed)) {
+          // Si contiene datos de prueba obsoletos de versiones antiguas, migrar una sola vez
+          if (parsed.some(i => i.title === 'XaoManager' || i.id === 'prog-1')) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_ITEMS));
             return DEFAULT_ITEMS;
           }
@@ -147,12 +170,22 @@
     } catch (e) {
       console.error('Error al leer de localStorage:', e);
     }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_ITEMS));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_ITEMS));
+    } catch (e) {
+      console.error('Error al inicializar localStorage:', e);
+    }
     return DEFAULT_ITEMS;
   }
 
   function saveItems(items) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    } catch (e) {
+      console.error('Error al guardar en localStorage:', e);
+      showToast('Error al guardar en el almacenamiento local: ' + e.message, 'error');
+      return;
+    }
     renderAll();
   }
 
@@ -169,12 +202,12 @@
   function sanitizeUrl(url) {
     if (!url) return '#';
     const trimmed = String(url).trim();
-    // Block path traversal attempts and backslashes
+    // Bloquear intentos de path traversal y diagonales invertidas
     if (trimmed.includes('..') || trimmed.includes('\\')) return '#';
 
     if (trimmed.startsWith('descargas/')) {
       const fileName = trimmed.slice('descargas/'.length);
-      if (/^[a-zA-Z0-9_\-.]+\.(exe|zip)$/i.test(fileName)) {
+      if (/^[a-zA-Z0-9_\-. ]+\.(exe|zip|msi|rar|7z)$/i.test(fileName)) {
         return escapeHtml(trimmed);
       }
       return '#';
@@ -568,6 +601,7 @@
       if (editSoftwareId.value === id) {
         resetSoftwareForm();
       }
+      showToast(`✓ "${item.title}" eliminado correctamente.`, 'success');
     }
   }
 
@@ -585,8 +619,8 @@
 
       if (isLocal) {
         fName = fName.replace(/^descargas[/\\]+/, '').trim();
-        if (!fName || !/^[a-zA-Z0-9_\-.]+\.(exe|zip)$/i.test(fName) || fName.includes('..')) {
-          alert('Nombre de archivo inválido. Debe terminar en .exe o .zip y contener solo letras, números, guiones o puntos (ej: XaoSuite.exe).');
+        if (!fName || !/^[a-zA-Z0-9_\-. ]+\.(exe|zip|msi|rar|7z)$/i.test(fName) || fName.includes('..')) {
+          alert('Nombre de archivo inválido. Debe terminar en una extensión válida (.exe, .zip, .msi, .rar, .7z) y contener caracteres válidos.');
           fileNameInput.focus();
           return;
         }
@@ -612,9 +646,15 @@
         url: uVal
       };
 
+      let isEdit = false;
       if (currentId) {
         const idx = items.findIndex(i => i.id === currentId);
-        if (idx !== -1) items[idx] = softwareItem;
+        if (idx !== -1) {
+          items[idx] = softwareItem;
+          isEdit = true;
+        } else {
+          items.unshift(softwareItem);
+        }
       } else {
         items.unshift(softwareItem);
       }
@@ -622,6 +662,12 @@
       saveItems(items);
       resetSoftwareForm();
       switchTab('tab-list');
+      showToast(
+        isEdit 
+          ? `✓ Cambios guardados para "${softwareItem.title}".` 
+          : `✓ "${softwareItem.title}" agregado y publicado correctamente.`,
+        'success'
+      );
     });
   }
 
@@ -653,7 +699,7 @@
       if (confirm('¿Restablecer los programas por defecto (XaoSuite y XaoExtras)? Se perderán cambios no exportados.')) {
         saveItems(DEFAULT_ITEMS);
         resetSoftwareForm();
-        alert('Se restablecieron los programas originales.');
+        showToast('✓ Se restablecieron los programas originales por defecto.', 'success');
       }
     });
   }
@@ -672,6 +718,7 @@
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+      showToast('✓ Respaldo JSON descargado.', 'success');
     });
   }
 
@@ -754,6 +801,7 @@
         URL.revokeObjectURL(url);
 
         btnExportHtml.textContent = '✓ ¡index.html Descargado!';
+        showToast('✓ index.html generado y descargado correctamente.', 'success');
         setTimeout(() => {
           btnExportHtml.disabled = false;
           btnExportHtml.innerHTML = `
@@ -763,19 +811,220 @@
         }, 2500);
       } catch (err) {
         console.error('Error al exportar index.html:', err);
-        alert('Ocurrió un error al generar index.html: ' + err.message);
+        const isFileProtocol = window.location.protocol === 'file:';
+        if (isFileProtocol) {
+          alert('Aviso: Si estás abriendo el panel directamente como archivo (file://), el navegador bloquea la lectura automática de index.html por seguridad.\n\nPara exportarlo, podés abrir la carpeta con Visual Studio Code (usando Live Server o un servidor local) o usar el botón "Descargar Respaldo JSON".');
+        } else {
+          alert('Ocurrió un error al generar index.html: ' + err.message);
+        }
         btnExportHtml.disabled = false;
-        btnExportHtml.textContent = 'Descargar index.html Actualizado';
+        btnExportHtml.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Descargar index.html Actualizado</span>
+        `;
       }
     });
+  }
+
+  // ══════════════════════════════════════════════
+  // FESTIVITIES & HOLIDAY DECORATOR CONTROLLER
+  // ══════════════════════════════════════════════
+  const topbarFestiveBadge = document.getElementById('topbarFestiveBadge');
+  const btnSaveFestivities = document.getElementById('btnSaveFestivities');
+  const festiveThemeCards = document.querySelectorAll('.festive-theme-card');
+  const toggleParticles = document.getElementById('toggleParticles');
+  const toggleLights = document.getElementById('toggleLights');
+  const toggleHat = document.getElementById('toggleHat');
+  const toggleBanner = document.getElementById('toggleBanner');
+  const toggleVisitorWidget = document.getElementById('toggleVisitorWidget');
+
+  // Simulation preview elements
+  const festiveSimHeader = document.getElementById('festiveSimHeader');
+  const festiveSimLogoX = document.getElementById('festiveSimLogoX');
+  const festiveSimLights = document.getElementById('festiveSimLights');
+  const festiveSimBanner = document.getElementById('festiveSimBanner');
+  const festiveSimBannerIcon = document.getElementById('festiveSimBannerIcon');
+  const festiveSimBannerText = document.getElementById('festiveSimBannerText');
+  const festiveSimTag = document.getElementById('festiveSimTag');
+  const festiveSimTitle = document.getElementById('festiveSimTitle');
+  const festiveSimDesc = document.getElementById('festiveSimDesc');
+
+  let selectedFestiveMode = 'auto';
+
+  function getEffectiveHolidayId(mode) {
+    if (mode === 'auto') {
+      return (window.Festivities && window.Festivities.getCalendarHoliday) ? window.Festivities.getCalendarHoliday() : 'none';
+    }
+    return mode;
+  }
+
+  function updateFestiveBadge() {
+    if (!topbarFestiveBadge || !window.Festivities) return;
+    const settings = window.Festivities.getSettings();
+    const effective = getEffectiveHolidayId(settings.mode);
+    const holidayInfo = window.Festivities.HOLIDAYS[effective] || { name: 'Normal', icon: '✖' };
+
+    if (settings.mode === 'auto') {
+      topbarFestiveBadge.textContent = effective !== 'none' ? `Auto: ${holidayInfo.name}` : 'Auto';
+      topbarFestiveBadge.style.borderColor = effective !== 'none' ? '#22c55e' : 'var(--clr-border)';
+    } else if (settings.mode === 'none') {
+      topbarFestiveBadge.textContent = 'Off';
+      topbarFestiveBadge.style.borderColor = 'var(--clr-border)';
+    } else {
+      topbarFestiveBadge.textContent = holidayInfo.name;
+      topbarFestiveBadge.style.borderColor = 'var(--clr-accent)';
+    }
+  }
+
+  function updateLiveSimulator() {
+    if (!window.Festivities) return;
+
+    const effectiveId = getEffectiveHolidayId(selectedFestiveMode);
+    const holiday = window.Festivities.HOLIDAYS[effectiveId] || window.Festivities.HOLIDAYS.none;
+
+    const showLights = toggleLights && toggleLights.checked && holiday.id !== 'none';
+    const showHat = toggleHat && toggleHat.checked && holiday.id !== 'none';
+    const showBanner = toggleBanner && toggleBanner.checked && holiday.id !== 'none' && holiday.greeting;
+
+    // 1. Lights simulation
+    if (festiveSimLights) {
+      festiveSimLights.innerHTML = '';
+      if (showLights) {
+        const bulbs = holiday.bulbs || ['red', 'green', 'gold', 'blue'];
+        for (let i = 0; i < 14; i++) {
+          const b = document.createElement('div');
+          const color = bulbs[i % bulbs.length];
+          b.className = `festive-bulb festive-bulb--${color} festive-sim-bulb`;
+          festiveSimLights.appendChild(b);
+        }
+        festiveSimLights.style.display = 'flex';
+      } else {
+        festiveSimLights.style.display = 'none';
+      }
+    }
+
+    // 2. Hat / emblem simulation
+    if (festiveSimLogoX) {
+      const existingHat = festiveSimLogoX.parentElement.querySelector('.festive-logo-hat, .festive-logo-pumpkin');
+      if (existingHat) existingHat.remove();
+
+      if (showHat) {
+        const wrap = document.createElement('div');
+        if (holiday.id === 'christmas') {
+          wrap.className = 'festive-logo-hat';
+          wrap.innerHTML = `<svg viewBox="0 0 100 85" fill="none"><path d="M78 60 C65 20, 30 10, 15 35 C10 42, 5 45, 2 50 C25 45, 60 55, 82 62 Z" fill="#d90429"/><path d="M78 60 C65 20, 30 10, 15 35 C20 40, 45 30, 78 60 Z" fill="#ef233c"/><path d="M-2 58 C15 52, 60 52, 88 64 C90 72, 80 75, 75 75 C50 70, 20 70, -2 72 C-6 66, -4 60, -2 58 Z" fill="#ffffff"/><circle cx="10" cy="38" r="10" fill="#ffffff"/></svg>`;
+          wrap.style.top = '-10px';
+          wrap.style.left = '-6px';
+          festiveSimLogoX.parentElement.appendChild(wrap);
+        } else if (holiday.id === 'halloween') {
+          wrap.className = 'festive-logo-pumpkin';
+          wrap.innerHTML = `<svg viewBox="0 0 100 90" fill="none"><ellipse cx="50" cy="52" rx="42" ry="32" fill="#ff6a00"/><polygon points="34,44 42,50 30,52" fill="#000"/><polygon points="66,44 70,52 58,50" fill="#000"/><path d="M30 66 Q50 78 70 66 Q64 74 50 74 Q36 74 30 66 Z" fill="#000"/></svg>`;
+          wrap.style.top = '-10px';
+          wrap.style.left = '-4px';
+          wrap.style.width = '18px';
+          wrap.style.height = '18px';
+          festiveSimLogoX.parentElement.appendChild(wrap);
+        }
+      }
+    }
+
+    // 3. Banner simulation
+    if (festiveSimBanner) {
+      if (showBanner) {
+        festiveSimBanner.style.display = 'flex';
+        if (festiveSimBannerIcon) festiveSimBannerIcon.textContent = holiday.icon;
+        if (festiveSimBannerText) festiveSimBannerText.textContent = holiday.greeting;
+      } else {
+        festiveSimBanner.style.display = 'none';
+      }
+    }
+
+    // 4. Information card simulation
+    if (festiveSimTitle) {
+      if (selectedFestiveMode === 'auto') {
+        festiveSimTitle.textContent = `Automático (${holiday.name})`;
+        festiveSimDesc.textContent = holiday.id !== 'none'
+          ? `Detectado por el calendario actual (${holiday.name}). Los efectos están listos para 60 FPS.`
+          : 'En esta fecha no hay festividad configurada por calendario. El sitio luce su estilo cyberpunk clásico.';
+      } else if (selectedFestiveMode === 'none') {
+        festiveSimTitle.textContent = 'Estándar Desactivado';
+        festiveSimDesc.textContent = 'La página se visualiza con su interfaz oscura táctica original sin adornos festivos.';
+      } else {
+        festiveSimTitle.textContent = `${holiday.icon} ${holiday.name}`;
+        festiveSimDesc.textContent = `Modo fijado permanentemente. La web mostrará ${holiday.name} independientemente de la fecha del año.`;
+      }
+    }
+
+    if (festiveSimTag) {
+      festiveSimTag.textContent = holiday.id !== 'none' ? `Temática: ${holiday.name}` : 'Temática Estándar';
+    }
+  }
+
+  function initFestivitiesAdmin() {
+    if (!window.Festivities) return;
+
+    const settings = window.Festivities.getSettings();
+    selectedFestiveMode = settings.mode || 'auto';
+
+    // Set active card
+    festiveThemeCards.forEach(card => {
+      card.classList.toggle('active', card.dataset.mode === selectedFestiveMode);
+    });
+
+    // Set switches
+    if (toggleParticles) toggleParticles.checked = !!settings.particles;
+    if (toggleLights) toggleLights.checked = !!settings.lights;
+    if (toggleHat) toggleHat.checked = !!settings.hat;
+    if (toggleBanner) toggleBanner.checked = !!settings.banner;
+    if (toggleVisitorWidget) toggleVisitorWidget.checked = !!settings.visitorWidget;
+
+    // Click on theme cards
+    festiveThemeCards.forEach(card => {
+      card.addEventListener('click', () => {
+        festiveThemeCards.forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        selectedFestiveMode = card.dataset.mode;
+        updateLiveSimulator();
+      });
+    });
+
+    // Toggle listeners for instant live simulation update
+    [toggleParticles, toggleLights, toggleHat, toggleBanner, toggleVisitorWidget].forEach(toggle => {
+      if (toggle) {
+        toggle.addEventListener('change', updateLiveSimulator);
+      }
+    });
+
+    // Save button
+    if (btnSaveFestivities) {
+      btnSaveFestivities.addEventListener('click', () => {
+        const newSettings = {
+          mode: selectedFestiveMode,
+          particles: toggleParticles ? toggleParticles.checked : true,
+          lights: toggleLights ? toggleLights.checked : true,
+          hat: toggleHat ? toggleHat.checked : true,
+          banner: toggleBanner ? toggleBanner.checked : true,
+          visitorWidget: toggleVisitorWidget ? toggleVisitorWidget.checked : true
+        };
+
+        window.Festivities.saveSettings(newSettings);
+        updateFestiveBadge();
+        showToast('✓ ¡Decoración festiva guardada y aplicada con éxito!', 'success');
+      });
+    }
+
+    updateFestiveBadge();
+    updateLiveSimulator();
   }
 
   // ── Global Render ──
   function renderAll() {
     renderSoftwareList();
     updateLivePreview();
+    updateFestiveBadge();
   }
 
   // Iniciar
   renderAll();
+  initFestivitiesAdmin();
 })();

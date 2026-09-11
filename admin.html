@@ -10,7 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;500;600;700&display=swap">
-  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="admin.css?v=6.6">
+  <link rel="stylesheet" href="festivities.css?v=1.0">
 </head>
 <body class="dashboard-body">
 
@@ -33,6 +34,11 @@
         <button class="topbar-tab" data-tab="tab-add" id="navTabAdd">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
           <span id="tabAddTitle">Agregar Nuevo</span>
+        </button>
+        <button class="topbar-tab" data-tab="tab-festivities" id="navTabFestivities">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M12 2l2.4 6.6H21l-5.4 4.2 2 6.6-5.6-4.1-5.6 4.1 2-6.6L3 8.6h6.6L12 2z"/></svg>
+          <span>Decoración Festiva</span>
+          <span class="tab-badge-festive" id="topbarFestiveBadge">Auto</span>
         </button>
         <button class="topbar-tab" data-tab="tab-settings">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
@@ -266,7 +272,198 @@
       </div>
     </section>
 
-    <!-- ══════════════ TAB 3: CONFIGURACIÓN & EXPORTAR ══════════════ -->
+    <!-- ══════════════ TAB 3: DECORACIÓN FESTIVA ══════════════ -->
+    <section class="dashboard-tab" id="tab-festivities">
+      <div class="dashboard-header">
+        <div>
+          <h2 class="section-heading">Centro de Festividades y Decoración</h2>
+          <p class="section-subheading">Ambientá tu sitio web con efectos temáticos para fechas especiales como Navidad, Halloween, Año Nuevo y San Valentín, o activá el modo automático por calendario.</p>
+        </div>
+        <div class="header-actions-group">
+          <button class="admin-btn admin-btn--primary" id="btnSaveFestivities">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            <span>Guardar Decoración</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="editor-grid">
+        <!-- Settings Column -->
+        <div class="editor-form-col">
+          <!-- Holiday Selector Cards -->
+          <div class="config-card" style="margin-bottom: 1.5rem;">
+            <div class="config-card__header">
+              <span class="config-icon">🎨</span>
+              <div>
+                <h3>1. Elegir Festividad Activa</h3>
+                <p>Seleccioná qué festividad querés que se muestre en tu web o dejalo en Automático para que cambie solo según el mes.</p>
+              </div>
+            </div>
+
+            <div class="festive-cards-grid" id="festiveCardsGrid">
+              <div class="festive-theme-card active" data-mode="auto">
+                <div class="festive-card-icon">🤖</div>
+                <div class="festive-card-info">
+                  <h4>Automático</h4>
+                  <p>Detecta el calendario (Navidad en Dic, Halloween en Oct, etc.)</p>
+                </div>
+                <span class="festive-check-badge">✓</span>
+              </div>
+
+              <div class="festive-theme-card" data-mode="christmas">
+                <div class="festive-card-icon">🎄</div>
+                <div class="festive-card-info">
+                  <h4>Navidad</h4>
+                  <p>Nieve suave, luces festivas y gorro navideño en el logo</p>
+                </div>
+                <span class="festive-check-badge">✓</span>
+              </div>
+
+              <div class="festive-theme-card" data-mode="halloween">
+                <div class="festive-card-icon">🎃</div>
+                <div class="festive-card-info">
+                  <h4>Halloween</h4>
+                  <p>Murciélagos flotantes, luces naranja/moradas y calabaza</p>
+                </div>
+                <span class="festive-check-badge">✓</span>
+              </div>
+
+              <div class="festive-theme-card" data-mode="newyear">
+                <div class="festive-card-icon">🎆</div>
+                <div class="festive-card-info">
+                  <h4>Año Nuevo</h4>
+                  <p>Lluvia de confeti, chispas doradas y saludo festivo</p>
+                </div>
+                <span class="festive-check-badge">✓</span>
+              </div>
+
+              <div class="festive-theme-card" data-mode="valentine">
+                <div class="festive-card-icon">💘</div>
+                <div class="festive-card-info">
+                  <h4>San Valentín</h4>
+                  <p>Corazones flotantes suaves y acentos rosa neón</p>
+                </div>
+                <span class="festive-check-badge">✓</span>
+              </div>
+
+              <div class="festive-theme-card" data-mode="none">
+                <div class="festive-card-icon">🚫</div>
+                <div class="festive-card-info">
+                  <h4>Desactivado</h4>
+                  <p>Diseño táctico / cyberpunk original sin efectos festivos</p>
+                </div>
+                <span class="festive-check-badge">✓</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Granular Feature Toggles -->
+          <div class="config-card">
+            <div class="config-card__header">
+              <span class="config-icon">⚙️</span>
+              <div>
+                <h3>2. Efectos y Elementos Visibles</h3>
+                <p>Personalizá con precisión qué elementos festivos querés mostrar en pantalla.</p>
+              </div>
+            </div>
+
+            <div class="festive-toggles-list">
+              <label class="festive-toggle-item">
+                <div class="toggle-text">
+                  <span class="toggle-title">❄️ Partículas Animadas (Canvas 60 FPS)</span>
+                  <span class="toggle-desc">Nieve en Navidad, murciélagos en Halloween, confeti en Año Nuevo, corazones en San Valentín.</span>
+                </div>
+                <input type="checkbox" id="toggleParticles" class="admin-switch" checked>
+              </label>
+
+              <label class="festive-toggle-item">
+                <div class="toggle-text">
+                  <span class="toggle-title">💡 Guirnalda de Luces en la Cabecera</span>
+                  <span class="toggle-desc">Luces parpadeantes colgantes debajo del menú superior con colores temáticos.</span>
+                </div>
+                <input type="checkbox" id="toggleLights" class="admin-switch" checked>
+              </label>
+
+              <label class="festive-toggle-item">
+                <div class="toggle-text">
+                  <span class="toggle-title">🎅 Accesorio Temático en el Logo</span>
+                  <span class="toggle-desc">Gorrito de Santa Claus o calabacita Jack-o'-lantern sobre la letra 'X' del logo.</span>
+                </div>
+                <input type="checkbox" id="toggleHat" class="admin-switch" checked>
+              </label>
+
+              <label class="festive-toggle-item">
+                <div class="toggle-text">
+                  <span class="toggle-title">📢 Banner Superior de Saludo</span>
+                  <span class="toggle-desc">Mensaje flotante de felicitaciones ("¡Felices Fiestas de parte de XAOXAY!").</span>
+                </div>
+                <input type="checkbox" id="toggleBanner" class="admin-switch" checked>
+              </label>
+
+              <label class="festive-toggle-item">
+                <div class="toggle-text">
+                  <span class="toggle-title">🎛️ Widget Selector para Visitantes</span>
+                  <span class="toggle-desc">Botón flotante en la esquina inferior izquierda que permite a tus visitantes probar o apagar efectos.</span>
+                </div>
+                <input type="checkbox" id="toggleVisitorWidget" class="admin-switch" checked>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Simulation Column -->
+        <div class="editor-preview-col">
+          <div class="preview-sticky-card">
+            <div class="preview-header">
+              <span class="preview-pill">👁️ Previsualizador en Vivo</span>
+              <small class="preview-note">Simulación interactiva en tiempo real</small>
+            </div>
+
+            <div class="festive-sim-box" id="festiveSimBox">
+              <!-- Mini Header Simulation -->
+              <div class="festive-sim-header" id="festiveSimHeader">
+                <div class="festive-sim-logo">
+                  <span class="logo__x" id="festiveSimLogoX">X</span>
+                  <span class="logo__text">AOXAY</span>
+                </div>
+                <div class="festive-sim-nav">
+                  <span>Inicio</span>
+                  <span>Programas</span>
+                </div>
+                <!-- Lights Garland in Simulation -->
+                <div class="festive-sim-lights" id="festiveSimLights"></div>
+              </div>
+
+              <!-- Mini Banner Simulation -->
+              <div class="festive-sim-banner" id="festiveSimBanner">
+                <span id="festiveSimBannerIcon">🎄</span>
+                <span id="festiveSimBannerText">¡Felices Fiestas de parte de XAOXAY!</span>
+              </div>
+
+              <!-- Simulation Canvas/Body -->
+              <div class="festive-sim-content">
+                <div class="festive-sim-card">
+                  <div class="festive-sim-tag" id="festiveSimTag">Modo Festivo Activo</div>
+                  <h4 id="festiveSimTitle">Navidad</h4>
+                  <p id="festiveSimDesc">Todos los efectos visuales están activos y optimizados para 60 FPS sin ralentizar las descargas.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="preview-tips" style="margin-top: 1.5rem;">
+              <h4>📌 Información importante:</h4>
+              <ul>
+                <li><strong>Modo Automático:</strong> Detectará Diciembre (Navidad), Octubre (Halloween), Fin de Año (Año Nuevo) y Febrero (San Valentín) sin que tengas que cambiar nada manualmente.</li>
+                <li><strong>Rendimiento:</strong> La animación se pausa automáticamente cuando la pestaña está en segundo plano para ahorrar batería y CPU del usuario.</li>
+                <li><strong>Accesibilidad:</strong> Respeta la configuración de movimiento reducido (reduced-motion) de los sistemas operativos.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════ TAB 4: CONFIGURACIÓN & EXPORTAR ══════════════ -->
     <section class="dashboard-tab" id="tab-settings">
       <div class="dashboard-header">
         <div>
@@ -334,6 +531,7 @@
 
   </main>
 
-  <script src="admin.js"></script>
+  <script src="festivities.js?v=1.0"></script>
+  <script src="admin.js?v=6.6"></script>
 </body>
 </html>

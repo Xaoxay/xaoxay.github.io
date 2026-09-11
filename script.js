@@ -109,13 +109,14 @@
   // ── State Management ──
   const STORAGE_KEY = 'xaoxay_items';
 
-  function getItems() {
+  function getStoredItems() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
+      if (stored !== null) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          if (parsed.length < DEFAULT_ITEMS.length || parsed.some(item => item.title === 'XaoManager' || item.id === 'prog-1')) {
+        if (Array.isArray(parsed)) {
+          // Si contiene datos obsoletos de prueba antiguos, migrar a los nuevos
+          if (parsed.some(item => item.title === 'XaoManager' || item.id === 'prog-1')) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_ITEMS));
             return DEFAULT_ITEMS;
           }
@@ -125,7 +126,7 @@
     } catch (e) {
       console.error('Error reading localStorage', e);
     }
-    return DEFAULT_ITEMS;
+    return null;
   }
 
   function escapeHtml(str) {
@@ -141,12 +142,12 @@
   function sanitizeUrl(url) {
     if (!url) return '#';
     const trimmed = String(url).trim();
-    // Block path traversal attempts and backslashes
+    // Bloquear intentos de path traversal y diagonales invertidas
     if (trimmed.includes('..') || trimmed.includes('\\')) return '#';
 
     if (trimmed.startsWith('descargas/')) {
       const fileName = trimmed.slice('descargas/'.length);
-      if (/^[a-zA-Z0-9_\-.]+\.(exe|zip)$/i.test(fileName)) {
+      if (/^[a-zA-Z0-9_\-. ]+\.(exe|zip|msi|rar|7z)$/i.test(fileName)) {
         return escapeHtml(trimmed);
       }
       return '#';
@@ -223,9 +224,17 @@
   }
 
   function renderAll() {
-    const items = getItems();
-    const progs = items.filter(i => i.section === 'programas');
-    const tools = items.filter(i => i.section === 'herramientas');
+    const customItems = getStoredItems();
+
+    // Si el usuario no tiene datos personalizados en localStorage, la página index.html
+    // ya cuenta con las tarjetas pre-renderizadas en su HTML estático. Solo observamos.
+    if (!customItems) {
+      setupRevealObserver();
+      return;
+    }
+
+    const progs = customItems.filter(i => i.section === 'programas');
+    const tools = customItems.filter(i => i.section === 'herramientas');
 
     if (programasGrid) {
       if (progs.length === 0) {
