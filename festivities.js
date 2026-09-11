@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════
-   XAOXAY — Festive Engine Script
-   Interactive Holiday Decorator & Particle Engine
+   XAOXAY — Advanced Festive Engine Script
+   Extreme Interactive Animations, Physics & Holiday Themes
    ═══════════════════════════════════════════════ */
 
 (() => {
@@ -62,14 +62,12 @@
     }
   };
 
-  // ── Santa Hat & Pumpkin SVGs ──
+  // ── High-Quality SVGs ──
   const SANTA_HAT_SVG = `
     <svg viewBox="0 0 100 85" class="santa-hat-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M78 60 C65 20, 30 10, 15 35 C10 42, 5 45, 2 50 C25 45, 60 55, 82 62 Z" fill="#d90429"/>
       <path d="M78 60 C65 20, 30 10, 15 35 C20 40, 45 30, 78 60 Z" fill="#ef233c"/>
-      <!-- Trim -->
       <path d="M-2 58 C15 52, 60 52, 88 64 C90 72, 80 75, 75 75 C50 70, 20 70, -2 72 C-6 66, -4 60, -2 58 Z" fill="#ffffff" filter="drop-shadow(0 2px 3px rgba(0,0,0,0.4))"/>
-      <!-- Pompom -->
       <circle cx="10" cy="38" r="10" fill="#ffffff" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.35))"/>
       <circle cx="8" cy="36" r="8" fill="#f8f9fa"/>
     </svg>
@@ -77,18 +75,46 @@
 
   const PUMPKIN_SVG = `
     <svg viewBox="0 0 100 90" class="pumpkin-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Stem -->
       <path d="M48 8 C48 2, 56 2, 55 18 C52 18, 48 14, 48 8 Z" fill="#2d6a4f"/>
-      <!-- Pumpkin Body -->
       <ellipse cx="50" cy="52" rx="42" ry="32" fill="#ff6a00"/>
       <ellipse cx="32" cy="52" rx="26" ry="30" fill="#f77f00"/>
       <ellipse cx="68" cy="52" rx="26" ry="30" fill="#f77f00"/>
       <ellipse cx="50" cy="52" rx="20" ry="32" fill="#fcbf49"/>
-      <!-- Eyes & Mouth (Glowing Jack) -->
       <polygon points="34,44 42,50 30,52" fill="#120204"/>
       <polygon points="66,44 70,52 58,50" fill="#120204"/>
       <polygon points="47,54 53,54 50,60" fill="#120204"/>
       <path d="M30 66 Q50 78 70 66 Q64 74 50 74 Q36 74 30 66 Z" fill="#120204"/>
+    </svg>
+  `;
+
+  const SNOW_CAP_SVG = `
+    <svg viewBox="0 0 320 24" preserveAspectRatio="none" class="festive-snow-cap-svg">
+      <defs>
+        <linearGradient id="snowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="60%" stop-color="#e6f4fa"/>
+          <stop offset="100%" stop-color="#bce3f7"/>
+        </linearGradient>
+      </defs>
+      <path d="M0,0 L320,0 L320,7 Q304,17 288,9 Q274,23 260,11 Q244,14 230,8 Q214,20 198,10 Q182,12 170,22 Q156,10 142,8 Q126,19 112,11 Q94,14 80,21 Q66,10 52,8 Q36,18 20,10 Q10,14 0,7 Z" fill="url(#snowGrad)"/>
+      <path d="M10,2 Q60,6 100,2 M145,2 Q200,6 250,2 M275,2 Q300,5 315,2" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" opacity="0.9"/>
+    </svg>
+  `;
+
+  const CYBER_SLEIGH_SVG = `
+    <svg viewBox="0 0 160 70" fill="none" class="cyber-sleigh-svg" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="14" cy="44" rx="14" ry="5" fill="#00f2fe" filter="drop-shadow(0 0 8px #00f2fe)"/>
+      <ellipse cx="6" cy="44" rx="6" ry="3" fill="#ffffff"/>
+      <path d="M22,46 L130,46 Q148,46 156,36 Q158,32 152,30 L110,30 L95,18 L55,18 L48,30 L22,30 Z" fill="#140204" stroke="#ff1e38" stroke-width="2"/>
+      <path d="M10,56 L140,56 Q156,56 160,42" stroke="#00f2fe" stroke-width="3" stroke-linecap="round" filter="drop-shadow(0 0 6px #00f2fe)"/>
+      <line x1="45" y1="46" x2="40" y2="56" stroke="#00f2fe" stroke-width="2"/>
+      <line x1="115" y1="46" x2="110" y2="56" stroke="#00f2fe" stroke-width="2"/>
+      <circle cx="75" cy="14" r="8" fill="#ff1e38"/>
+      <path d="M68,14 Q75,2 88,14 Z" fill="#ef233c"/>
+      <circle cx="90" cy="14" r="2.5" fill="#ffffff"/>
+      <rect x="74" y="12" width="7" height="3" rx="1.5" fill="#00f2fe" filter="drop-shadow(0 0 4px #00f2fe)"/>
+      <rect x="30" y="24" width="14" height="14" rx="2" fill="#ffd700" stroke="#ff1e38" stroke-width="1.5"/>
+      <rect x="46" y="20" width="16" height="16" rx="2" fill="#00cc66" stroke="#ffd700" stroke-width="1.5"/>
     </svg>
   `;
 
@@ -141,7 +167,6 @@
   }
 
   function getActiveHolidayId() {
-    // Check visitor override first
     const visitorOverride = sessionStorage.getItem(OVERRIDE_KEY);
     if (visitorOverride && HOLIDAY_DATA[visitorOverride]) {
       return visitorOverride;
@@ -154,13 +179,18 @@
     return settings.mode || 'none';
   }
 
-  // ── Canvas Particle System ──
+  // ── Canvas Particle & Sparkles Engine ──
   let canvas = null;
   let ctx = null;
   let particles = [];
+  let sparkles = [];
   let animFrameId = null;
   let isRunning = false;
   let canvasParticleType = 'none';
+
+  // Mouse interactivity variables
+  let lastMouseX = -1000;
+  let windForce = 0;
 
   function initCanvas() {
     if (!canvas) {
@@ -173,6 +203,7 @@
       }
       ctx = canvas.getContext('2d');
       window.addEventListener('resize', resizeCanvas, { passive: true });
+      setupMouseListeners();
     }
     resizeCanvas();
   }
@@ -183,25 +214,128 @@
     canvas.height = window.innerHeight;
   }
 
-  // 1. Snow Particles
+  // ── Cursor Trail & Click Burst Events ──
+  function setupMouseListeners() {
+    window.addEventListener('pointermove', (e) => {
+      const holidayId = getActiveHolidayId();
+      if (holidayId === 'none') return;
+      const settings = loadSettings();
+      if (!settings.particles) return;
+
+      // Calculate wind reaction
+      if (lastMouseX !== -1000) {
+        const deltaX = e.clientX - lastMouseX;
+        windForce = Math.max(-2.2, Math.min(2.2, windForce + deltaX * 0.04));
+      }
+      lastMouseX = e.clientX;
+
+      // Spawn sparkle on move
+      addSparkle(e.clientX, e.clientY, holidayId);
+    }, { passive: true });
+
+    window.addEventListener('pointerdown', (e) => {
+      const holidayId = getActiveHolidayId();
+      if (holidayId === 'none') return;
+      const settings = loadSettings();
+      if (!settings.particles) return;
+
+      addClickBurst(e.clientX, e.clientY, holidayId);
+    }, { passive: true });
+  }
+
+  function getSparkleColor(holidayId) {
+    if (holidayId === 'christmas') {
+      const c = ['#ffffff', '#00f2fe', '#ffd700', '#ff2233', '#10b981'];
+      return c[Math.floor(Math.random() * c.length)];
+    }
+    if (holidayId === 'halloween') {
+      const c = ['#ff6a00', '#a855f7', '#ffb703', '#ffffff'];
+      return c[Math.floor(Math.random() * c.length)];
+    }
+    if (holidayId === 'newyear') {
+      const c = ['#ffd700', '#ffffff', '#00f2fe', '#f59e0b'];
+      return c[Math.floor(Math.random() * c.length)];
+    }
+    if (holidayId === 'valentine') {
+      const c = ['#ff3366', '#ff758c', '#ffffff', '#fb7185'];
+      return c[Math.floor(Math.random() * c.length)];
+    }
+    return '#ffffff';
+  }
+
+  function addSparkle(x, y, holidayId) {
+    if (sparkles.length > 75) return; // Cap to keep silky 60fps
+    sparkles.push({
+      x: x + (Math.random() * 8 - 4),
+      y: y + (Math.random() * 8 - 4),
+      vx: (Math.random() - 0.5) * 1.2,
+      vy: Math.random() * 1.5 + 0.4,
+      size: Math.random() * 4 + 2,
+      alpha: 0.95,
+      decay: Math.random() * 0.035 + 0.025,
+      color: getSparkleColor(holidayId),
+      rot: Math.random() * Math.PI * 2,
+      rotSpeed: (Math.random() - 0.5) * 0.15
+    });
+  }
+
+  function addClickBurst(x, y, holidayId) {
+    const count = holidayId === 'newyear' ? 24 : 14;
+    for (let i = 0; i < count; i++) {
+      const angle = (Math.PI * 2 / count) * i + Math.random() * 0.3;
+      const speed = Math.random() * 4 + 2;
+      sparkles.push({
+        x: x,
+        y: y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        size: Math.random() * 4.5 + 2.5,
+        alpha: 1,
+        decay: Math.random() * 0.025 + 0.015,
+        color: getSparkleColor(holidayId),
+        rot: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 0.25
+      });
+    }
+  }
+
+  function drawStar(ctx, x, y, size, color, alpha, rot) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rot);
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = color;
+    ctx.shadowColor = color;
+    ctx.shadowBlur = size * 2;
+    ctx.beginPath();
+    for (let i = 0; i < 4; i++) {
+      ctx.lineTo(0, -size);
+      ctx.quadraticCurveTo(size * 0.18, -size * 0.18, size, 0);
+      ctx.rotate(Math.PI / 2);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // ── Particle Generators ──
   function createSnowFlakes(count) {
     const flakes = [];
     for (let i = 0; i < count; i++) {
       flakes.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        r: Math.random() * 3 + 1,
-        speed: Math.random() * 1.5 + 0.6,
+        r: Math.random() * 3 + 1.2,
+        speed: Math.random() * 1.4 + 0.6,
         swaySpeed: Math.random() * 0.02 + 0.01,
         swayAngle: Math.random() * Math.PI * 2,
         swayWidth: Math.random() * 1.5 + 0.5,
-        opacity: Math.random() * 0.6 + 0.3
+        opacity: Math.random() * 0.65 + 0.3
       });
     }
     return flakes;
   }
 
-  // 2. Bat Particles (Halloween)
   function createBats(count) {
     const bats = [];
     for (let i = 0; i < count; i++) {
@@ -218,7 +352,6 @@
     return bats;
   }
 
-  // 3. Confetti Particles (New Year)
   function createConfetti(count) {
     const pieces = [];
     const colors = ['#ffd700', '#00f2fe', '#ff007f', '#ffffff', '#22c55e', '#a855f7'];
@@ -240,7 +373,6 @@
     return pieces;
   }
 
-  // 4. Hearts Particles (Valentine)
   function createHearts(count) {
     const hearts = [];
     for (let i = 0; i < count; i++) {
@@ -264,11 +396,11 @@
     const isMobile = window.innerWidth < 768;
 
     if (type === 'snow') {
-      particles = createSnowFlakes(isMobile ? 35 : 70);
+      particles = createSnowFlakes(isMobile ? 35 : 75);
     } else if (type === 'bats') {
       particles = createBats(isMobile ? 12 : 24);
     } else if (type === 'confetti') {
-      particles = createConfetti(isMobile ? 30 : 60);
+      particles = createConfetti(isMobile ? 30 : 65);
     } else if (type === 'hearts') {
       particles = createHearts(isMobile ? 16 : 32);
     } else {
@@ -292,6 +424,7 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
     particles = [];
+    sparkles = [];
     canvasParticleType = 'none';
   }
 
@@ -321,13 +454,10 @@
 
     const wing = Math.sin(wingPhase) * (size * 0.4);
     ctx.beginPath();
-    // Body
     ctx.ellipse(0, 0, size * 0.3, size * 0.5, 0, 0, Math.PI * 2);
-    // Left Wing
     ctx.moveTo(0, -size * 0.2);
     ctx.quadraticCurveTo(-size * 0.8, -size * 0.6 + wing, -size * 1.3, wing);
     ctx.quadraticCurveTo(-size * 0.6, size * 0.3 + wing, 0, size * 0.3);
-    // Right Wing
     ctx.moveTo(0, -size * 0.2);
     ctx.quadraticCurveTo(size * 0.8, -size * 0.6 + wing, size * 1.3, wing);
     ctx.quadraticCurveTo(size * 0.6, size * 0.3 + wing, 0, size * 0.3);
@@ -339,7 +469,6 @@
   function animateParticles() {
     if (!isRunning || !ctx || !canvas) return;
 
-    // Check reduced motion preference
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       stopParticles();
       return;
@@ -350,12 +479,16 @@
     const w = canvas.width;
     const h = canvas.height;
 
+    // Wind damping
+    windForce *= 0.96;
+
+    // 1. Base Particles
     if (canvasParticleType === 'snow') {
       ctx.fillStyle = '#ffffff';
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
         p.swayAngle += p.swaySpeed;
-        p.x += Math.sin(p.swayAngle) * p.swayWidth;
+        p.x += Math.sin(p.swayAngle) * p.swayWidth + windForce;
         p.y += p.speed;
 
         if (p.y > h + 10) {
@@ -388,7 +521,7 @@
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
         p.y += p.vy;
-        p.x += p.vx;
+        p.x += p.vx + windForce * 0.5;
         p.rotation += p.rotSpeed;
         p.tilt += p.tiltSpeed;
 
@@ -411,7 +544,7 @@
         const p = particles[i];
         p.y += p.vy;
         p.swayAngle += p.swaySpeed;
-        p.x += Math.sin(p.swayAngle) * 0.8;
+        p.x += Math.sin(p.swayAngle) * 0.8 + windForce * 0.5;
 
         if (p.y < -30) {
           p.y = h + 20;
@@ -422,10 +555,26 @@
       }
     }
 
+    // 2. Cursor Sparkles & Burst Particles
+    for (let i = sparkles.length - 1; i >= 0; i--) {
+      const s = sparkles[i];
+      s.x += s.vx;
+      s.y += s.vy;
+      s.vy += 0.04; // gentle gravity
+      s.rot += s.rotSpeed;
+      s.alpha -= s.decay;
+
+      if (s.alpha <= 0) {
+        sparkles.splice(i, 1);
+      } else {
+        drawStar(ctx, s.x, s.y, s.size, s.color, s.alpha, s.rot);
+      }
+    }
+
     animFrameId = requestAnimationFrame(animateParticles);
   }
 
-  // Auto-pause loop when page is hidden to save battery & CPU
+  // Auto-pause loop when page is hidden
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       if (animFrameId) {
@@ -514,7 +663,61 @@
     }
   }
 
-  // 3. Top Greeting Banner
+  // 3. Snow-Caps & Icicles on Cards
+  function updateCardDecorations(holiday) {
+    document.querySelectorAll('.festive-card-snowcap').forEach(el => el.remove());
+
+    if (holiday.id === 'christmas') {
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        const cap = document.createElement('div');
+        cap.className = 'festive-card-snowcap';
+        cap.setAttribute('aria-hidden', 'true');
+        cap.innerHTML = SNOW_CAP_SVG;
+        card.appendChild(cap);
+      });
+    }
+  }
+
+  // 4. Cyber-Sleigh / Drone Flyby in Hero
+  function updateHeroCyberSleigh(holiday) {
+    const existing = document.querySelector('.cyber-sleigh-wrap');
+    if (existing) existing.remove();
+
+    if (holiday.id === 'christmas') {
+      const hero = document.querySelector('.hero') || document.getElementById('inicio');
+      if (hero) {
+        const wrap = document.createElement('div');
+        wrap.className = 'cyber-sleigh-wrap';
+        wrap.setAttribute('aria-hidden', 'true');
+        wrap.innerHTML = `<div class="cyber-sleigh">${CYBER_SLEIGH_SVG}</div>`;
+        hero.appendChild(wrap);
+      }
+    }
+  }
+
+  // 5. Halloween Spooky Peeking Eyes
+  function updateHalloweenSpookyEyes(holiday) {
+    document.querySelectorAll('.festive-spooky-eyes').forEach(el => el.remove());
+
+    if (holiday.id === 'halloween') {
+      const sections = document.querySelectorAll('.section');
+      sections.forEach((sec, idx) => {
+        if (idx > 1) return;
+        const eyes = document.createElement('div');
+        eyes.className = 'festive-spooky-eyes';
+        eyes.style.top = '30px';
+        eyes.style.right = idx === 0 ? '45px' : 'auto';
+        eyes.style.left = idx === 1 ? '45px' : 'auto';
+        eyes.setAttribute('aria-hidden', 'true');
+        eyes.innerHTML = `<div class="festive-spooky-eye"></div><div class="festive-spooky-eye"></div>`;
+        sec.style.position = 'relative';
+        sec.appendChild(eyes);
+      });
+    }
+  }
+
+  // 6. Top Greeting Banner
   function updateGreetingBanner(holiday) {
     const existing = document.querySelector('.festive-banner');
     if (existing) existing.remove();
@@ -522,7 +725,6 @@
     const settings = loadSettings();
     if (!settings.banner || holiday.id === 'none' || !holiday.greeting) return;
 
-    // Check if dismissed in this session
     if (sessionStorage.getItem(BANNER_DISMISSED_KEY) === holiday.id) return;
 
     const banner = document.createElement('div');
@@ -534,8 +736,6 @@
     `;
 
     document.body.appendChild(banner);
-
-    // Fade in
     requestAnimationFrame(() => banner.classList.add('visible'));
 
     banner.querySelector('.festive-banner__close').addEventListener('click', () => {
@@ -545,12 +745,11 @@
     });
   }
 
-  // 4. Visitor Interactive Floating Widget
+  // 7. Visitor Interactive Floating Widget
   function updateVisitorWidget(holiday) {
     let widget = document.getElementById('festiveVisitorWidget');
     const settings = loadSettings();
 
-    // In admin panel, we don't need the floating visitor widget
     if (window.location.pathname.includes('admin.html') || window.location.pathname.includes('login.html')) {
       if (widget) widget.remove();
       return;
@@ -625,7 +824,6 @@
       });
     }
 
-    // Update active button & icon
     const activeId = getActiveHolidayId();
     const currentOverride = sessionStorage.getItem(OVERRIDE_KEY);
     const widgetIcon = widget.querySelector('#festiveWidgetIcon');
@@ -659,16 +857,38 @@
       stopParticles();
     }
 
-    // Injections
+    // Injections & Advanced Decorations
     updateHeaderLights(holiday);
     updateLogoEmblem(holiday);
     updateGreetingBanner(holiday);
     updateVisitorWidget(holiday);
+    updateCardDecorations(holiday);
+    updateHeroCyberSleigh(holiday);
+    updateHalloweenSpookyEyes(holiday);
 
     // Dispatch event for any other component (e.g. admin preview)
     window.dispatchEvent(new CustomEvent('festivities:changed', {
       detail: { holiday, settings }
     }));
+  }
+
+  // Watch for dynamic card rerenders (e.g. from script.js)
+  const observer = new MutationObserver(() => {
+    const holidayId = getActiveHolidayId();
+    if (holidayId === 'christmas') {
+      const cardsWithoutCap = document.querySelectorAll('.card:not(:has(.festive-card-snowcap))');
+      cardsWithoutCap.forEach(card => {
+        const cap = document.createElement('div');
+        cap.className = 'festive-card-snowcap';
+        cap.setAttribute('aria-hidden', 'true');
+        cap.innerHTML = SNOW_CAP_SVG;
+        card.appendChild(cap);
+      });
+    }
+  });
+
+  if (document.body) {
+    observer.observe(document.body, { childList: true, subtree: true });
   }
 
   // ── Public API for Admin Panel & Integrations ──
