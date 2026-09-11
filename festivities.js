@@ -785,11 +785,11 @@
     flameParticles = [];
 
     if (type === 'snow') {
-      particles = createSnowFlakes(isMobile ? 55 : 120);
+      particles = createSnowFlakes(Math.floor(window.innerWidth / 6));
     } else if (type === 'flames' || type === 'bats') {
-      particles = createFlamesAndBats(isMobile ? 20 : 38);
+      particles = createFlamesAndBats(Math.floor(window.innerWidth / 15));
     } else if (type === 'fireworks') {
-      for (let i = 0; i < (isMobile ? 20 : 35); i++) {
+      for (let i = 0; i < Math.floor(window.innerWidth / 15); i++) {
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
@@ -802,7 +802,7 @@
         });
       }
     } else if (type === 'hearts') {
-      particles = createHearts(isMobile ? 20 : 36);
+      particles = createHearts(Math.floor(window.innerWidth / 15));
     } else {
       stopParticles();
       return;
