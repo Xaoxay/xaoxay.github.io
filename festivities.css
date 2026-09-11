@@ -10,6 +10,7 @@ body[data-festivity="christmas"] {
   --festive-accent: #ffd700;
   --festive-glow: rgba(255, 30, 56, 0.45);
   --festive-ice: rgba(0, 240, 255, 0.6);
+  background: linear-gradient(180deg, #030812 0%, #061324 25%, #0a1e38 55%, #050e1c 100%) !important;
 }
 
 body[data-festivity="halloween"] {
@@ -48,7 +49,54 @@ body[data-festivity="valentine"] {
   z-index: 998;
 }
 
-/* Christmas Background Continuous Snowfall */
+/* ══════════════════════════════════════════════
+   CHRISTMAS SNOWY MOUNTAINS BACKDROP
+   ══════════════════════════════════════════════ */
+.festive-mountains-backdrop {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0.95;
+  transition: opacity 0.5s ease;
+}
+
+.festive-mountains-svg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 68vh;
+  min-height: 440px;
+  display: block;
+}
+
+/* Make content stand out on top of the scenic mountains */
+body[data-festivity="christmas"] .hero,
+body[data-festivity="christmas"] .section,
+body[data-festivity="christmas"] .footer {
+  position: relative;
+  z-index: 2;
+}
+
+body[data-festivity="christmas"] .hero__bg-grid {
+  opacity: 0.22;
+}
+
+.aurora-wave {
+  animation: auroraPulse 9s ease-in-out infinite alternate;
+}
+
+@keyframes auroraPulse {
+  0%   { opacity: 0.35; transform: translateY(0) scaleY(1); }
+  50%  { opacity: 0.75; transform: translateY(-8px) scaleY(1.1); filter: hue-rotate(15deg); }
+  100% { opacity: 0.45; transform: translateY(5px) scaleY(0.95); }
+}
+
+/* Christmas Background Continuous Snowfall (Drifting layer) */
 body[data-festivity="christmas"]::before {
   content: '';
   position: fixed;
@@ -599,7 +647,7 @@ body[data-festivity="valentine"] .card::after {
 }
 
 /* ══════════════════════════════════════════════
-   INTERACTIVE CELEBRATION ITEMS (GIFTS, CHEERS, BONBONS, PUMPKINS)
+   INTERACTIVE CELEBRATION ITEMS
    ══════════════════════════════════════════════ */
 .festive-gift-item,
 .festive-cheers-item,
@@ -975,6 +1023,7 @@ body[data-festivity="valentine"] .card::after {
 @media (prefers-reduced-motion: reduce) {
   #festiveCanvas,
   body[data-festivity]::before,
+  .festive-mountains-backdrop,
   .festive-sleigh-sky,
   .festive-cupid-sky,
   .festive-dropped-gift,

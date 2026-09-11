@@ -64,6 +64,125 @@
 
   // ── SVGs ──
 
+  // 0. Christmas Snowy Mountains Backdrop SVG
+  const CHRISTMAS_MOUNTAINS_SVG = `
+    <svg viewBox="0 0 1440 600" preserveAspectRatio="xMidYBottom slice" class="festive-mountains-svg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#040914" stop-opacity="0.85"/>
+          <stop offset="45%" stop-color="#091b34" stop-opacity="0.88"/>
+          <stop offset="85%" stop-color="#0e284c" stop-opacity="0.92"/>
+          <stop offset="100%" stop-color="#0a1d37" stop-opacity="0.96"/>
+        </linearGradient>
+        <linearGradient id="auroraGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="rgba(0, 242, 254, 0)"/>
+          <stop offset="25%" stop-color="rgba(0, 242, 254, 0.22)"/>
+          <stop offset="50%" stop-color="rgba(0, 255, 128, 0.28)"/>
+          <stop offset="75%" stop-color="rgba(0, 242, 254, 0.18)"/>
+          <stop offset="100%" stop-color="rgba(0, 242, 254, 0)"/>
+        </linearGradient>
+        <linearGradient id="distPeakGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#e0f2fe"/>
+          <stop offset="25%" stop-color="#7dd3fc"/>
+          <stop offset="65%" stop-color="#193354"/>
+          <stop offset="100%" stop-color="#0b172a"/>
+        </linearGradient>
+        <linearGradient id="midPeakGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="20%" stop-color="#bae6fd"/>
+          <stop offset="60%" stop-color="#12253f"/>
+          <stop offset="100%" stop-color="#07101c"/>
+        </linearGradient>
+        <linearGradient id="foreHillGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#1a3554"/>
+          <stop offset="40%" stop-color="#0c1b2d"/>
+          <stop offset="100%" stop-color="#040810"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Aurora Waves -->
+      <path d="M0,180 Q360,90 720,160 T1440,110 L1440,320 L0,320 Z" fill="url(#auroraGrad)" opacity="0.75" class="aurora-wave"/>
+      <path d="M0,140 Q400,220 800,130 T1440,180 L1440,320 L0,320 Z" fill="url(#auroraGrad)" opacity="0.5" class="aurora-wave" style="animation-delay: -4s;"/>
+
+      <!-- Distant Majestic Peaks -->
+      <g class="mountains-distant" opacity="0.88">
+        <polygon points="40,460 220,150 420,460" fill="url(#distPeakGrad)"/>
+        <polygon points="220,150 180,220 215,205 235,225 260,205 220,150" fill="#ffffff"/>
+        <path d="M220,150 L220,300 L260,340" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+
+        <polygon points="280,480 510,120 740,480" fill="url(#distPeakGrad)"/>
+        <polygon points="510,120 440,220 490,200 520,230 570,190 510,120" fill="#ffffff" filter="drop-shadow(0 0 10px rgba(224,242,254,0.8))"/>
+        <path d="M510,120 L495,270 L540,330" stroke="rgba(255,255,255,0.7)" stroke-width="2.5"/>
+
+        <polygon points="620,490 920,85 1220,490" fill="url(#distPeakGrad)"/>
+        <polygon points="920,85 840,205 890,185 930,225 980,175 1020,215 920,85" fill="#ffffff" filter="drop-shadow(0 0 14px rgba(224,242,254,0.9))"/>
+        <path d="M920,85 L900,245 L960,335 L930,425" stroke="rgba(255,255,255,0.8)" stroke-width="3"/>
+
+        <polygon points="1060,480 1280,160 1480,480" fill="url(#distPeakGrad)"/>
+        <polygon points="1280,160 1220,240 1270,220 1300,245 1350,210 1280,160" fill="#ffffff"/>
+      </g>
+
+      <!-- Midground Craggy Ridges -->
+      <g class="mountains-midground">
+        <path d="M-40,540 L120,290 L320,450 L480,270 L720,540 Z" fill="url(#midPeakGrad)"/>
+        <polygon points="120,290 80,350 115,340 135,360 170,330 120,290" fill="#ffffff"/>
+        <polygon points="480,270 430,340 470,325 500,350 540,320 480,270" fill="#ffffff"/>
+
+        <path d="M680,560 L880,250 L1080,430 L1260,260 L1480,560 Z" fill="url(#midPeakGrad)"/>
+        <polygon points="880,250 820,320 865,305 895,330 940,300 880,250" fill="#ffffff"/>
+        <polygon points="1260,260 1200,330 1245,315 1275,340 1320,310 1260,260" fill="#ffffff"/>
+      </g>
+
+      <!-- Foreground Snowy Hills with Dusted Pines -->
+      <g class="mountains-foreground">
+        <path d="M0,600 L0,490 Q240,430 540,480 T1100,460 Q1300,440 1440,480 L1440,600 Z" fill="url(#foreHillGrad)"/>
+        <path d="M0,490 Q240,430 540,480 T1100,460 Q1300,440 1440,480" stroke="#bae6fd" stroke-width="3.5" fill="none" opacity="0.85"/>
+
+        <!-- Pines Left -->
+        <g transform="translate(60, 430) scale(0.9)">
+          <polygon points="20,0 5,30 35,30" fill="#040a12"/>
+          <polygon points="20,18 2,52 38,52" fill="#040a12"/>
+          <polygon points="20,38 -2,75 42,75" fill="#040a12"/>
+          <path d="M20,0 L13,15 M20,18 L9,36 M20,38 L5,58" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+        </g>
+        <g transform="translate(110, 445) scale(0.75)">
+          <polygon points="20,0 5,30 35,30" fill="#040a12"/>
+          <polygon points="20,18 2,52 38,52" fill="#040a12"/>
+          <polygon points="20,38 -2,75 42,75" fill="#040a12"/>
+          <path d="M20,0 L13,15 M20,18 L9,36 M20,38 L5,58" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+        </g>
+
+        <!-- Pines Center -->
+        <g transform="translate(560, 450) scale(0.85)">
+          <polygon points="20,0 5,30 35,30" fill="#040a12"/>
+          <polygon points="20,18 2,52 38,52" fill="#040a12"/>
+          <polygon points="20,38 -2,75 42,75" fill="#040a12"/>
+          <path d="M20,0 L13,15 M20,18 L9,36 M20,38 L5,58" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+        </g>
+        <g transform="translate(610, 465) scale(0.7)">
+          <polygon points="20,0 5,30 35,30" fill="#040a12"/>
+          <polygon points="20,18 2,52 38,52" fill="#040a12"/>
+          <polygon points="20,38 -2,75 42,75" fill="#040a12"/>
+          <path d="M20,0 L13,15 M20,18 L9,36 M20,38 L5,58" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+        </g>
+
+        <!-- Pines Right -->
+        <g transform="translate(1220, 440) scale(0.95)">
+          <polygon points="20,0 5,30 35,30" fill="#040a12"/>
+          <polygon points="20,18 2,52 38,52" fill="#040a12"/>
+          <polygon points="20,38 -2,75 42,75" fill="#040a12"/>
+          <path d="M20,0 L13,15 M20,18 L9,36 M20,38 L5,58" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+        </g>
+        <g transform="translate(1280, 455) scale(0.8)">
+          <polygon points="20,0 5,30 35,30" fill="#040a12"/>
+          <polygon points="20,18 2,52 38,52" fill="#040a12"/>
+          <polygon points="20,38 -2,75 42,75" fill="#040a12"/>
+          <path d="M20,0 L13,15 M20,18 L9,36 M20,38 L5,58" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+        </g>
+      </g>
+    </svg>
+  `;
+
   // 1. Santa Hat (Centered at x=50)
   const SANTA_HAT_SVG = `
     <svg viewBox="0 0 100 80" class="santa-hat-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -172,7 +291,7 @@
     </svg>
   `;
 
-  // 6. Toasting Champagne Glasses SVG (Animated Clinking & Rising Bubbles)
+  // 6. Toasting Champagne Glasses SVG
   const TOASTING_GLASSES_SVG = `
     <svg viewBox="0 0 160 120" class="toasting-glasses-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -182,13 +301,11 @@
           <stop offset="100%" stop-color="#ffb300"/>
         </linearGradient>
       </defs>
-      <!-- Central Clink Sparkle -->
       <g class="clink-sparkle">
         <circle cx="80" cy="35" r="7" fill="#ffffff" filter="drop-shadow(0 0 8px #ffd700)"/>
         <path d="M80 15 L80 55 M60 35 L100 35 M66 21 L94 49 M66 49 L94 21" stroke="#ffd700" stroke-width="2.5" stroke-linecap="round"/>
         <circle cx="80" cy="35" r="14" stroke="#ffffff" stroke-width="1.5" opacity="0.7" stroke-dasharray="3 3"/>
       </g>
-      <!-- Left Glass -->
       <g class="flute-left">
         <path d="M48 85 L48 110 M32 110 L64 110" stroke="#bae6fd" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
         <path d="M36 25 C36 25, 34 65, 48 85 C62 65, 60 25, 60 25 Z" fill="rgba(255,255,255,0.08)" stroke="#bae6fd" stroke-width="2"/>
@@ -199,7 +316,6 @@
         <circle cx="45" cy="47" r="1.2" fill="#ffffff" opacity="0.9" class="champagne-bubble cb3"/>
         <path d="M40 30 C39 45, 42 65, 47 76" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" opacity="0.75"/>
       </g>
-      <!-- Right Glass -->
       <g class="flute-right">
         <path d="M112 85 L112 110 M96 110 L128 110" stroke="#bae6fd" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
         <path d="M100 25 C100 25, 98 65, 112 85 C126 65, 124 25, 124 25 Z" fill="rgba(255,255,255,0.08)" stroke="#bae6fd" stroke-width="2"/>
@@ -228,7 +344,7 @@
     </svg>
   `;
 
-  // 8. Flying Cupid SVG (Flapping wings, halo, bow & heart arrow)
+  // 8. Flying Cupid SVG
   const CUPID_SVG = `
     <svg viewBox="0 0 140 100" class="cupid-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="65" cy="14" rx="15" ry="4" stroke="#ffd700" stroke-width="2.5" fill="none" filter="drop-shadow(0 0 6px #ffd700)"/>
@@ -301,7 +417,7 @@
     </svg>
   `;
 
-  // 12. Flaming Pumpkin (Jack-o'-lantern engulfed in dancing fire)
+  // 12. Flaming Pumpkin
   const FLAMING_PUMPKIN_SVG = `
     <svg viewBox="0 0 110 100" class="flaming-pumpkin-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -988,6 +1104,21 @@
 
   // ── DOM Enhancements Injection ──
 
+  // 0. Christmas Snowy Mountains Backdrop
+  function updateChristmasMountains(holiday) {
+    const existing = document.getElementById('festiveMountainsBackdrop');
+    if (existing) existing.remove();
+
+    if (holiday.id === 'christmas') {
+      const backdrop = document.createElement('div');
+      backdrop.id = 'festiveMountainsBackdrop';
+      backdrop.className = 'festive-mountains-backdrop';
+      backdrop.setAttribute('aria-hidden', 'true');
+      backdrop.innerHTML = CHRISTMAS_MOUNTAINS_SVG;
+      document.body.prepend(backdrop);
+    }
+  }
+
   // 1. Header Lights Garland with Wind Sway in ALL Styles
   function updateHeaderLights(holiday) {
     const existing = document.querySelector('.festive-lights-garland');
@@ -1514,6 +1645,7 @@
       stopParticles();
     }
 
+    updateChristmasMountains(holiday);
     updateHeaderLights(holiday);
     updateLogoEmblem(holiday);
     updateGreetingBanner(holiday);
