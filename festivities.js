@@ -785,11 +785,11 @@
     flameParticles = [];
 
     if (type === 'snow') {
-      particles = createSnowFlakes(Math.floor(window.innerWidth / 6));
+      particles = createSnowFlakes(Math.min(200, Math.floor(window.innerWidth / 6)));
     } else if (type === 'flames' || type === 'bats') {
-      particles = createFlamesAndBats(Math.floor(window.innerWidth / 15));
+      particles = createFlamesAndBats(Math.min(80, Math.floor(window.innerWidth / 15)));
     } else if (type === 'fireworks') {
-      for (let i = 0; i < Math.floor(window.innerWidth / 15); i++) {
+      for (let i = 0; i < Math.min(80, Math.floor(window.innerWidth / 15)); i++) {
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
@@ -802,7 +802,7 @@
         });
       }
     } else if (type === 'hearts') {
-      particles = createHearts(Math.floor(window.innerWidth / 15));
+      particles = createHearts(Math.min(80, Math.floor(window.innerWidth / 15)));
     } else {
       stopParticles();
       return;
@@ -837,8 +837,6 @@
     ctx.scale(scale, scale);
     ctx.globalAlpha = opacity;
     ctx.fillStyle = color;
-    ctx.shadowColor = color;
-    ctx.shadowBlur = size * 1.5;
     ctx.beginPath();
     const d = size;
     ctx.moveTo(0, -d / 4);
@@ -855,8 +853,6 @@
     ctx.rotate(rot);
     ctx.globalAlpha = alpha;
     ctx.fillStyle = color;
-    ctx.shadowColor = color;
-    ctx.shadowBlur = size * 2;
     ctx.beginPath();
     for (let i = 0; i < 4; i++) {
       ctx.lineTo(0, -size);
@@ -942,8 +938,6 @@
         ctx.save();
         ctx.globalAlpha = Math.max(0, fp.alpha);
         ctx.fillStyle = fp.color;
-        ctx.shadowColor = fp.color;
-        ctx.shadowBlur = fp.size * 2;
         ctx.beginPath();
         ctx.arc(fp.x, fp.y, fp.size, 0, Math.PI * 2);
         ctx.fill();
@@ -998,8 +992,6 @@
         ctx.beginPath();
         ctx.arc(r.x, r.y, 2.5, 0, Math.PI * 2);
         ctx.fillStyle = '#ffffff';
-        ctx.shadowColor = r.color;
-        ctx.shadowBlur = 12;
         ctx.fill();
         ctx.restore();
 
@@ -1025,8 +1017,6 @@
         ctx.save();
         ctx.globalAlpha = s.flicker && Math.random() > 0.4 ? s.alpha * 0.6 : s.alpha;
         ctx.fillStyle = s.color;
-        ctx.shadowColor = s.color;
-        ctx.shadowBlur = s.size * 2.5;
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
         ctx.fill();
@@ -1041,8 +1031,6 @@
         ctx.save();
         ctx.fillStyle = p.color;
         ctx.globalAlpha = p.alpha;
-        ctx.shadowColor = p.color;
-        ctx.shadowBlur = 6;
         ctx.fillRect(p.x, p.y, p.w, p.h);
         ctx.restore();
       }
