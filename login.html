@@ -33,7 +33,7 @@
               type="password" 
               id="pinInput" 
               class="admin-input" 
-              placeholder="Ingresá tu PIN (por defecto: 1234)" 
+              placeholder="Ingresá tu PIN de acceso" 
               required 
               autofocus 
               autocomplete="current-password"
@@ -65,7 +65,7 @@
       'use strict';
       const PIN_KEY = 'xaoxay_pin';
       const AUTH_KEY = 'xaoxay_admin_token';
-      const DEFAULT_PIN_HASH = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4'; // SHA-256 de '1234'
+      const DEFAULT_PIN_HASH = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4';
 
       async function hashString(str) {
         const encoder = new TextEncoder();
@@ -100,8 +100,21 @@
         }
       });
 
+      let failedAttempts = 0;
+      let lockoutUntil = 0;
+
       loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        // Rate limiting check
+        const now = Date.now();
+        if (now < lockoutUntil) {
+          const secsLeft = Math.ceil((lockoutUntil - now) / 1000);
+          loginError.textContent = `⏳ Demasiados intentos. Esperá ${secsLeft} segundos.`;
+          pinInput.select();
+          return;
+        }
+
         const enteredPin = pinInput.value.trim();
         if (!enteredPin) return;
 
@@ -109,6 +122,7 @@
         const actualHash = getStoredPinHash();
 
         if (enteredHash === actualHash) {
+          failedAttempts = 0;
           sessionStorage.setItem(AUTH_KEY, enteredHash);
           loginError.textContent = '';
           loginForm.querySelector('button[type="submit"]').textContent = '✓ Accediendo...';
@@ -116,7 +130,22 @@
             window.location.replace('admin.html');
           }, 300);
         } else {
-          loginError.textContent = '❌ PIN incorrecto. Intentá nuevamente.';
+          failedAttempts++;
+          if (failedAttempts >= 3) {
+            lockoutUntil = Date.now() + 30000;
+            loginError.textContent = '🔒 3 intentos fallidos. Bloqueado 30 segundos.';
+            const countdownInterval = setInterval(() => {
+              const remaining = Math.ceil((lockoutUntil - Date.now()) / 1000);
+              if (remaining <= 0) {
+                loginError.textContent = '❌ PIN incorrecto. Intentá nuevamente.';
+                clearInterval(countdownInterval);
+              } else {
+                loginError.textContent = `🔒 Bloqueado. Esperá ${remaining} segundos...`;
+              }
+            }, 1000);
+          } else {
+            loginError.textContent = `❌ PIN incorrecto. Intento ${failedAttempts}/3.`;
+          }
           pinInput.classList.add('input-shake');
           pinInput.select();
           setTimeout(() => pinInput.classList.remove('input-shake'), 500);

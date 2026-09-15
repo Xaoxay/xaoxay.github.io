@@ -1637,6 +1637,7 @@
     updateSkyFlyer(holiday);
     updateInteractiveCelebrations(holiday);
     updateFestiveMascot(holiday);
+    syncCardObserver();
 
     window.dispatchEvent(new CustomEvent('festivities:changed', {
       detail: { holiday, settings }
@@ -1644,6 +1645,7 @@
   }
 
   // Watch for dynamic card rerenders (e.g. from script.js)
+  let cardObserverConnected = false;
   const cardObserver = new MutationObserver(() => {
     const holidayId = getActiveHolidayId();
     if (holidayId === 'christmas') {
@@ -1665,8 +1667,19 @@
     }
   });
 
-  if (document.body) {
-    cardObserver.observe(document.body, { childList: true, subtree: true });
+  function syncCardObserver() {
+    const holidayId = getActiveHolidayId();
+    if (holidayId !== 'none' && document.body) {
+      if (!cardObserverConnected) {
+        cardObserver.observe(document.body, { childList: true, subtree: true });
+        cardObserverConnected = true;
+      }
+    } else {
+      if (cardObserverConnected) {
+        cardObserver.disconnect();
+        cardObserverConnected = false;
+      }
+    }
   }
 
   // ── Public API ──
