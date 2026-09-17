@@ -15,6 +15,30 @@
   const DEFAULT_ITEMS = [
     // ── 01. Programas ──
     {
+      id: 'prog-xaosleep',
+      section: 'programas',
+      title: '🌙 XaoSleep (Apagado Inteligente y Sensor de Red)',
+      desc: 'Utilidad de control de energía que automatiza el apagado, reinicio o suspensión de la PC para ahorrar energía o dejar la computadora trabajando por la noche.',
+      version: '',
+      platform: 'Windows10/11, Portable',
+      icon: 'window',
+      downloadType: 'local',
+      fileName: 'XaoSleep.exe',
+      url: 'descargas/XaoSleep.exe'
+    },
+    {
+      id: 'prog-xaofocus',
+      section: 'programas',
+      title: '🎯 XaoFocus (Modo Enfoque y Estudio Profundo)',
+      desc: 'Herramienta de concentración estricta y productividad diseñada para eliminar distracciones por completo mientras estudias o trabajas.',
+      version: '',
+      platform: 'Windows10/11, Portable',
+      icon: 'window',
+      downloadType: 'local',
+      fileName: 'XaoFocus.exe',
+      url: 'descargas/XaoFocus.exe'
+    },
+    {
       id: 'prog-xaosuite',
       section: 'programas',
       title: 'XaoSuite',
@@ -25,42 +49,6 @@
       downloadType: 'local',
       fileName: 'XaoSuite.exe',
       url: 'descargas/XaoSuite.exe'
-    },
-    {
-      id: 'prog-xaofocus',
-      section: 'programas',
-      title: 'XaoFocus',
-      desc: 'Modo de máxima concentración. Bloquea distracciones, silencia avisos y activa filtro de confort visual para jornadas de trabajo intensas.',
-      version: 'v1.0',
-      platform: 'Windows, Portable',
-      icon: 'bolt',
-      downloadType: 'local',
-      fileName: 'XaoFocus.exe',
-      url: 'descargas/XaoFocus.exe'
-    },
-    {
-      id: 'prog-xaosleep',
-      section: 'programas',
-      title: 'XaoSleep',
-      desc: 'Temporizador inteligente de apagado y suspensión programada para Windows. Ligero, preciso y sin configuraciones complejas.',
-      version: 'v1.0',
-      platform: 'Windows, Portable',
-      icon: 'window',
-      downloadType: 'local',
-      fileName: 'XaoSleep.exe',
-      url: 'descargas/XaoSleep.exe'
-    },
-    {
-      id: 'prog-xaoinstaller',
-      section: 'programas',
-      title: 'XaoInstaller',
-      desc: 'Instalador y actualizador silencioso de software esencial para Windows en 1 solo clic mediante paquetes limpios y oficiales.',
-      version: 'v1.0',
-      platform: 'Windows, Portable',
-      icon: 'file',
-      downloadType: 'local',
-      fileName: 'XaoInstaller.zip',
-      url: 'descargas/XaoInstaller.zip'
     },
     // ── 02. Herramientas ──
     {
@@ -160,7 +148,7 @@
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) {
           // Si contiene datos de prueba obsoletos de versiones antiguas, migrar una sola vez
-          if (parsed.some(i => i.title === 'XaoManager' || i.id === 'prog-1')) {
+          if (parsed.some(i => i.title === 'XaoManager' || i.id === 'prog-1' || i.title === 'XaoFocus' || i.title === 'XaoSleep')) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_ITEMS));
             return DEFAULT_ITEMS;
           }
