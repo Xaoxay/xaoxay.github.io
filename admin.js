@@ -815,6 +815,217 @@
   }
 
   // ══════════════════════════════════════════════
+  // GITHUB 1-CLICK PUSH ENGINE (REST API)
+  // ══════════════════════════════════════════════
+  const GITHUB_TOKEN_KEY = 'xaoxay_git_token';
+  const GITHUB_REPO_KEY = 'xaoxay_git_repo';
+  const GITHUB_BRANCH_KEY = 'xaoxay_git_branch';
+  const DEFAULT_REPO = 'Xaoxay/xaoxay.github.io';
+  const DEFAULT_BRANCH = 'main';
+
+  const gitConfigForm = document.getElementById('gitConfigForm');
+  const gitTokenInput = document.getElementById('gitTokenInput');
+  const btnToggleGitToken = document.getElementById('btnToggleGitToken');
+  const gitRepoInput = document.getElementById('gitRepoInput');
+  const gitBranchInput = document.getElementById('gitBranchInput');
+  const btnPushToGit = document.getElementById('btnPushToGit');
+  const btnQuickGitPush = document.getElementById('btnQuickGitPush');
+  const gitStatusAlert = document.getElementById('gitStatusAlert');
+
+  function getGitConfig() {
+    return {
+      token: (localStorage.getItem(GITHUB_TOKEN_KEY) || '').trim(),
+      repo: (localStorage.getItem(GITHUB_REPO_KEY) || DEFAULT_REPO).trim(),
+      branch: (localStorage.getItem(GITHUB_BRANCH_KEY) || DEFAULT_BRANCH).trim()
+    };
+  }
+
+  function initGitSettingsUI() {
+    const config = getGitConfig();
+    if (gitTokenInput) gitTokenInput.value = config.token;
+    if (gitRepoInput) gitRepoInput.value = config.repo;
+    if (gitBranchInput) gitBranchInput.value = config.branch;
+  }
+
+  if (btnToggleGitToken && gitTokenInput) {
+    btnToggleGitToken.addEventListener('click', () => {
+      if (gitTokenInput.type === 'password') {
+        gitTokenInput.type = 'text';
+        btnToggleGitToken.textContent = '🙈';
+      } else {
+        gitTokenInput.type = 'password';
+        btnToggleGitToken.textContent = '👁️';
+      }
+    });
+  }
+
+  if (gitConfigForm) {
+    gitConfigForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const token = gitTokenInput ? gitTokenInput.value.trim() : '';
+      const repo = gitRepoInput ? (gitRepoInput.value.trim() || DEFAULT_REPO) : DEFAULT_REPO;
+      const branch = gitBranchInput ? (gitBranchInput.value.trim() || DEFAULT_BRANCH) : DEFAULT_BRANCH;
+
+      localStorage.setItem(GITHUB_TOKEN_KEY, token);
+      localStorage.setItem(GITHUB_REPO_KEY, repo);
+      localStorage.setItem(GITHUB_BRANCH_KEY, branch);
+
+      if (gitStatusAlert) {
+        gitStatusAlert.style.color = '#22c55e';
+        gitStatusAlert.textContent = '✓ Configuración de GitHub guardada correctamente.';
+        setTimeout(() => { gitStatusAlert.textContent = ''; }, 4000);
+      }
+      showToast('✓ Token y repositorio de GitHub guardados.', 'success');
+    });
+  }
+
+  async function executeGitHubPush() {
+    const config = getGitConfig();
+    if (!config.token) {
+      showToast('⚠️ Ingresá tu Token de GitHub en Ajustes para activar el Push', 'error');
+      switchTab('tab-settings');
+      setTimeout(() => {
+        if (gitTokenInput) gitTokenInput.focus();
+      }, 250);
+      return;
+    }
+
+    const repo = config.repo;
+    const branch = config.branch;
+    const token = config.token;
+
+    const setButtonsLoading = (isLoading, text) => {
+      const btns = [btnPushToGit, btnQuickGitPush].filter(Boolean);
+      btns.forEach(btn => {
+        btn.disabled = isLoading;
+        if (isLoading) {
+          btn.dataset.origHtml = btn.innerHTML;
+          btn.innerHTML = `<span>⏳ ${text || 'Subiendo a GitHub...'}</span>`;
+        } else if (btn.dataset.origHtml) {
+          btn.innerHTML = btn.dataset.origHtml;
+        }
+      });
+    };
+
+    try {
+      setButtonsLoading(true, 'Conectando con GitHub...');
+      if (gitStatusAlert) {
+        gitStatusAlert.style.color = 'var(--clr-text-muted)';
+        gitStatusAlert.textContent = '⏳ Leyendo index.html desde GitHub API...';
+      }
+
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28'
+      };
+
+      // 1. Obtener index.html y su SHA actual
+      const fileUrl = `https://api.github.com/repos/${repo}/contents/index.html?ref=${branch}`;
+      const getRes = await fetch(fileUrl, { headers });
+
+      if (getRes.status === 401 || getRes.status === 403) {
+        throw new Error('Token de GitHub inválido o sin permisos suficientes. Asegurate de que tenga permiso "repo" o "contents:write".');
+      }
+      if (getRes.status === 404) {
+        throw new Error(`No se encontró el repositorio o archivo en: ${repo} (rama: ${branch})`);
+      }
+      if (!getRes.ok) {
+        throw new Error(`Error en GitHub API (${getRes.status}): ${getRes.statusText}`);
+      }
+
+      const fileData = await getRes.json();
+      const currentSha = fileData.sha;
+
+      // 2. Decodificar contenido de forma segura con UTF-8
+      const rawBase64 = fileData.content.replace(/\s/g, '');
+      let htmlText = decodeURIComponent(escape(atob(rawBase64)));
+
+      // 3. Reemplazar tarjetas de programas y herramientas
+      setButtonsLoading(true, 'Generando cambios...');
+      const items = getItems();
+      const progs = items.filter(i => i.section === 'programas');
+      const tools = items.filter(i => i.section === 'herramientas');
+
+      const progsCardsHtml = progs.map(generateIndexCard).join('\n');
+      const toolsCardsHtml = tools.map(generateIndexCard).join('\n');
+
+      htmlText = htmlText.replace(
+        /(<div class="cards-grid" id="programasGrid">)[\s\S]*?(<\/div>\s*<\/div>\s*<\/section>)/,
+        `$1\n${progsCardsHtml}\n      $2`
+      );
+      htmlText = htmlText.replace(
+        /(<div class="cards-grid" id="herramientasGrid">)[\s\S]*?(<\/div>\s*<\/div>\s*<\/section>)/,
+        `$1\n${toolsCardsHtml}\n      $2`
+      );
+
+      // Cache-bust para asegurar que los navegadores descarguen la versión más reciente
+      htmlText = htmlText.replace(/script\.js\?v=[\d\.]+/g, `script.js?v=${Date.now()}`);
+
+      // 4. Codificar a Base64 compatible con emojis y tildes UTF-8
+      const updatedContentBase64 = btoa(unescape(encodeURIComponent(htmlText)));
+
+      // 5. Enviar PUT a GitHub para crear el commit
+      setButtonsLoading(true, 'Creando Commit y Push...');
+      const commitMessage = `feat(admin): actualizar programas y herramientas desde panel web [${new Date().toLocaleDateString('es-AR')}]`;
+
+      const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/index.html`, {
+        method: 'PUT',
+        headers: {
+          ...headers,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: commitMessage,
+          content: updatedContentBase64,
+          sha: currentSha,
+          branch: branch
+        })
+      });
+
+      if (!putRes.ok) {
+        const errJson = await putRes.json().catch(() => ({}));
+        throw new Error(errJson.message || `Error al guardar commit (${putRes.status})`);
+      }
+
+      const putData = await putRes.json();
+      const shortSha = (putData.commit && putData.commit.sha) ? putData.commit.sha.slice(0, 7) : 'OK';
+
+      if (gitStatusAlert) {
+        gitStatusAlert.style.color = '#22c55e';
+        gitStatusAlert.textContent = `✓ ¡Push completado con éxito! Commit: ${shortSha}. En ~1 minuto se reflejará en la web.`;
+      }
+      showToast('🚀 ¡Git Push exitoso! Tus cambios ya están en GitHub.', 'success');
+
+      // Animación de éxito momentánea en botones
+      [btnPushToGit, btnQuickGitPush].filter(Boolean).forEach(btn => {
+        btn.innerHTML = `<span>✓ ¡Subido a GitHub!</span>`;
+        setTimeout(() => {
+          setButtonsLoading(false);
+        }, 3000);
+      });
+
+    } catch (err) {
+      console.error('Error al hacer push a GitHub:', err);
+      if (gitStatusAlert) {
+        gitStatusAlert.style.color = '#ff4444';
+        gitStatusAlert.textContent = `❌ ${err.message}`;
+      }
+      showToast(`Error de Push: ${err.message}`, 'error');
+      setButtonsLoading(false);
+    }
+  }
+
+  if (btnPushToGit) {
+    btnPushToGit.addEventListener('click', executeGitHubPush);
+  }
+  if (btnQuickGitPush) {
+    btnQuickGitPush.addEventListener('click', executeGitHubPush);
+  }
+
+  initGitSettingsUI();
+
+  // ══════════════════════════════════════════════
   // FESTIVITIES & HOLIDAY DECORATOR CONTROLLER
   // ══════════════════════════════════════════════
   const topbarFestiveBadge = document.getElementById('topbarFestiveBadge');
