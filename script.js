@@ -212,33 +212,12 @@
   }
 
   function renderAll() {
-    const customItems = getStoredItems();
-
-    // Si el usuario no tiene datos personalizados en localStorage, la página index.html
-    // ya cuenta con las tarjetas pre-renderizadas en su HTML estático. Solo observamos.
-    if (!customItems) {
-      setupRevealObserver();
-      return;
-    }
-
-    const progs = customItems.filter(i => i.section === 'programas');
-    const tools = customItems.filter(i => i.section === 'herramientas');
-
-    if (programasGrid) {
-      if (progs.length === 0) {
-        programasGrid.innerHTML = `<p style="grid-column:1/-1; color:var(--clr-text-muted); text-align:center; padding:2rem;">No hay programas disponibles en este momento.</p>`;
-      } else {
-        programasGrid.innerHTML = progs.map(renderCard).join('');
-      }
-    }
-
-    if (herramientasGrid) {
-      if (tools.length === 0) {
-        herramientasGrid.innerHTML = `<p style="grid-column:1/-1; color:var(--clr-text-muted); text-align:center; padding:2rem;">No hay herramientas disponibles en este momento.</p>`;
-      } else {
-        herramientasGrid.innerHTML = tools.map(renderCard).join('');
-      }
-    }
+    // La página pública siempre muestra las tarjetas oficiales pre-renderizadas en index.html.
+    // Limpiamos cualquier copia residual de localStorage para que TODOS los navegadores
+    // (Chrome, Brave, Edge, celulares) muestren idéntico contenido sin desincronización.
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (e) {}
 
     setupRevealObserver();
   }
