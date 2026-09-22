@@ -879,6 +879,27 @@
     });
   }
 
+  async function getLatestFileSha(repo, branch, filePath, headers) {
+    try {
+      const commitUrl = `https://api.github.com/repos/${repo}/commits/${branch}?_nocache=${Date.now()}`;
+      const commitRes = await fetch(commitUrl, { headers, cache: 'no-store' });
+      if (!commitRes.ok) return null;
+      const commitData = await commitRes.json();
+      const treeSha = commitData.commit && commitData.commit.tree && commitData.commit.tree.sha;
+      if (!treeSha) return null;
+
+      const treeUrl = `https://api.github.com/repos/${repo}/git/trees/${treeSha}?_nocache=${Date.now()}`;
+      const treeRes = await fetch(treeUrl, { headers, cache: 'no-store' });
+      if (!treeRes.ok) return null;
+      const treeData = await treeRes.json();
+      const fileEntry = (treeData.tree || []).find(item => item.path === filePath);
+      return fileEntry ? fileEntry.sha : null;
+    } catch (e) {
+      console.warn('Fallo al obtener SHA fresco:', e);
+      return null;
+    }
+  }
+
   async function executeGitHubPush() {
     const config = getGitConfig();
     if (!config.token) {
@@ -899,10 +920,13 @@
       btns.forEach(btn => {
         btn.disabled = isLoading;
         if (isLoading) {
-          btn.dataset.origHtml = btn.innerHTML;
+          if (!btn.dataset.origHtml) {
+            btn.dataset.origHtml = btn.innerHTML;
+          }
           btn.innerHTML = `<span>⏳ ${text || 'Subiendo a GitHub...'}</span>`;
         } else if (btn.dataset.origHtml) {
           btn.innerHTML = btn.dataset.origHtml;
+          delete btn.dataset.origHtml;
         }
       });
     };
@@ -917,12 +941,14 @@
       const headers = {
         'Authorization': `Bearer ${token}`,
         'Accept': 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28'
+        'X-GitHub-Api-Version': '2022-11-28',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
       };
 
-      // 1. Obtener index.html y su SHA actual
-      const fileUrl = `https://api.github.com/repos/${repo}/contents/index.html?ref=${branch}`;
-      const getRes = await fetch(fileUrl, { headers });
+      // 1. Obtener index.html y su SHA actual (forzar no-cache para evitar 409)
+      const fileUrl = `https://api.github.com/repos/${repo}/contents/index.html?ref=${branch}&_nocache=${Date.now()}`;
+      const getRes = await fetch(fileUrl, { headers, cache: 'no-store' });
 
       if (getRes.status === 401 || getRes.status === 403) {
         throw new Error('Token de GitHub inválido o sin permisos suficientes. Asegurate de que tenga permiso "repo" o "contents:write".');
@@ -935,7 +961,7 @@
       }
 
       const fileData = await getRes.json();
-      const currentSha = fileData.sha;
+      let currentSha = fileData.sha;
 
       // 2. Decodificar contenido de forma segura con UTF-8
       const rawBase64 = fileData.content.replace(/\s/g, '');
@@ -969,7 +995,7 @@
       setButtonsLoading(true, 'Creando Commit y Push...');
       const commitMessage = `feat(admin): actualizar programas y herramientas desde panel web [${new Date().toLocaleDateString('es-AR')}]`;
 
-      const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/index.html`, {
+      let putRes = await fetch(`https://api.github.com/repos/${repo}/contents/index.html`, {
         method: 'PUT',
         headers: {
           ...headers,
@@ -982,6 +1008,30 @@
           branch: branch
         })
       });
+
+      // Si hay conflicto de versión (409 Conflict), consultar el SHA del commit actual de la rama y reintentar
+      if (putRes.status === 409) {
+        if (gitStatusAlert) {
+          gitStatusAlert.textContent = '⏳ Sincronizando con última versión de GitHub...';
+        }
+        const freshSha = await getLatestFileSha(repo, branch, 'index.html', headers);
+        if (freshSha && freshSha !== currentSha) {
+          currentSha = freshSha;
+          putRes = await fetch(`https://api.github.com/repos/${repo}/contents/index.html`, {
+            method: 'PUT',
+            headers: {
+              ...headers,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              message: commitMessage,
+              content: updatedContentBase64,
+              sha: currentSha,
+              branch: branch
+            })
+          });
+        }
+      }
 
       if (!putRes.ok) {
         const errJson = await putRes.json().catch(() => ({}));
@@ -997,13 +1047,13 @@
       }
       showToast('🚀 ¡Git Push exitoso! Tus cambios ya están en GitHub.', 'success');
 
-      // Animación de éxito momentánea en botones
+      // Animación de éxito momentánea en botones y restauración limpia
       [btnPushToGit, btnQuickGitPush].filter(Boolean).forEach(btn => {
         btn.innerHTML = `<span>✓ ¡Subido a GitHub!</span>`;
-        setTimeout(() => {
-          setButtonsLoading(false);
-        }, 3000);
       });
+      setTimeout(() => {
+        setButtonsLoading(false);
+      }, 3500);
 
     } catch (err) {
       console.error('Error al hacer push a GitHub:', err);
