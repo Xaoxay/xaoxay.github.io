@@ -941,9 +941,7 @@
       const headers = {
         'Authorization': `Bearer ${token}`,
         'Accept': 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28',
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache'
+        'X-GitHub-Api-Version': '2022-11-28'
       };
 
       // 1. Obtener index.html y su SHA actual (forzar no-cache para evitar 409)
