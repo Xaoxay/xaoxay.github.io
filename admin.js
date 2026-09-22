@@ -882,14 +882,14 @@
   async function getLatestFileSha(repo, branch, filePath, headers) {
     try {
       const commitUrl = `https://api.github.com/repos/${repo}/commits/${branch}?_nocache=${Date.now()}`;
-      const commitRes = await fetch(commitUrl, { headers, cache: 'no-store' });
+      const commitRes = await fetch(commitUrl, { headers });
       if (!commitRes.ok) return null;
       const commitData = await commitRes.json();
       const treeSha = commitData.commit && commitData.commit.tree && commitData.commit.tree.sha;
       if (!treeSha) return null;
 
       const treeUrl = `https://api.github.com/repos/${repo}/git/trees/${treeSha}?_nocache=${Date.now()}`;
-      const treeRes = await fetch(treeUrl, { headers, cache: 'no-store' });
+      const treeRes = await fetch(treeUrl, { headers });
       if (!treeRes.ok) return null;
       const treeData = await treeRes.json();
       const fileEntry = (treeData.tree || []).find(item => item.path === filePath);
@@ -944,9 +944,9 @@
         'X-GitHub-Api-Version': '2022-11-28'
       };
 
-      // 1. Obtener index.html y su SHA actual (forzar no-cache para evitar 409)
+      // 1. Obtener index.html y su SHA actual (forzar no-cache mediante timestamp unico)
       const fileUrl = `https://api.github.com/repos/${repo}/contents/index.html?ref=${branch}&_nocache=${Date.now()}`;
-      const getRes = await fetch(fileUrl, { headers, cache: 'no-store' });
+      const getRes = await fetch(fileUrl, { headers });
 
       if (getRes.status === 401 || getRes.status === 403) {
         throw new Error('Token de GitHub inválido o sin permisos suficientes. Asegurate de que tenga permiso "repo" o "contents:write".');
