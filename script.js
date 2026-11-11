@@ -310,10 +310,18 @@
     `;
   }
 
+  const isTouchDevice = window.matchMedia('(pointer: coarse)').matches || window.innerWidth <= 768;
+
   let revealObserver;
   function setupRevealObserver() {
     if (revealObserver) revealObserver.disconnect();
     const cards = document.querySelectorAll('.card');
+
+    if (isTouchDevice) {
+      // En celular revelar inmediatamente todas las tarjetas sin animación pesada para 120 FPS táctil
+      cards.forEach((el) => el.classList.add('revealed'));
+      return;
+    }
 
     revealObserver = new IntersectionObserver(
       (entries) => {
@@ -324,7 +332,7 @@
           }
         });
       },
-      { threshold: 0.1, rootMargin: '0px 0px -20px 0px' }
+      { threshold: 0.08, rootMargin: '0px 0px -20px 0px' }
     );
 
     cards.forEach((el) => revealObserver.observe(el));
@@ -372,7 +380,7 @@
     });
   }
 
-  // ── Unified Tactical Scroll Engine ──
+  // ── Unified High-Performance Scroll Engine (60/120 FPS Mobile Optimized) ──
   const scrollBar = document.getElementById('scrollBar');
   const heroContent = document.querySelector('.hero__content');
   const backToTop = document.getElementById('backToTop');
@@ -381,22 +389,26 @@
   const navLinks = document.querySelectorAll('.nav__link');
 
   let isTicking = false;
+  let isHeaderScrolled = false;
+  let isBackToTopVisible = false;
 
   function onScroll() {
     if (!isTicking) {
       window.requestAnimationFrame(() => {
         // Clamp to 0 to prevent negative scroll on iOS rubber-band overscroll
         const scrollY = Math.max(0, window.scrollY || window.pageYOffset);
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
 
         // 1. Tactical Laser Scroll Tracker (scaleX 0 -> 1)
-        if (scrollBar && docHeight > 0) {
-          const progress = Math.min(Math.max(scrollY / docHeight, 0), 1);
-          scrollBar.style.transform = `scaleX(${progress})`;
+        if (scrollBar) {
+          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          if (docHeight > 0) {
+            const progress = Math.min(Math.max(scrollY / docHeight, 0), 1);
+            scrollBar.style.transform = `scaleX(${progress})`;
+          }
         }
 
-        // 2. Hero 3D Parallax Descent (only computed when visible in viewport)
-        if (heroContent) {
+        // 2. Parallax solo en computadoras con mouse (desactivado en celulares para no trabar scroll táctil)
+        if (!isTouchDevice && heroContent) {
           if (scrollY <= window.innerHeight) {
             const heroHeight = window.innerHeight * 0.75;
             heroContent.style.transform = `translateY(${scrollY * 0.28}px)`;
@@ -406,14 +418,18 @@
           }
         }
 
-        // 3. Header Class Toggle (Zero-reflow style transition)
-        if (header) {
-          header.classList.toggle('scrolled', scrollY > 50);
+        // 3. Header Class Toggle (Cero reflows innecesarios: solo mutar DOM cuando cambia el estado)
+        const shouldScroll = scrollY > 50;
+        if (shouldScroll !== isHeaderScrolled) {
+          isHeaderScrolled = shouldScroll;
+          if (header) header.classList.toggle('scrolled', isHeaderScrolled);
         }
 
-        // 4. Back to Top Tactical Button
-        if (backToTop) {
-          backToTop.classList.toggle('visible', scrollY > 350);
+        // 4. Back to Top Tactical Button (solo mutar cuando cambia)
+        const shouldShowTop = scrollY > 350;
+        if (shouldShowTop !== isBackToTopVisible) {
+          isBackToTopVisible = shouldShowTop;
+          if (backToTop) backToTop.classList.toggle('visible', isBackToTopVisible);
         }
 
         isTicking = false;

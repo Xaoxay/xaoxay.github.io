@@ -773,10 +773,19 @@
     return hearts;
   }
 
+  let isTouchScrolling = false;
+  let touchScrollTimer = null;
+  window.addEventListener('touchstart', () => { isTouchScrolling = true; }, { passive: true });
+  window.addEventListener('touchmove', () => { isTouchScrolling = true; }, { passive: true });
+  window.addEventListener('touchend', () => {
+    clearTimeout(touchScrollTimer);
+    touchScrollTimer = setTimeout(() => { isTouchScrolling = false; }, 200);
+  }, { passive: true });
+
   function startParticles(type) {
     initCanvas();
     canvasParticleType = type;
-    const isMobile = window.innerWidth < 768;
+    const isMobile = window.innerWidth <= 768;
 
     particles = [];
     sparkles = [];
@@ -785,11 +794,12 @@
     flameParticles = [];
 
     if (type === 'snow') {
-      particles = createSnowFlakes(Math.min(200, Math.floor(window.innerWidth / 6)));
+      particles = createSnowFlakes(isMobile ? 15 : Math.min(180, Math.floor(window.innerWidth / 7)));
     } else if (type === 'flames' || type === 'bats') {
-      particles = createFlamesAndBats(Math.min(80, Math.floor(window.innerWidth / 15)));
+      particles = createFlamesAndBats(isMobile ? 12 : Math.min(70, Math.floor(window.innerWidth / 16)));
     } else if (type === 'fireworks') {
-      for (let i = 0; i < Math.min(80, Math.floor(window.innerWidth / 15)); i++) {
+      const pCount = isMobile ? 14 : Math.min(70, Math.floor(window.innerWidth / 16));
+      for (let i = 0; i < pCount; i++) {
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
@@ -802,7 +812,7 @@
         });
       }
     } else if (type === 'hearts') {
-      particles = createHearts(Math.min(80, Math.floor(window.innerWidth / 15)));
+      particles = createHearts(isMobile ? 10 : Math.min(60, Math.floor(window.innerWidth / 18)));
     } else {
       stopParticles();
       return;
@@ -889,6 +899,11 @@
 
   function animateParticles() {
     if (!isRunning || !ctx || !canvas) return;
+
+    if (isTouchScrolling) {
+      animFrameId = requestAnimationFrame(animateParticles);
+      return;
+    }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 

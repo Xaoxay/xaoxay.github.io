@@ -1016,3 +1016,35 @@ body[data-festivity="valentine"] .card::after {
   font-weight: 600;
 }
 
+/* ══════════════════════════════════════════════
+   MOBILE PERFORMANCE OVERRIDES (60/120 FPS FLUIDITY)
+   ══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Aligerar guirnalda y bombillos en celular */
+  .festive-lights-garland {
+    animation: none !important;
+  }
+  .festive-bulb {
+    animation: none !important;
+    transform: none !important;
+  }
+  .festive-bulb--red,
+  .festive-bulb--green,
+  .festive-bulb--gold,
+  .festive-bulb--blue,
+  .festive-bulb--orange,
+  .festive-bulb--purple {
+    box-shadow: 0 0 5px currentColor !important;
+  }
+  .festive-mountains-svg {
+    display: none !important;
+  }
+  .festive-sleigh-sky {
+    display: none !important;
+  }
+  .festive-neon-border {
+    animation: none !important;
+    filter: none !important;
+  }
+}
+
