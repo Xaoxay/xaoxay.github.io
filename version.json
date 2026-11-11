@@ -3,10 +3,10 @@
   "release_date": "2026-11-11",
   "changelog": "- Nuevo logotipo oficial XAOXAY integrado en todas las suites y herramientas portables.\n- Auditoría de seguridad y blindaje de rutas del sistema contra Binary Planting.\n- Endurecimiento criptográfico del subsistema de actualizaciones con hash SHA-256 e identidad de ensamblado.",
   "download_url": "https://xaoxay.github.io/descargas/XaoSuite.exe",
-  "sha256": "51d55b6c4bb9728586875f8b37f0b1fb88a63bca1af8661ecdb806b94cb557cd",
-  "size_bytes": 519680,
+  "sha256": "d34aa360e4426cd67d86c720a1436a8319985008778b33a5e3b596b3b2512359",
+  "size_bytes": 190976,
   "extras_version": "1.2.0",
   "extras_download_url": "https://xaoxay.github.io/descargas/XaoExtras.exe",
-  "extras_sha256": "bd7f48fadec0041c1b68f7ff507a02c622cfbf3e5e347334676230a0b67d72a3",
-  "extras_size_bytes": 474624
+  "extras_sha256": "467b1e81aea8430c4fb1c771cfac3edf1678c393be9f3b012200c4f8452acf18",
+  "extras_size_bytes": 146432
 }
