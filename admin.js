@@ -1017,6 +1017,17 @@
   }
 
   async function executeGitHubPush() {
+    // Sincronizar automáticamente valores del formulario de ajustes si fueron editados en pantalla
+    if (gitTokenInput && gitTokenInput.value.trim()) {
+      localStorage.setItem(GITHUB_TOKEN_KEY, gitTokenInput.value.trim());
+    }
+    if (gitRepoInput && gitRepoInput.value.trim()) {
+      localStorage.setItem(GITHUB_REPO_KEY, gitRepoInput.value.trim());
+    }
+    if (gitBranchInput && gitBranchInput.value.trim()) {
+      localStorage.setItem(GITHUB_BRANCH_KEY, gitBranchInput.value.trim());
+    }
+
     const config = getGitConfig();
     if (!config.token) {
       showToast('⚠️ Ingresá tu Token de GitHub en Ajustes para activar el Push', 'error');
@@ -1065,7 +1076,9 @@
       const getRes = await fetch(fileUrl, { headers });
 
       if (getRes.status === 401 || getRes.status === 403) {
-        throw new Error('Token de GitHub inválido o sin permisos suficientes. Asegurate de que tenga permiso "repo" o "contents:write".');
+        const errJson = await getRes.json().catch(() => ({}));
+        const detail = errJson.message ? ` (${errJson.message})` : '';
+        throw new Error(`Token inválido o sin permisos suficientes${detail}. Asegurate de que no haya vencido y tenga permiso "repo" (Classic) o "Contents: Read & write" (Fine-grained).`);
       }
       if (getRes.status === 404) {
         throw new Error(`No se encontró el repositorio o archivo en: ${repo} (rama: ${branch})`);
