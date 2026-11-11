@@ -6,79 +6,199 @@
 (() => {
   'use strict';
 
-  // ── Default Items ──
-  // ── Default Items (Programas y Herramientas subidos) ──
+  // ── Default Items (Catálogo Completo v4.6) ──
   const DEFAULT_ITEMS = [
     // ── 01. Programas ──
     {
-      id: 'prog-xaosleep',
-      section: 'programas',
-      title: '🌙 XaoSleep (Apagado Inteligente y Sensor de Red)',
-      desc: 'Utilidad de control de energía que automatiza el apagado, reinicio o suspensión de la PC para ahorrar energía o dejar la computadora trabajando por la noche.',
-      version: '',
-      platform: 'Windows10/11, Portable',
-      icon: 'window',
-      downloadType: 'local',
-      fileName: 'XaoSleep.exe',
-      url: 'descargas/XaoSleep.exe'
-    },
-    {
-      id: 'prog-xaofocus',
-      section: 'programas',
-      title: '🎯 XaoFocus (Modo Enfoque y Estudio Profundo)',
-      desc: 'Herramienta de concentración estricta y productividad diseñada para eliminar distracciones por completo mientras estudias o trabajas.',
-      version: '',
-      platform: 'Windows10/11, Portable',
-      icon: 'window',
-      downloadType: 'local',
-      fileName: 'XaoFocus.exe',
-      url: 'descargas/XaoFocus.exe'
-    },
-    {
       id: 'prog-xaosuite',
       section: 'programas',
-      title: 'XaoSuite',
-      desc: 'Centro integral de diagnóstico, optimización y reparación para Windows. 10 herramientas portables y auto-actualización.',
-      version: 'v4.5',
-      platform: 'Windows, Portable',
+      title: 'XaoSuite (Centro Integral de Mantenimiento)',
+      desc: 'Centro integral de diagnóstico, optimización y reparación para Windows. Incluye 10 herramientas portables y auto-actualización.',
+      version: 'v4.6',
+      platform: 'Windows 10/11, Portable',
       icon: 'shield',
       downloadType: 'local',
       fileName: 'XaoSuite.exe',
       url: 'descargas/XaoSuite.exe'
     },
-    // ── 02. Herramientas ──
     {
-      id: 'tool-xaoextras',
-      section: 'herramientas',
-      title: 'XaoExtras',
-      desc: 'Colección de utilidades y herramientas complementarias para Windows. Rápido, ligero y portable.',
-      version: 'v1.0',
-      platform: 'Windows, Portable',
+      id: 'prog-xaoextras',
+      section: 'programas',
+      title: 'XaoExtras (Suite Complementaria)',
+      desc: 'Suite complementaria para Windows que reúne enfoque de estudio, apagado programado, optimizador gaming y escudo de privacidad.',
+      version: 'v1.2',
+      platform: 'Windows 10/11, Portable',
       icon: 'tool',
       downloadType: 'local',
       fileName: 'XaoExtras.exe',
       url: 'descargas/XaoExtras.exe'
     },
     {
+      id: 'prog-xaofocus',
+      section: 'programas',
+      title: '🎯 XaoFocus (Modo Enfoque y Estudio)',
+      desc: 'Temporizador Pomodoro con modo normal y estricto. Bloquea distracciones para maximizar tu estudio y concentración.',
+      version: 'v1.0',
+      platform: 'Windows 10/11, Portable',
+      icon: 'window',
+      downloadType: 'local',
+      fileName: 'XaoFocus.exe',
+      url: 'descargas/XaoFocus.exe'
+    },
+    {
+      id: 'prog-xaosleep',
+      section: 'programas',
+      title: '🌙 XaoSleep (Apagado Inteligente y Red)',
+      desc: 'Temporizador de apagado, reinicio o suspensión inteligente con monitor de descargas de red en tiempo real.',
+      version: 'v1.0',
+      platform: 'Windows 10/11, Portable',
+      icon: 'window',
+      downloadType: 'local',
+      fileName: 'XaoSleep.exe',
+      url: 'descargas/XaoSleep.exe'
+    },
+    {
+      id: 'prog-xaogame',
+      section: 'programas',
+      title: '🎮 XaoGame (Optimizador Gaming y FPS)',
+      desc: 'Optimizador gaming de alto rendimiento. Suspende tareas secundarias y libera memoria RAM para aumentar FPS.',
+      version: 'v1.0',
+      platform: 'Windows 10/11, Portable',
+      icon: 'bolt',
+      downloadType: 'local',
+      fileName: 'XaoGame.exe',
+      url: 'descargas/XaoGame.exe'
+    },
+    {
+      id: 'prog-xaoguard',
+      section: 'programas',
+      title: '🛡️ XaoGuard (Escudo de Privacidad)',
+      desc: 'Escudo de privacidad para Windows. Bloquea telemetría, rastreadores y servicios innecesarios con un solo clic.',
+      version: 'v1.0',
+      platform: 'Windows 10/11, Portable',
+      icon: 'shield',
+      downloadType: 'local',
+      fileName: 'XaoGuard.exe',
+      url: 'descargas/XaoGuard.exe'
+    },
+
+    // ── 02. Herramientas ──
+    {
+      id: 'tool-xaoclean',
+      section: 'herramientas',
+      title: '🧹 XaoClean (Limpiador de Sistema)',
+      desc: 'Limpiador profundo de temporales, registros obsoletos y cachés del sistema para liberar espacio en disco.',
+      version: 'v1.0',
+      platform: 'Windows 10/11, Portable',
+      icon: 'tool',
+      downloadType: 'local',
+      fileName: 'XaoClean.exe',
+      url: 'descargas/XaoClean.exe'
+    },
+    {
+      id: 'tool-xaodoctor',
+      section: 'herramientas',
+      title: '🩺 XaoDoctor (Diagnóstico Integral)',
+      desc: 'Diagnóstico completo del estado del hardware, memoria RAM, almacenamiento y salud general del sistema.',
+      version: 'v1.0',
+      platform: 'Windows 10/11, Portable',
+      icon: 'shield',
+      downloadType: 'local',
+      fileName: 'XaoDoctor.exe',
+      url: 'descargas/XaoDoctor.exe'
+    },
+    {
+      id: 'tool-xaofix',
+      section: 'herramientas',
+      title: '🔧 XaoFix (Reparador del Sistema)',
+      desc: 'Reparador avanzado de Windows. Soluciona fallos críticos en Windows Update, SFC/DISM y registro.',
+      version: 'v1.0',
+      platform: 'Windows 10/11, Portable',
+      icon: 'tool',
+      downloadType: 'local',
+      fileName: 'XaoFix.exe',
+      url: 'descargas/XaoFix.exe'
+    },
+    {
+      id: 'tool-xaonet',
+      section: 'herramientas',
+      title: '🌐 XaoNet (Optimizador de Red y DNS)',
+      desc: 'Optimizador de conexiones de red. Limpia caché DNS, repara Winsock y mejora la estabilidad de tu conexión.',
+      version: 'v1.0',
+      platform: 'Windows 10/11, Portable',
+      icon: 'bolt',
+      downloadType: 'local',
+      fileName: 'XaoNet.exe',
+      url: 'descargas/XaoNet.exe'
+    },
+    {
+      id: 'tool-xaooptic',
+      section: 'herramientas',
+      title: '⚡ XaoOptic (Rendimiento Visual)',
+      desc: 'Ajustes de efectos visuales y rendimiento gráfico para maximizar la fluidez y velocidad de Windows.',
+      version: 'v1.0',
+      platform: 'Windows 10/11, Portable',
+      icon: 'window',
+      downloadType: 'local',
+      fileName: 'XaoOptic.exe',
+      url: 'descargas/XaoOptic.exe'
+    },
+    {
+      id: 'tool-xaovault',
+      section: 'herramientas',
+      title: '🔐 XaoVault (Cifrado y Destructor Seguro)',
+      desc: 'Cifrado seguro de datos confidenciales y destructor digital permanente de archivos sensibles (DoD).',
+      version: 'v1.0',
+      platform: 'Windows 10/11, Portable',
+      icon: 'shield',
+      downloadType: 'local',
+      fileName: 'XaoVault.exe',
+      url: 'descargas/XaoVault.exe'
+    },
+    {
+      id: 'tool-xaohub',
+      section: 'herramientas',
+      title: '🎛️ XaoHub (Herramientas Administrativas)',
+      desc: 'Panel de acceso rápido a herramientas administrativas ocultas de Windows y creador de puntos de restauración.',
+      version: 'v1.0',
+      platform: 'Windows 10/11, Portable',
+      icon: 'tool',
+      downloadType: 'local',
+      fileName: 'XaoHub.exe',
+      url: 'descargas/XaoHub.exe'
+    },
+    {
       id: 'tool-xaotoolbox',
       section: 'herramientas',
-      title: 'XaoToolbox',
-      desc: 'Suite gráfica integral de mantenimiento para Windows 10 y 11: optimizaciones de rendimiento, modo gaming y diagnóstico del equipo.',
-      version: 'v1.0',
-      platform: 'Windows, Portable',
+      title: '🚀 XaoToolbox (Suite Visual Todo en Uno)',
+      desc: 'Suite gráfica en PowerShell inspirada en WinUtil: instalación de software, optimizaciones y modo gaming.',
+      version: 'v1.2',
+      platform: 'Windows 10/11, Portable',
       icon: 'terminal',
       downloadType: 'local',
       fileName: 'XaoToolbox.zip',
       url: 'descargas/XaoToolbox.zip'
     },
     {
+      id: 'tool-xaoinstaller',
+      section: 'herramientas',
+      title: '📦 XaoInstaller (El Instalador Seguro)',
+      desc: 'Instalador desatendido de software seguro: descarga e instala programas esenciales desde fuentes oficiales.',
+      version: 'v1.2',
+      platform: 'Windows 10/11, Portable',
+      icon: 'terminal',
+      downloadType: 'local',
+      fileName: 'XaoInstaller.zip',
+      url: 'descargas/XaoInstaller.zip'
+    },
+    {
       id: 'tool-xaoproblems',
       section: 'herramientas',
-      title: 'XaoProblems',
-      desc: 'Reparador automatizado para Windows. Soluciona pantallas azules, Windows Update trabado, archivos dañados DISM/SFC y fallos de red.',
-      version: 'v1.0',
-      platform: 'Windows, Portable',
-      icon: 'shield',
+      title: '🛠️ XaoProblems (El Médico de tu PC)',
+      desc: 'Reparador automatizado de emergencias en Windows: resuelve pantallas azules, cuelgues y fallos de red.',
+      version: 'v1.2',
+      platform: 'Windows 10/11, Portable',
+      icon: 'terminal',
       downloadType: 'local',
       fileName: 'XaoProblems.zip',
       url: 'descargas/XaoProblems.zip'
@@ -95,26 +215,25 @@
   };
 
   // ── State Management ──
-  const STORAGE_KEY = 'xaoxay_items';
+  const STORAGE_KEY = 'xaoxay_items_v4';
 
   function getStoredItems() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored !== null) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) {
-          // Si contiene datos obsoletos de prueba antiguos, migrar a los nuevos
-          if (parsed.some(item => item.title === 'XaoManager' || item.id === 'prog-1' || item.title === 'XaoFocus' || item.title === 'XaoSleep')) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_ITEMS));
-            return DEFAULT_ITEMS;
-          }
+        if (Array.isArray(parsed) && parsed.length >= 16) {
           return parsed;
         }
       }
     } catch (e) {
       console.error('Error reading localStorage', e);
     }
-    return null;
+    // Si no existe o tiene versión antigua, inicializar con el catálogo completo
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_ITEMS));
+    } catch (e) {}
+    return DEFAULT_ITEMS;
   }
 
   function escapeHtml(str) {
