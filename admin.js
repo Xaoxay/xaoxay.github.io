@@ -1353,6 +1353,7 @@ ${cardsHtml}
   const gitConfigForm = document.getElementById('gitConfigForm');
   const gitTokenInput = document.getElementById('gitTokenInput');
   const btnToggleGitToken = document.getElementById('btnToggleGitToken');
+  const btnTestGitToken = document.getElementById('btnTestGitToken');
   const gitRepoInput = document.getElementById('gitRepoInput');
   const gitBranchInput = document.getElementById('gitBranchInput');
   const btnPushToGit = document.getElementById('btnPushToGit');
@@ -1360,8 +1361,13 @@ ${cardsHtml}
   const gitStatusAlert = document.getElementById('gitStatusAlert');
 
   function getGitConfig() {
+    let token = (localStorage.getItem(GITHUB_TOKEN_KEY) || '').trim();
+    token = token.replace(/^["']|["']$/g, '').trim();
+    if (token.toLowerCase().startsWith('bearer ')) token = token.slice(7).trim();
+    else if (token.toLowerCase().startsWith('token ')) token = token.slice(6).trim();
+
     return {
-      token: (localStorage.getItem(GITHUB_TOKEN_KEY) || '').trim(),
+      token: token,
       repo: (localStorage.getItem(GITHUB_REPO_KEY) || DEFAULT_REPO).trim(),
       branch: (localStorage.getItem(GITHUB_BRANCH_KEY) || DEFAULT_BRANCH).trim()
     };
@@ -1384,6 +1390,104 @@ ${cardsHtml}
         btnToggleGitToken.textContent = '👁️';
       }
     });
+  }
+
+  async function testGitHubToken() {
+    const raw = gitTokenInput ? gitTokenInput.value.trim() : '';
+    let token = raw.replace(/^["']|["']$/g, '').trim();
+    if (token.toLowerCase().startsWith('bearer ')) token = token.slice(7).trim();
+    else if (token.toLowerCase().startsWith('token ')) token = token.slice(6).trim();
+
+    const repo = gitRepoInput ? (gitRepoInput.value.trim() || DEFAULT_REPO) : DEFAULT_REPO;
+
+    if (!token) {
+      if (gitStatusAlert) {
+        gitStatusAlert.style.color = '#ff4444';
+        gitStatusAlert.textContent = '⚠️ Ingresá o pegá un Token primero para probar la conexión.';
+      }
+      showToast('⚠️ Ingresá un Token primero', 'error');
+      if (gitTokenInput) gitTokenInput.focus();
+      return;
+    }
+
+    if (btnTestGitToken) {
+      btnTestGitToken.disabled = true;
+      btnTestGitToken.textContent = '⏳ Probando...';
+    }
+    if (gitStatusAlert) {
+      gitStatusAlert.style.color = 'var(--clr-text-muted)';
+      gitStatusAlert.textContent = '⏳ Verificando token con GitHub API...';
+    }
+
+    try {
+      const authValue = token.startsWith('github_pat_') ? `Bearer ${token}` : `token ${token}`;
+      const userRes = await fetch('https://api.github.com/user', {
+        headers: {
+          'Authorization': authValue,
+          'Accept': 'application/vnd.github+json'
+        }
+      });
+
+      if (userRes.status === 401) {
+        throw new Error('Token inválido o expirado (401 Bad credentials). Asegurate de copiar el token completo generado en GitHub (empieza con "ghp_" o "github_pat_") y no tu contraseña personal de la cuenta.');
+      }
+      if (!userRes.ok) {
+        const errData = await userRes.json().catch(() => ({}));
+        throw new Error(`Error en GitHub API (${userRes.status}): ${errData.message || userRes.statusText}`);
+      }
+
+      const user = await userRes.json();
+
+      // Probar acceso al repositorio
+      const repoRes = await fetch(`https://api.github.com/repos/${repo}`, {
+        headers: {
+          'Authorization': authValue,
+          'Accept': 'application/vnd.github+json'
+        }
+      });
+
+      if (repoRes.status === 404) {
+        throw new Error(`Token autenticado como @${user.login}, pero no se encontró el repo "${repo}". Verificá el nombre o que el token tenga permiso "repo".`);
+      }
+      if (!repoRes.ok) {
+        const repoErr = await repoRes.json().catch(() => ({}));
+        throw new Error(`Error en repositorio (${repoRes.status}): ${repoErr.message || repoRes.statusText}`);
+      }
+
+      const repoData = await repoRes.json();
+      const canPush = repoData.permissions ? (repoData.permissions.push || repoData.permissions.admin) : true;
+
+      if (canPush) {
+        localStorage.setItem(GITHUB_TOKEN_KEY, token);
+        if (gitStatusAlert) {
+          gitStatusAlert.style.color = '#22c55e';
+          gitStatusAlert.textContent = `✓ ¡Conexión exitosa! Autenticado como @${user.login} con permisos de escritura en ${repo}. Ya podés hacer Push.`;
+        }
+        showToast(`✓ Token verificado para @${user.login}`, 'success');
+      } else {
+        if (gitStatusAlert) {
+          gitStatusAlert.style.color = '#eab308';
+          gitStatusAlert.textContent = `⚠️ Autenticado como @${user.login}, pero tu Token NO tiene permiso de escritura ("push") en ${repo}. Creá un token nuevo marcando el permiso "repo".`;
+        }
+        showToast('⚠️ Falta permiso "repo" en el token', 'error');
+      }
+    } catch (err) {
+      console.error('Error al probar token:', err);
+      if (gitStatusAlert) {
+        gitStatusAlert.style.color = '#ff4444';
+        gitStatusAlert.textContent = `❌ ${err.message}`;
+      }
+      showToast(`Error: ${err.message}`, 'error');
+    } finally {
+      if (btnTestGitToken) {
+        btnTestGitToken.disabled = false;
+        btnTestGitToken.textContent = '🔍 Probar Token';
+      }
+    }
+  }
+
+  if (btnTestGitToken) {
+    btnTestGitToken.addEventListener('click', testGitHubToken);
   }
 
   if (gitConfigForm) {
@@ -1476,10 +1580,15 @@ ${cardsHtml}
         gitStatusAlert.textContent = '⏳ Leyendo index.html desde GitHub API...';
       }
 
+      let cleanToken = token.replace(/^["']|["']$/g, '').trim();
+      if (cleanToken.toLowerCase().startsWith('bearer ')) cleanToken = cleanToken.slice(7).trim();
+      else if (cleanToken.toLowerCase().startsWith('token ')) cleanToken = cleanToken.slice(6).trim();
+
+      const authValue = cleanToken.startsWith('github_pat_') ? `Bearer ${cleanToken}` : `token ${cleanToken}`;
+
       const headers = {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28'
+        'Authorization': authValue,
+        'Accept': 'application/vnd.github+json'
       };
 
       // 1. Obtener index.html y su SHA actual (forzar no-cache mediante timestamp unico)
@@ -1489,7 +1598,7 @@ ${cardsHtml}
       if (getRes.status === 401 || getRes.status === 403) {
         const errJson = await getRes.json().catch(() => ({}));
         const detail = errJson.message ? ` (${errJson.message})` : '';
-        throw new Error(`Token inválido o sin permisos suficientes${detail}. Asegurate de que no haya vencido y tenga permiso "repo" (Classic) o "Contents: Read & write" (Fine-grained).`);
+        throw new Error(`Token inválido o sin permisos suficientes${detail}. Si pusiste tu contraseña personal, GitHub no la acepta: creá un Token de Acceso Personal (PAT) con el enlace de Ajustes marcando el permiso "repo".`);
       }
       if (getRes.status === 404) {
         throw new Error(`No se encontró el repositorio o archivo en: ${repo} (rama: ${branch})`);

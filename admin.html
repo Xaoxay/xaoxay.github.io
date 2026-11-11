@@ -545,16 +545,18 @@
               <label for="gitTokenInput" style="display:block; font-size: 0.85rem; font-weight:600; margin-bottom: 0.4rem; color: var(--clr-text);">
                 GitHub Personal Access Token (PAT)
               </label>
-              <div style="display: flex; gap: 0.5rem;">
-                <input type="password" id="gitTokenInput" class="admin-input flex-2" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <input type="password" id="gitTokenInput" class="admin-input flex-2" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" style="min-width: 220px;">
                 <button type="button" id="btnToggleGitToken" class="admin-btn admin-btn--ghost" title="Mostrar/Ocultar Token" style="padding: 0 0.85rem;">👁️</button>
+                <button type="button" id="btnTestGitToken" class="admin-btn admin-btn--ghost" title="Probar conexión con GitHub" style="padding: 0 0.85rem; font-size: 0.82rem;">🔍 Probar Token</button>
               </div>
-              <p style="font-size: 0.78rem; color: var(--clr-text-muted); margin-top: 0.4rem; line-height: 1.4;">
-                🔑 Necesita permiso <code>repo</code> o <code>contents:write</code>.
-                <a href="https://github.com/settings/tokens/new?description=XAOXAY+Admin+Panel&scopes=repo" target="_blank" rel="noopener noreferrer" style="color: var(--clr-accent-bright); text-decoration: underline; font-weight: 600;">
-                  Crear Token en GitHub aquí (automático) ↗
-                </a>
-              </p>
+              <div style="margin-top: 0.6rem; padding: 0.65rem 0.85rem; background: rgba(224, 16, 32, 0.08); border-left: 3px solid var(--clr-accent); border-radius: 4px; font-size: 0.8rem; line-height: 1.45; color: var(--clr-text);">
+                <strong>¿Dónde se consigue el Token?</strong><br>
+                GitHub ya <u>no acepta contraseñas</u> para publicar cambios. Necesitás un Token con permiso <code>repo</code>.<br>
+                👉 <a href="https://github.com/settings/tokens/new?description=XAOXAY+Admin+Panel&scopes=repo" target="_blank" rel="noopener noreferrer" style="color: #22c55e; font-weight: 700; text-decoration: underline;">
+                  Hacé clic acá para crear tu Token en GitHub con 1 solo clic ↗
+                </a> (Solo dale a "Generate token" abajo del todo y pegá el código acá).
+              </div>
             </div>
 
             <div class="form-row" style="margin-bottom: 1rem;">
@@ -621,7 +623,7 @@
 
   </main>
 
-  <script src="festivities.js?v=2.0"></script>
-  <script src="admin.js?v=8.0"></script>
+  <script src="festivities.js?v=2.2" defer></script>
+  <script src="admin.js?v=8.2"></script>
 </body>
 </html>
