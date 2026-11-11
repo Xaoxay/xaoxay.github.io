@@ -1664,29 +1664,34 @@
   const cardObserver = new MutationObserver(() => {
     const holidayId = getActiveHolidayId();
     if (holidayId === 'christmas') {
-      const cardsWithoutCap = document.querySelectorAll('.card:not(:has(.festive-card-snowcap))');
-      cardsWithoutCap.forEach(card => {
-        const cap = document.createElement('div');
-        cap.className = 'festive-card-snowcap';
-        cap.setAttribute('aria-hidden', 'true');
-        cap.innerHTML = SNOW_CAP_SVG;
-        card.appendChild(cap);
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        if (!card.querySelector('.festive-card-snowcap')) {
+          const cap = document.createElement('div');
+          cap.className = 'festive-card-snowcap';
+          cap.setAttribute('aria-hidden', 'true');
+          cap.innerHTML = SNOW_CAP_SVG;
+          card.appendChild(cap);
+        }
       });
     } else if (holidayId === 'valentine') {
-      const cardsWithoutRibbon = document.querySelectorAll('.card:not(:has(.festive-card-bonbon-ribbon))');
-      cardsWithoutRibbon.forEach(card => {
-        const wrap = document.createElement('div');
-        wrap.innerHTML = CHOCOLATE_BOX_CARD_HTML;
-        card.appendChild(wrap.firstElementChild);
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        if (!card.querySelector('.festive-card-bonbon-ribbon')) {
+          const wrap = document.createElement('div');
+          wrap.innerHTML = CHOCOLATE_BOX_CARD_HTML;
+          card.appendChild(wrap.firstElementChild);
+        }
       });
     }
   });
 
   function syncCardObserver() {
     const holidayId = getActiveHolidayId();
-    if (holidayId !== 'none' && document.body) {
-      if (!cardObserverConnected) {
-        cardObserver.observe(document.body, { childList: true, subtree: true });
+    if (holidayId !== 'none') {
+      const grids = document.querySelectorAll('.cards-grid');
+      if (grids.length > 0 && !cardObserverConnected) {
+        grids.forEach(grid => cardObserver.observe(grid, { childList: true }));
         cardObserverConnected = true;
       }
     } else {

@@ -5,15 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>XAOXAY — Programas & Herramientas</title>
   <meta name="description" content="XAOXAY — Descargá programas, herramientas y utilidades de optimización y mantenimiento para Windows. Creado por un dev para devs.">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✖</text></svg>">
   <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="alternate icon" href="favicon.ico">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap">
-  <link rel="stylesheet" href="styles.css?v=7.0">
-  <link rel="stylesheet" href="festivities.css?v=2.0">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap">
+  </noscript>
+  <link rel="stylesheet" href="styles.css?v=7.1">
+  <link rel="stylesheet" href="festivities.css?v=2.1">
 </head>
 <body class="cyber-terminal">
   <!-- CRT Scanlines Overlay (Tactical Telemetry) -->
@@ -52,8 +57,24 @@
   <section class="hero" id="inicio">
     <div class="hero__bg-grid" aria-hidden="true"></div>
     <div class="hero__content container">
-      <div class="hero__logo-wrap" style="width: 170px; max-width: 170px; margin: 0 auto 1.5rem; text-align: center;" aria-hidden="true">
-        <img src="logo.png" alt="XAOXAY Logo" width="170" height="170" style="width: 100%; max-width: 170px; height: auto; display: block; margin: 0 auto; border-radius: 50%; box-shadow: 0 0 35px rgba(230, 20, 20, 0.45); filter: drop-shadow(0 0 15px rgba(255, 30, 30, 0.3)); transition: transform 0.3s ease;" class="hero__x-logo-img" />
+      <div class="hero__logo-wrap" style="width: 160px; max-width: 160px; margin: 0 auto 1.5rem;" aria-hidden="true">
+        <svg class="hero__x-svg" viewBox="0 0 200 200" width="160" height="160" style="width: 100%; max-width: 160px; height: auto; display: block;" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="xGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ff1a1a"/>
+              <stop offset="50%" stop-color="#cc0000"/>
+              <stop offset="100%" stop-color="#ff4444"/>
+            </linearGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="4" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <line x1="30" y1="30" x2="170" y2="170" stroke="url(#xGrad)" stroke-width="18" stroke-linecap="round" filter="url(#glow)" class="hero__x-line"/>
+          <line x1="170" y1="30" x2="30" y2="170" stroke="url(#xGrad)" stroke-width="18" stroke-linecap="round" filter="url(#glow)" class="hero__x-line"/>
+          <circle cx="100" cy="100" r="90" fill="none" stroke="url(#xGrad)" stroke-width="3" opacity="0.3" class="hero__x-ring"/>
+          <circle cx="100" cy="100" r="76" fill="none" stroke="url(#xGrad)" stroke-width="1.5" stroke-dasharray="6 12" opacity="0.4" class="hero__x-radar"/>
+        </svg>
       </div>
 
       <!-- Tactical Telemetry HUD -->
@@ -412,7 +433,7 @@
     <span class="back-to-top__text">TOP</span>
   </button>
 
-  <script src="festivities.js?v=2.0"></script>
-  <script src="script.js?v=10.0"></script>
+  <script src="festivities.js?v=2.1" defer></script>
+  <script src="script.js?v=10.1" defer></script>
 </body>
 </html>
