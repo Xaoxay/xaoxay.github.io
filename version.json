@@ -1,12 +1,12 @@
 {
   "version": "4.6.0.0",
   "release_date": "2026-11-11",
-  "changelog": "- Auditoría de seguridad y blindaje de rutas del sistema contra Binary Planting.\n- Endurecimiento criptográfico del subsistema de actualizaciones con hash SHA-256 e identidad de ensamblado.\n- Limpieza y optimización general de XaoSuite y XaoExtras.",
+  "changelog": "- Nuevo logotipo oficial XAOXAY integrado en todas las suites y herramientas portables.\n- Auditoría de seguridad y blindaje de rutas del sistema contra Binary Planting.\n- Endurecimiento criptográfico del subsistema de actualizaciones con hash SHA-256 e identidad de ensamblado.",
   "download_url": "https://xaoxay.github.io/descargas/XaoSuite.exe",
-  "sha256": "f24e6ff44f9137cc5ea95b7307186ee81d1fae355e52f3b788bd547b4804c59b",
-  "size_bytes": 252416,
+  "sha256": "c6ecbd4f47cbe858e0042b12f51a14e407db54680d0760875cd5e0e444399795",
+  "size_bytes": 264704,
   "extras_version": "1.2.0",
   "extras_download_url": "https://xaoxay.github.io/descargas/XaoExtras.exe",
-  "extras_sha256": "375430f6c83f8127af3e97517e78cfb91ea129e9dc0e21ba2be3f8025666890c",
-  "extras_size_bytes": 208896
+  "extras_sha256": "beeb98bf0fc04bea6c63fb21fd1e54f15c6d8c4a1049cbcde581bfc10b87e34a",
+  "extras_size_bytes": 220160
 }
