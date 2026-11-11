@@ -19,7 +19,7 @@
       icon: 'shield',
       downloadType: 'local',
       fileName: 'XaoSuite.exe',
-      url: 'descargas/XaoSuite.exe?v=4.6.1'
+      url: 'descargas/XaoSuite.exe?v=4.6.2'
     },
     {
       id: 'prog-xaoextras',
@@ -31,7 +31,7 @@
       icon: 'tool',
       downloadType: 'local',
       fileName: 'XaoExtras.exe',
-      url: 'descargas/XaoExtras.exe?v=4.6.1'
+      url: 'descargas/XaoExtras.exe?v=4.6.2'
     },
     {
       id: 'prog-xaofocus',
@@ -43,7 +43,7 @@
       icon: 'window',
       downloadType: 'local',
       fileName: 'XaoFocus.exe',
-      url: 'descargas/XaoFocus.exe?v=4.6.1'
+      url: 'descargas/XaoFocus.exe?v=4.6.2'
     },
     {
       id: 'prog-xaosleep',
@@ -55,7 +55,7 @@
       icon: 'window',
       downloadType: 'local',
       fileName: 'XaoSleep.exe',
-      url: 'descargas/XaoSleep.exe?v=4.6.1'
+      url: 'descargas/XaoSleep.exe?v=4.6.2'
     },
     {
       id: 'prog-xaogame',
@@ -67,7 +67,7 @@
       icon: 'bolt',
       downloadType: 'local',
       fileName: 'XaoGame.exe',
-      url: 'descargas/XaoGame.exe?v=4.6.1'
+      url: 'descargas/XaoGame.exe?v=4.6.2'
     },
     {
       id: 'prog-xaoguard',
@@ -79,7 +79,7 @@
       icon: 'shield',
       downloadType: 'local',
       fileName: 'XaoGuard.exe',
-      url: 'descargas/XaoGuard.exe?v=4.6.1'
+      url: 'descargas/XaoGuard.exe?v=4.6.2'
     },
 
     // ── 02. Herramientas ──
@@ -93,7 +93,7 @@
       icon: 'tool',
       downloadType: 'local',
       fileName: 'XaoClean.exe',
-      url: 'descargas/XaoClean.exe?v=4.6.1'
+      url: 'descargas/XaoClean.exe?v=4.6.2'
     },
     {
       id: 'tool-xaodoctor',
@@ -105,7 +105,7 @@
       icon: 'shield',
       downloadType: 'local',
       fileName: 'XaoDoctor.exe',
-      url: 'descargas/XaoDoctor.exe?v=4.6.1'
+      url: 'descargas/XaoDoctor.exe?v=4.6.2'
     },
     {
       id: 'tool-xaofix',
@@ -117,7 +117,7 @@
       icon: 'tool',
       downloadType: 'local',
       fileName: 'XaoFix.exe',
-      url: 'descargas/XaoFix.exe?v=4.6.1'
+      url: 'descargas/XaoFix.exe?v=4.6.2'
     },
     {
       id: 'tool-xaonet',
@@ -129,7 +129,7 @@
       icon: 'bolt',
       downloadType: 'local',
       fileName: 'XaoNet.exe',
-      url: 'descargas/XaoNet.exe?v=4.6.1'
+      url: 'descargas/XaoNet.exe?v=4.6.2'
     },
     {
       id: 'tool-xaooptic',
@@ -141,7 +141,7 @@
       icon: 'window',
       downloadType: 'local',
       fileName: 'XaoOptic.exe',
-      url: 'descargas/XaoOptic.exe?v=4.6.1'
+      url: 'descargas/XaoOptic.exe?v=4.6.2'
     },
     {
       id: 'tool-xaovault',
@@ -153,7 +153,7 @@
       icon: 'shield',
       downloadType: 'local',
       fileName: 'XaoVault.exe',
-      url: 'descargas/XaoVault.exe?v=4.6.1'
+      url: 'descargas/XaoVault.exe?v=4.6.2'
     },
     {
       id: 'tool-xaohub',
@@ -165,7 +165,7 @@
       icon: 'tool',
       downloadType: 'local',
       fileName: 'XaoHub.exe',
-      url: 'descargas/XaoHub.exe?v=4.6.1'
+      url: 'descargas/XaoHub.exe?v=4.6.2'
     },
     {
       id: 'tool-xaotoolbox',
@@ -177,7 +177,7 @@
       icon: 'terminal',
       downloadType: 'local',
       fileName: 'XaoToolbox.zip',
-      url: 'descargas/XaoToolbox.zip?v=4.6.1'
+      url: 'descargas/XaoToolbox.zip?v=4.6.2'
     },
     {
       id: 'tool-xaoinstaller',
@@ -189,7 +189,7 @@
       icon: 'terminal',
       downloadType: 'local',
       fileName: 'XaoInstaller.zip',
-      url: 'descargas/XaoInstaller.zip?v=4.6.1'
+      url: 'descargas/XaoInstaller.zip?v=4.6.2'
     },
     {
       id: 'tool-xaoproblems',
@@ -201,7 +201,7 @@
       icon: 'terminal',
       downloadType: 'local',
       fileName: 'XaoProblems.zip',
-      url: 'descargas/XaoProblems.zip?v=4.6.1'
+      url: 'descargas/XaoProblems.zip?v=4.6.2'
     }
   ];
 
@@ -294,7 +294,7 @@
       actionButtons = `
         <div class="card__actions-group">
           <a href="${href}" ${downloadAttr} class="btn btn--small btn--primary">Descargar .exe</a>
-          <a href="descargas/${escapeHtml(zipName)}?v=4.6.1" download="${escapeHtml(zipName)}" class="btn btn--small btn--ghost">.zip</a>
+          <a href="descargas/${escapeHtml(zipName)}?v=4.6.2" download="${escapeHtml(zipName)}" class="btn btn--small btn--ghost">.zip</a>
         </div>
       `;
     }

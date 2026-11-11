@@ -1,7 +1,7 @@
 {
-  "version": "4.6.0.0",
+  "version": "4.6.2.0",
   "release_date": "2026-11-11",
-  "changelog": "- Nuevo logotipo oficial XAOXAY integrado en todas las suites y herramientas portables.\n- Auditoría de seguridad y blindaje de rutas del sistema contra Binary Planting.\n- Endurecimiento criptográfico del subsistema de actualizaciones con hash SHA-256 e identidad de ensamblado.",
+  "changelog": "- Compatibilidad universal en Windows 10 y 11 con manifiesto asInvoker.\n- Auto-desbloqueo nativo del flujo Mark-of-the-Web (Zone.Identifier).\n- Empaquetado zip con lanzador Iniciar.bat para ejecución instantánea sin bloqueos.",
   "download_url": "https://xaoxay.github.io/descargas/XaoSuite.exe",
   "sha256": "45c21364f9729d4dc11a4142d55e3b4eed4f521356169d3ba65d0dc12f932e77",
   "size_bytes": 191488,
