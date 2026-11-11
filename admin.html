@@ -113,10 +113,10 @@
 
       <!-- Filter Bar -->
       <div class="filter-bar">
-        <div class="filter-tabs">
-          <button class="filter-btn active" data-filter="all">Todos</button>
-          <button class="filter-btn" data-filter="programas">Programas</button>
-          <button class="filter-btn" data-filter="herramientas">Herramientas</button>
+        <div class="filter-tabs" id="filterTabsContainer">
+          <button class="filter-btn active" data-filter="all">Todos <span class="badge" id="countAll">0</span></button>
+          <button class="filter-btn" data-filter="programas">Programas <span class="badge" id="countProgramas">0</span></button>
+          <button class="filter-btn" data-filter="herramientas">Herramientas <span class="badge" id="countHerramientas">0</span></button>
         </div>
         <div class="search-wrap">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -151,11 +151,25 @@
                 <input type="text" id="titleInput" class="admin-input" placeholder="Ej: XaoSuite Pro" required>
               </div>
               <div class="form-field flex-1">
-                <label for="sectionInput">Sección en la Web *</label>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                  <label for="sectionInput" style="margin-bottom: 0;">Categoría / Sección *</label>
+                  <button type="button" id="btnToggleNewCat" class="link-btn" style="font-size: 0.78rem; color: var(--clr-accent-bright); background: none; border: none; cursor: pointer; text-decoration: underline; font-weight: 600;">
+                    + Nueva Categoría
+                  </button>
+                </div>
                 <select id="sectionInput" class="admin-input" required>
                   <option value="programas">01. Programas</option>
                   <option value="herramientas">02. Herramientas</option>
+                  <option value="__new__">➕ Crear nueva categoría...</option>
                 </select>
+                <div id="newCategoryInlineBox" style="display: none; margin-top: 0.5rem; padding: 0.65rem; background: var(--clr-surface-alt, #161616); border: 1px dashed var(--clr-accent, #e01020); border-radius: 8px;">
+                  <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.4rem;">
+                    <input type="text" id="inlineCatNameInput" class="admin-input flex-2" placeholder="Nombre (ej: Juegos, Emuladores, Scripts...)">
+                    <button type="button" id="btnConfirmInlineCat" class="admin-btn admin-btn--primary admin-btn--sm">Agregar</button>
+                    <button type="button" id="btnCancelInlineCat" class="admin-btn admin-btn--ghost admin-btn--sm">✕</button>
+                  </div>
+                  <input type="text" id="inlineCatDescInput" class="admin-input" placeholder="Descripción breve para la web (opcional)" style="font-size: 0.8rem;">
+                </div>
               </div>
             </div>
 
@@ -492,6 +506,25 @@
               <button type="submit" class="admin-btn admin-btn--primary flex-1">Actualizar PIN</button>
             </div>
             <span id="pinAlert" class="alert-msg"></span>
+          </form>
+        </div>
+
+        <!-- Card: Gestión de Categorías y Secciones -->
+        <div class="config-card" style="grid-column: 1 / -1;">
+          <div class="config-card__header">
+            <span class="config-icon">🏷️</span>
+            <div>
+              <h3>Gestión de Categorías y Secciones Web</h3>
+              <p>Creá cualquier categoría para tu web (ej: Juegos, Emuladores, Scripts, Bots, etc.). Cada categoría se mostrará como una sección propia con su menú de navegación en tu página.</p>
+            </div>
+          </div>
+          <div id="categoriesManagerList" style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.65rem;">
+            <!-- Renderizado dinámicamente -->
+          </div>
+          <form id="newCategoryManagerForm" style="margin-top: 1.25rem; display: flex; gap: 0.5rem; flex-wrap: wrap; background: var(--clr-surface-alt, #161616); padding: 0.85rem; border-radius: 8px; border: 1px solid var(--clr-border);">
+            <input type="text" id="manageCatNameInput" class="admin-input flex-1" placeholder="Nombre (ej: Juegos, Emuladores...)" required style="min-width: 180px;">
+            <input type="text" id="manageCatDescInput" class="admin-input flex-2" placeholder="Descripción breve que verá la gente en la web (opcional)" style="min-width: 240px;">
+            <button type="submit" class="admin-btn admin-btn--primary">➕ Agregar Categoría</button>
           </form>
         </div>
 

@@ -8,9 +8,23 @@
 
   // ── Keys & Constants ──
   const STORAGE_KEY = 'xaoxay_items_v4';
+  const CATEGORIES_KEY = 'xaoxay_custom_categories';
   const PIN_KEY = 'xaoxay_pin';
   const AUTH_KEY = 'xaoxay_admin_token';
   const DEFAULT_PIN_HASH = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4';
+
+  const DEFAULT_CATEGORIES = [
+    {
+      id: 'programas',
+      name: 'Programas',
+      desc: 'Suites y aplicaciones completas para potenciar y optimizar tu PC.'
+    },
+    {
+      id: 'herramientas',
+      name: 'Herramientas',
+      desc: 'Utilidades especializadas y scripts de mantenimiento listos para usar.'
+    }
+  ];
 
   const DEFAULT_ITEMS = [
     // ── 01. Programas ──
@@ -293,6 +307,103 @@
     renderAll();
   }
 
+  // ── Category System Operations ──
+  function slugifyCategory(str) {
+    return str
+      .toString()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'categoria';
+  }
+
+  function getCategories() {
+    let custom = [];
+    try {
+      const stored = localStorage.getItem(CATEGORIES_KEY);
+      if (stored) {
+        custom = JSON.parse(stored);
+      }
+    } catch (e) {
+      custom = [];
+    }
+
+    const map = new Map();
+    DEFAULT_CATEGORIES.forEach(c => map.set(c.id.toLowerCase(), { ...c }));
+
+    if (Array.isArray(custom)) {
+      custom.forEach(c => {
+        if (c && c.id) {
+          map.set(c.id.toLowerCase(), {
+            id: c.id.toLowerCase(),
+            name: c.name || c.id,
+            desc: c.desc || `Software y descargas de ${c.name || c.id}.`
+          });
+        }
+      });
+    }
+
+    // Auto-detectar secciones de items que no figuren en categories
+    const items = getItems();
+    items.forEach(item => {
+      const secId = (item.section || 'programas').trim().toLowerCase();
+      if (secId && !map.has(secId)) {
+        const displayName = secId.charAt(0).toUpperCase() + secId.slice(1);
+        map.set(secId, {
+          id: secId,
+          name: displayName,
+          desc: `Colección de aplicaciones y utilidades de ${displayName}.`
+        });
+      }
+    });
+
+    return Array.from(map.values());
+  }
+
+  function saveCategories(cats) {
+    try {
+      localStorage.setItem(CATEGORIES_KEY, JSON.stringify(cats));
+    } catch (e) {
+      console.error('Error al guardar categorías en localStorage:', e);
+    }
+  }
+
+  function getCategoryById(id) {
+    const cleanId = (id || 'programas').trim().toLowerCase();
+    const found = getCategories().find(c => c.id.toLowerCase() === cleanId);
+    if (found) return found;
+    const name = cleanId.charAt(0).toUpperCase() + cleanId.slice(1);
+    return { id: cleanId, name, desc: `Colección de ${name} y utilidades.` };
+  }
+
+  function addOrUpdateCategory(newCat) {
+    const cats = getCategories();
+    const cleanId = (newCat.id || slugifyCategory(newCat.name)).toLowerCase();
+    const idx = cats.findIndex(c => c.id.toLowerCase() === cleanId);
+    const catObj = {
+      id: cleanId,
+      name: newCat.name.trim(),
+      desc: (newCat.desc || '').trim() || `Colección de ${newCat.name.trim()} y utilidades.`
+    };
+    if (idx !== -1) {
+      cats[idx] = catObj;
+    } else {
+      cats.push(catObj);
+    }
+    saveCategories(cats);
+    return catObj;
+  }
+
+  function deleteCategory(catId) {
+    const cleanId = (catId || '').toLowerCase();
+    if (cleanId === 'programas' || cleanId === 'herramientas') return false;
+    const cats = getCategories().filter(c => c.id.toLowerCase() !== cleanId);
+    saveCategories(cats);
+    return true;
+  }
+
   function escapeHtml(str) {
     if (!str) return '';
     return String(str)
@@ -336,7 +447,7 @@
   const metricTotal = document.getElementById('metricTotal');
 
   // Filters & Search
-  const filterBtns = document.querySelectorAll('.filter-btn');
+  const filterTabsContainer = document.getElementById('filterTabsContainer');
   const searchInput = document.getElementById('searchInput');
   const softwareListContainer = document.getElementById('softwareListContainer');
 
@@ -346,6 +457,12 @@
   const formHeaderTitle = document.getElementById('formHeaderTitle');
   const titleInput = document.getElementById('titleInput');
   const sectionInput = document.getElementById('sectionInput');
+  const btnToggleNewCat = document.getElementById('btnToggleNewCat');
+  const newCategoryInlineBox = document.getElementById('newCategoryInlineBox');
+  const inlineCatNameInput = document.getElementById('inlineCatNameInput');
+  const inlineCatDescInput = document.getElementById('inlineCatDescInput');
+  const btnConfirmInlineCat = document.getElementById('btnConfirmInlineCat');
+  const btnCancelInlineCat = document.getElementById('btnCancelInlineCat');
   const descInput = document.getElementById('descInput');
   const versionInput = document.getElementById('versionInput');
   const platformInput = document.getElementById('platformInput');
@@ -366,10 +483,14 @@
   const previewMeta = document.getElementById('previewMeta');
   const previewButtons = document.getElementById('previewButtons');
 
-  // Settings Elements
+  // Settings & Category Manager Elements
   const updatePinForm = document.getElementById('updatePinForm');
   const newPinInput = document.getElementById('newPinInput');
   const pinAlert = document.getElementById('pinAlert');
+  const categoriesManagerList = document.getElementById('categoriesManagerList');
+  const newCategoryManagerForm = document.getElementById('newCategoryManagerForm');
+  const manageCatNameInput = document.getElementById('manageCatNameInput');
+  const manageCatDescInput = document.getElementById('manageCatDescInput');
   const btnExportHtml = document.getElementById('btnExportHtml');
   const btnExportJson = document.getElementById('btnExportJson');
   const btnResetPrograms = document.getElementById('btnResetPrograms');
@@ -377,6 +498,194 @@
   // ── State ──
   let activeFilter = 'all';
   let searchQuery = '';
+
+  // ── Category Dropdown & Inline Creator ──
+  function populateCategorySelect(selectedId) {
+    if (!sectionInput) return;
+    const categories = getCategories();
+    const targetId = (selectedId || (categories[0] ? categories[0].id : 'programas')).toLowerCase();
+
+    let optionsHtml = categories.map((cat, idx) => {
+      const paddedNum = String(idx + 1).padStart(2, '0');
+      const isSel = cat.id.toLowerCase() === targetId ? 'selected' : '';
+      return `<option value="${escapeHtml(cat.id)}" ${isSel}>${paddedNum}. ${escapeHtml(cat.name)}</option>`;
+    }).join('');
+
+    optionsHtml += `<option value="__new__">➕ Crear nueva categoría...</option>`;
+    sectionInput.innerHTML = optionsHtml;
+
+    if (newCategoryInlineBox) {
+      newCategoryInlineBox.style.display = 'none';
+    }
+  }
+
+  if (sectionInput) {
+    sectionInput.addEventListener('change', () => {
+      if (sectionInput.value === '__new__') {
+        if (newCategoryInlineBox) {
+          newCategoryInlineBox.style.display = 'block';
+          if (inlineCatNameInput) {
+            inlineCatNameInput.value = '';
+            inlineCatNameInput.focus();
+          }
+        }
+      } else {
+        if (newCategoryInlineBox) newCategoryInlineBox.style.display = 'none';
+      }
+    });
+  }
+
+  if (btnToggleNewCat) {
+    btnToggleNewCat.addEventListener('click', () => {
+      if (!newCategoryInlineBox) return;
+      const isOpen = newCategoryInlineBox.style.display !== 'none';
+      newCategoryInlineBox.style.display = isOpen ? 'none' : 'block';
+      if (!isOpen && inlineCatNameInput) {
+        inlineCatNameInput.focus();
+      }
+    });
+  }
+
+  if (btnCancelInlineCat) {
+    btnCancelInlineCat.addEventListener('click', () => {
+      if (newCategoryInlineBox) newCategoryInlineBox.style.display = 'none';
+      if (sectionInput && sectionInput.value === '__new__') {
+        const cats = getCategories();
+        sectionInput.value = cats[0] ? cats[0].id : 'programas';
+      }
+    });
+  }
+
+  if (btnConfirmInlineCat) {
+    btnConfirmInlineCat.addEventListener('click', () => {
+      const name = inlineCatNameInput ? inlineCatNameInput.value.trim() : '';
+      if (!name) {
+        alert('Por favor escribí el nombre de la categoría.');
+        if (inlineCatNameInput) inlineCatNameInput.focus();
+        return;
+      }
+      const slug = slugifyCategory(name);
+      const desc = inlineCatDescInput ? inlineCatDescInput.value.trim() : '';
+      addOrUpdateCategory({
+        id: slug,
+        name: name,
+        desc: desc || `Colección de ${name} y utilidades.`
+      });
+
+      populateCategorySelect(slug);
+      renderSoftwareList();
+      renderCategoriesManager();
+      showToast(`✓ Categoría "${name}" creada y seleccionada.`, 'success');
+      if (inlineCatNameInput) inlineCatNameInput.value = '';
+      if (inlineCatDescInput) inlineCatDescInput.value = '';
+    });
+  }
+
+  if (newCategoryManagerForm) {
+    newCategoryManagerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = manageCatNameInput ? manageCatNameInput.value.trim() : '';
+      if (!name) return;
+      const slug = slugifyCategory(name);
+      const desc = manageCatDescInput ? manageCatDescInput.value.trim() : '';
+
+      addOrUpdateCategory({
+        id: slug,
+        name: name,
+        desc: desc || `Colección de ${name} y utilidades.`
+      });
+
+      populateCategorySelect(sectionInput ? sectionInput.value : slug);
+      renderSoftwareList();
+      renderCategoriesManager();
+      showToast(`✓ Categoría "${name}" agregada exitosamente.`, 'success');
+      newCategoryManagerForm.reset();
+    });
+  }
+
+  // ── Render Category Manager in Settings ──
+  function renderCategoriesManager() {
+    if (!categoriesManagerList) return;
+    const items = getItems();
+    const categories = getCategories();
+
+    categoriesManagerList.innerHTML = categories.map((cat, idx) => {
+      const paddedIndex = String(idx + 1).padStart(2, '0');
+      const count = items.filter(i => (i.section || '').toLowerCase() === cat.id.toLowerCase()).length;
+      const isDefault = cat.id === 'programas' || cat.id === 'herramientas';
+
+      return `
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; background: var(--clr-surface-alt, #161616); border: 1px solid var(--clr-border, #2a2a2a); border-radius: 8px; flex-wrap: wrap; gap: 0.75rem;">
+          <div style="display: flex; align-items: center; gap: 0.85rem; flex: 1; min-width: 250px;">
+            <span style="font-family: monospace; font-size: 0.85rem; font-weight: 700; color: var(--clr-accent, #e01020); background: rgba(224, 16, 32, 0.1); padding: 0.2rem 0.5rem; border-radius: 4px;">${paddedIndex}</span>
+            <div>
+              <div style="font-weight: 600; font-size: 0.95rem; color: var(--clr-text); display: flex; align-items: center; gap: 0.5rem;">
+                ${escapeHtml(cat.name)}
+                <span style="font-size: 0.75rem; color: var(--clr-text-muted); font-weight: normal;">(id: <code>${escapeHtml(cat.id)}</code>)</span>
+              </div>
+              <div style="font-size: 0.8rem; color: var(--clr-text-muted); margin-top: 0.15rem;">
+                ${escapeHtml(cat.desc || 'Sin descripción')}
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.65rem;">
+            <span class="pill-badge" style="font-size: 0.75rem;">${count} software</span>
+            <button type="button" class="admin-btn admin-btn--ghost admin-btn--sm btn-edit-category" data-id="${escapeHtml(cat.id)}" title="Editar nombre o descripción">
+              ✏️ Editar
+            </button>
+            ${!isDefault ? `
+              <button type="button" class="admin-btn admin-btn--ghost admin-btn--sm btn-delete-category" data-id="${escapeHtml(cat.id)}" style="color: #ff4444;" title="Eliminar categoría">
+                🗑️
+              </button>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Listeners para editar categoría
+    categoriesManagerList.querySelectorAll('.btn-edit-category').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const catId = btn.dataset.id;
+        const cat = getCategoryById(catId);
+        const newName = prompt(`Modificar nombre de categoría "${cat.name}":`, cat.name);
+        if (newName === null) return;
+        const trimmedName = newName.trim();
+        if (!trimmedName) {
+          alert('El nombre no puede estar vacío.');
+          return;
+        }
+        const newDesc = prompt(`Modificar descripción para "${trimmedName}":`, cat.desc || '');
+        if (newDesc === null) return;
+
+        addOrUpdateCategory({ id: cat.id, name: trimmedName, desc: newDesc.trim() });
+        populateCategorySelect(sectionInput ? sectionInput.value : null);
+        renderSoftwareList();
+        renderCategoriesManager();
+        showToast(`✓ Categoría "${trimmedName}" actualizada.`, 'success');
+      });
+    });
+
+    // Listeners para eliminar categoría
+    categoriesManagerList.querySelectorAll('.btn-delete-category').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const catId = btn.dataset.id;
+        const cat = getCategoryById(catId);
+        const assignedItems = items.filter(i => (i.section || '').toLowerCase() === catId.toLowerCase());
+        if (assignedItems.length > 0) {
+          alert(`No se puede eliminar la categoría "${cat.name}" porque tiene ${assignedItems.length} software asignado(s). Cambiales la categoría primero desde la lista.`);
+          return;
+        }
+        if (confirm(`¿Seguro que deseás eliminar la categoría "${cat.name}"?`)) {
+          deleteCategory(catId);
+          populateCategorySelect();
+          renderSoftwareList();
+          renderCategoriesManager();
+          showToast(`✓ Categoría "${cat.name}" eliminada.`, 'success');
+        }
+      });
+    });
+  }
 
   // ── Tab Navigation ──
   function switchTab(tabId) {
@@ -416,16 +725,7 @@
     });
   }
 
-  // ── Filter & Search Handlers ──
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeFilter = btn.dataset.filter;
-      renderSoftwareList();
-    });
-  });
-
+  // ── Search Handler ──
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
       searchQuery = e.target.value.trim().toLowerCase();
@@ -531,20 +831,39 @@
   // ── Render Cards in Admin List ──
   function renderSoftwareList() {
     const items = getItems();
+    const categories = getCategories();
 
     // Actualizar métricas
-    const progs = items.filter(i => i.section === 'programas');
-    const tools = items.filter(i => i.section === 'herramientas');
+    const progs = items.filter(i => (i.section || '').toLowerCase() === 'programas');
+    const tools = items.filter(i => (i.section || '').toLowerCase() === 'herramientas');
 
     if (programsCounter) programsCounter.textContent = items.length;
     if (metricPrograms) metricPrograms.textContent = progs.length;
     if (metricTools) metricTools.textContent = tools.length;
     if (metricTotal) metricTotal.textContent = items.length;
 
+    // Renderizar botones de filtro dinámicos con todas las categorías
+    if (filterTabsContainer) {
+      let tabsHtml = `<button class="filter-btn ${activeFilter === 'all' ? 'active' : ''}" data-filter="all">Todos <span class="badge">${items.length}</span></button>`;
+      categories.forEach(cat => {
+        const catCount = items.filter(i => (i.section || '').toLowerCase() === cat.id.toLowerCase()).length;
+        const isActive = activeFilter === cat.id;
+        tabsHtml += `<button class="filter-btn ${isActive ? 'active' : ''}" data-filter="${escapeHtml(cat.id)}">${escapeHtml(cat.name)} <span class="badge">${catCount}</span></button>`;
+      });
+      filterTabsContainer.innerHTML = tabsHtml;
+
+      filterTabsContainer.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          activeFilter = btn.dataset.filter;
+          renderSoftwareList();
+        });
+      });
+    }
+
     // Filtrar
     let filtered = items;
     if (activeFilter !== 'all') {
-      filtered = filtered.filter(i => i.section === activeFilter);
+      filtered = filtered.filter(i => (i.section || '').toLowerCase() === activeFilter.toLowerCase());
     }
     if (searchQuery) {
       filtered = filtered.filter(i =>
@@ -575,9 +894,10 @@
 
     softwareListContainer.innerHTML = filtered.map(item => {
       const iconSvg = ICONS[item.icon] || ICONS.window;
-      const isProg = item.section === 'programas';
+      const cat = getCategoryById(item.section);
+      const isProg = (item.section || '').toLowerCase() === 'programas';
       const sectionBadgeClass = isProg ? 'pill-badge--accent' : 'pill-badge';
-      const sectionName = isProg ? '01. Programa' : '02. Herramienta';
+      const sectionName = cat.name;
 
       const isLocal = item.downloadType === 'local';
       const targetPath = isLocal ? `descargas/${item.fileName}` : item.url;
@@ -589,7 +909,7 @@
               ${iconSvg}
             </div>
             <div class="dash-card__badges">
-              <span class="pill-badge ${sectionBadgeClass}">${sectionName}</span>
+              <span class="pill-badge ${sectionBadgeClass}">${escapeHtml(sectionName)}</span>
               ${item.version ? `<span class="pill-badge">${escapeHtml(item.version)}</span>` : ''}
               ${item.platform ? `<span class="pill-badge">${escapeHtml(item.platform)}</span>` : ''}
             </div>
@@ -637,6 +957,8 @@
     softwareForm.reset();
     editSoftwareId.value = '';
     formHeaderTitle.textContent = 'Agregar Nuevo Software';
+    populateCategorySelect();
+    if (newCategoryInlineBox) newCategoryInlineBox.style.display = 'none';
     submitSoftwareBtn.innerHTML = `<span>💾 Guardar y Publicar</span>`;
     cancelFormBtn.style.display = 'none';
 
@@ -664,7 +986,7 @@
     editSoftwareId.value = item.id;
     formHeaderTitle.textContent = `Editar Software: ${item.title}`;
     titleInput.value = item.title;
-    sectionInput.value = item.section;
+    populateCategorySelect(item.section);
     descInput.value = item.desc;
     versionInput.value = item.version || '';
     platformInput.value = item.platform || '';
@@ -737,9 +1059,23 @@
         }
       }
 
+      let sec = sectionInput ? sectionInput.value : 'programas';
+      if (sec === '__new__') {
+        const customName = inlineCatNameInput ? inlineCatNameInput.value.trim() : '';
+        if (!customName) {
+          alert('Por favor ingresá un nombre para la nueva categoría.');
+          if (inlineCatNameInput) inlineCatNameInput.focus();
+          return;
+        }
+        const slug = slugifyCategory(customName);
+        const customDesc = inlineCatDescInput ? inlineCatDescInput.value.trim() : '';
+        addOrUpdateCategory({ id: slug, name: customName, desc: customDesc || `Colección de ${customName} y utilidades.` });
+        sec = slug;
+      }
+
       const softwareItem = {
         id: currentId || `item-${Date.now()}`,
-        section: sectionInput.value,
+        section: sec,
         title: titleInput.value.trim(),
         desc: descInput.value.trim(),
         version: versionInput.value.trim(),
@@ -868,6 +1204,95 @@
         </article>`;
   }
 
+  // ── Generador Universal de index.html con Soporte Multicategoría ──
+  function buildFullIndexHtml(templateHtml, items, categories) {
+    let html = templateHtml;
+
+    // Obtener categorías activas (que tengan software o sean programas/herramientas)
+    const activeCats = [];
+    const usedIds = new Set();
+
+    categories.forEach(cat => {
+      const catItems = items.filter(i => (i.section || '').toLowerCase() === cat.id.toLowerCase());
+      if (catItems.length > 0 || cat.id === 'programas' || cat.id === 'herramientas') {
+        activeCats.push({ ...cat, items: catItems });
+        usedIds.add(cat.id.toLowerCase());
+      }
+    });
+
+    // Detectar items con categoría no registrada aún
+    items.forEach(item => {
+      const secId = (item.section || 'programas').toLowerCase();
+      if (!usedIds.has(secId)) {
+        const catName = secId.charAt(0).toUpperCase() + secId.slice(1);
+        const catItems = items.filter(i => (i.section || '').toLowerCase() === secId);
+        activeCats.push({
+          id: secId,
+          name: catName,
+          desc: `Colección de ${catName} y utilidades.`,
+          items: catItems
+        });
+        usedIds.add(secId);
+      }
+    });
+
+    // 1. Generar secciones HTML completas
+    const sectionsHtml = activeCats.map((cat, idx) => {
+      const paddedIndex = String(idx + 1).padStart(2, '0');
+      const isAlt = idx % 2 !== 0;
+      const altClass = isAlt ? ' section--alt' : '';
+      const cardsHtml = (cat.items || []).map(generateIndexCard).join('\n');
+
+      return `
+  <!-- ══════════════ ${paddedIndex}. ${escapeHtml(cat.name.toUpperCase())} ══════════════ -->
+  <section class="section${altClass}" id="${escapeHtml(cat.id)}">
+    <div class="container">
+      <h2 class="section__title"><span class="section__title-accent">${paddedIndex}.</span> ${escapeHtml(cat.name)}</h2>
+      <p class="section__desc">${escapeHtml(cat.desc || '')}</p>
+
+      <div class="cards-grid" id="${escapeHtml(cat.id)}Grid">
+${cardsHtml}
+      </div>
+    </div>
+  </section>`;
+    }).join('\n');
+
+    // Inyectar secciones en el HTML
+    if (html.includes('<!-- START:CATALOG_SECTIONS -->') && html.includes('<!-- END:CATALOG_SECTIONS -->')) {
+      html = html.replace(
+        /<!-- START:CATALOG_SECTIONS -->[\s\S]*?<!-- END:CATALOG_SECTIONS -->/,
+        `<!-- START:CATALOG_SECTIONS -->\n${sectionsHtml}\n  <!-- END:CATALOG_SECTIONS -->`
+      );
+    } else {
+      html = html.replace(
+        /(<!-- ══════════════ (?:01\.\s*)?PROGRAMAS ══════════════ -->[\s\S]*?)(?=\s*<!-- ══════════════ FOOTER ══════════════ -->)/,
+        `<!-- START:CATALOG_SECTIONS -->\n${sectionsHtml}\n  <!-- END:CATALOG_SECTIONS -->\n\n  `
+      );
+    }
+
+    // 2. Generar ítems de navegación para el navbar
+    const navItemsHtml = activeCats.map(cat => {
+      return `        <li><a href="#${escapeHtml(cat.id)}" class="nav__link">${escapeHtml(cat.name)}</a></li>`;
+    }).join('\n');
+
+    if (html.includes('<!-- START:NAV_ITEMS -->') && html.includes('<!-- END:NAV_ITEMS -->')) {
+      html = html.replace(
+        /<!-- START:NAV_ITEMS -->[\s\S]*?<!-- END:NAV_ITEMS -->/,
+        `<!-- START:NAV_ITEMS -->\n${navItemsHtml}\n        <!-- END:NAV_ITEMS -->`
+      );
+    } else {
+      html = html.replace(
+        /(<li><a href="#inicio"[^>]*>Inicio<\/a><\/li>)[\s\S]*?(?=\s*<li>\s*<a href="https:\/\/github\.com\/Xaoxay")/i,
+        `$1\n        <!-- START:NAV_ITEMS -->\n${navItemsHtml}\n        <!-- END:NAV_ITEMS -->`
+      );
+    }
+
+    // Cache-bust
+    html = html.replace(/script\.js\?v=[\d\.]+/g, `script.js?v=${Date.now()}`);
+
+    return html;
+  }
+
   if (btnExportHtml) {
     btnExportHtml.addEventListener('click', async () => {
       try {
@@ -878,21 +1303,7 @@
         if (!res.ok) throw new Error('No se pudo leer index.html');
         let htmlText = await res.text();
 
-        const items = getItems();
-        const progs = items.filter(i => i.section === 'programas');
-        const tools = items.filter(i => i.section === 'herramientas');
-
-        const progsCardsHtml = progs.map(generateIndexCard).join('\n');
-        const toolsCardsHtml = tools.map(generateIndexCard).join('\n');
-
-        htmlText = htmlText.replace(
-          /(<div class="cards-grid" id="programasGrid">)[\s\S]*?(<\/div>\s*<\/div>\s*<\/section>)/,
-          `$1\n${progsCardsHtml}\n      $2`
-        );
-        htmlText = htmlText.replace(
-          /(<div class="cards-grid" id="herramientasGrid">)[\s\S]*?(<\/div>\s*<\/div>\s*<\/section>)/,
-          `$1\n${toolsCardsHtml}\n      $2`
-        );
+        htmlText = buildFullIndexHtml(htmlText, getItems(), getCategories());
 
         const blob = new Blob([htmlText], { type: 'text/html;charset=utf-8' });
         const url = URL.createObjectURL(blob);
@@ -1094,33 +1505,16 @@
       const rawBase64 = fileData.content.replace(/\s/g, '');
       let htmlText = decodeURIComponent(escape(atob(rawBase64)));
 
-      // 3. Reemplazar tarjetas de programas y herramientas
+      // 3. Reemplazar dinámicamente todas las categorías y secciones en index.html
       setButtonsLoading(true, 'Generando cambios...');
-      const items = getItems();
-      const progs = items.filter(i => i.section === 'programas');
-      const tools = items.filter(i => i.section === 'herramientas');
-
-      const progsCardsHtml = progs.map(generateIndexCard).join('\n');
-      const toolsCardsHtml = tools.map(generateIndexCard).join('\n');
-
-      htmlText = htmlText.replace(
-        /(<div class="cards-grid" id="programasGrid">)[\s\S]*?(<\/div>\s*<\/div>\s*<\/section>)/,
-        `$1\n${progsCardsHtml}\n      $2`
-      );
-      htmlText = htmlText.replace(
-        /(<div class="cards-grid" id="herramientasGrid">)[\s\S]*?(<\/div>\s*<\/div>\s*<\/section>)/,
-        `$1\n${toolsCardsHtml}\n      $2`
-      );
-
-      // Cache-bust para asegurar que los navegadores descarguen la versión más reciente
-      htmlText = htmlText.replace(/script\.js\?v=[\d\.]+/g, `script.js?v=${Date.now()}`);
+      htmlText = buildFullIndexHtml(htmlText, getItems(), getCategories());
 
       // 4. Codificar a Base64 compatible con emojis y tildes UTF-8
       const updatedContentBase64 = btoa(unescape(encodeURIComponent(htmlText)));
 
       // 5. Enviar PUT a GitHub para crear el commit
       setButtonsLoading(true, 'Creando Commit y Push...');
-      const commitMessage = `feat(admin): actualizar programas y herramientas desde panel web [${new Date().toLocaleDateString('es-AR')}]`;
+      const commitMessage = `feat(admin): actualizar catálogo y categorías desde panel web [${new Date().toLocaleDateString('es-AR')}]`;
 
       let putRes = await fetch(`https://api.github.com/repos/${repo}/contents/index.html`, {
         method: 'PUT',
@@ -1423,7 +1817,9 @@
 
   // ── Global Render ──
   function renderAll() {
+    populateCategorySelect();
     renderSoftwareList();
+    renderCategoriesManager();
     updateLivePreview();
     updateFestiveBadge();
   }
