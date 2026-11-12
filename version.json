@@ -1,12 +1,12 @@
 {
-  "version": "4.6.2.0",
+  "version": "4.6.3.0",
   "release_date": "2026-11-11",
-  "changelog": "- Compatibilidad universal en Windows 10 y 11 con manifiesto asInvoker.\n- Auto-desbloqueo nativo del flujo Mark-of-the-Web (Zone.Identifier).\n- Empaquetado zip con lanzador Iniciar.bat para ejecución instantánea sin bloqueos.",
+  "changelog": "- Permisos de administrador automáticos habilitados (requireAdministrator).\n- Manifiesto SxS estricto y limpio compatible con Windows 10 y 11.\n- Auto-desbloqueo nativo del flujo Mark-of-the-Web (Zone.Identifier).",
   "download_url": "https://xaoxay.github.io/descargas/XaoSuite.exe",
-  "sha256": "45c21364f9729d4dc11a4142d55e3b4eed4f521356169d3ba65d0dc12f932e77",
+  "sha256": "0a0c73d2dd861f450a11b6663a0fa77df2c53af94873bce2fe4defd9258fadd1",
   "size_bytes": 191488,
   "extras_version": "1.2.0",
   "extras_download_url": "https://xaoxay.github.io/descargas/XaoExtras.exe",
-  "extras_sha256": "c4249348f15c0025c6a2716a6bf1b94d4b7062c18111a87523c9d244ff30e5a7",
+  "extras_sha256": "f15033bd8aa6d1fd1667d18444c464790f95279a5e2cf8721cbe49457968ac54",
   "extras_size_bytes": 146432
 }
